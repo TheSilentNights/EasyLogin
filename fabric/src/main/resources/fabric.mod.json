@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "easylogin",
+  "version": "${version}",
+  "name": "EasyLogin",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": [
+    "Me!"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "CC0-1.0",
+  "icon": "assets/easylogin/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.thesilentnights.fabric.EasyLoginFabric"
+    ],
+    "client": [
+      "com.thesilentnights.fabric.client.EasyLoginFabricClient"
+    ]
+  },
+  "mixins": [
+    "easylogin.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.17.3",
+    "minecraft": "~1.17.1",
+    "java": ">=16",
+    "architectury": ">=2.10.12",
+    "fabric": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
