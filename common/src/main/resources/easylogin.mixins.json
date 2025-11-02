@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "com.thesilentnights.mixin",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
   ],

@@ -1,34 +1,36 @@
 package com.thesilentnights;
 
-import com.thesilentnights.sql.Mybatis;
-import com.zaxxer.hikari.HikariDataSource;
+import cn.hutool.core.io.FileUtil;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.thesilentnights.guice.EasyLoginModule;
+import com.thesilentnights.service.PlayerLoginAuth;
+import com.thesilentnights.sql.config.ConfigProvider;
 import dev.architectury.platform.Platform;
-import dev.architectury.utils.Env;
 
 import java.io.File;
-import java.io.IOException;
 
 public final class EasyLogin {
+    public static final Injector injector = Guice.createInjector(new EasyLoginModule());
 
     public static void init() {
-        //init server side database
-        if (Platform.getEnvironment() == Env.SERVER){
-            File file = new File(Platform.getGameFolder().toAbsolutePath()+"\\EasyLogin\\playerAccounts.db");
-            if (!file.exists()){
-                try{
-                    file.createNewFile();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+        //init server side database'
+        initProviders();
+        injector.getInstance(PlayerLoginAuth.class).authPlayerWithPwd("re","re");
+    }
 
-            HikariDataSource dataSource = new HikariDataSource();
-            dataSource.setJdbcUrl("jdbc:sqlite:"+file.getAbsolutePath());
-            dataSource.setMaximumPoolSize(10);
-            dataSource.setMinimumIdle(2);
-            dataSource.setIdleTimeout(30000);
-            dataSource.setAutoCommit(true);
-            Mybatis.init(dataSource);
+    private static File getServerSideDatabasePath() {
+        File file = new File(Platform.getGameFolder().toAbsolutePath() + "\\EasyLogin\\playerAccounts.db");
+        return file;
+    }
+
+    private static void initProviders(){
+        ConfigProvider instance = injector.getInstance(ConfigProvider.class);
+        File file = getServerSideDatabasePath();
+        if (!file.exists()) {
+            FileUtil.copy(ClassLoader.getSystemResource("playerAccounts.db").toString(),getServerSideDatabasePath().toString(), true);
         }
+        instance.setFileToDatabase(getServerSideDatabasePath());
     }
 }
+

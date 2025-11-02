@@ -35,12 +35,14 @@ subprojects {
     dependencies {
         minecraft "net.minecraft:minecraft:$minecraft_version"
         mappings "net.fabricmc:yarn:$yarn_mappings:v2"
-        // https://mvnrepository.com/artifact/org.mybatis/mybatis
-        implementation ("org.mybatis:mybatis:3.5.19")
-        // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
+        implementation("cn.hutool:hutool-all:5.8.26")
+        // https://mvnrepository.com/artifact/com.google.inject/guice
+        implementation("com.google.inject:guice:7.0.0")
+        implementation("org.mybatis:mybatis:3.5.19")
         implementation("com.zaxxer:HikariCP:7.0.2")
-        // https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc
         implementation("org.xerial:sqlite-jdbc:3.50.3.0")
+
+
     }
 
     java {
