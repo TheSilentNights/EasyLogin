@@ -1,8 +1,9 @@
 package com.thesilentnights.fabric;
 
-import net.fabricmc.api.ModInitializer;
-
 import com.thesilentnights.EasyLogin;
+import com.thesilentnights.configs.Config;
+import com.thesilentnights.configs.SqlType;
+import net.fabricmc.api.ModInitializer;
 
 public final class EasyLoginFabric implements ModInitializer {
     @Override
@@ -12,6 +13,6 @@ public final class EasyLoginFabric implements ModInitializer {
         // Proceed with mild caution.
 
         // Run our common setup.
-        EasyLogin.init();
+        EasyLogin.init(Config.builder().sqlType(SqlType.SQLITE).build());
     }
 }

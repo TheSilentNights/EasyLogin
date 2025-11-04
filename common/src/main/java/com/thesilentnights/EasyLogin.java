@@ -1,6 +1,7 @@
 package com.thesilentnights;
 
 import cn.hutool.core.io.FileUtil;
+import com.thesilentnights.configs.Config;
 import com.thesilentnights.service.PlayerLoginAuth;
 import com.thesilentnights.sql.DatabaseChecker;
 import com.thesilentnights.sql.DatabaseProvider;
@@ -10,7 +11,7 @@ import net.fabricmc.api.EnvType;
 
 public final class EasyLogin {
 
-    public static void init() {
+    public static void init(Config config) {
         //init server side database'
         if (Platform.getEnv() == EnvType.SERVER || Platform.isDevelopmentEnvironment()) {
             //init database

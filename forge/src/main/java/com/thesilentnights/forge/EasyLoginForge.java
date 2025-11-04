@@ -1,5 +1,7 @@
 package com.thesilentnights.forge;
 
+import com.thesilentnights.configs.Config;
+import com.thesilentnights.configs.SqlType;
 import com.thesilentnights.repo.CommonStaticRepo;
 import dev.architectury.platform.forge.EventBuses;
 import net.minecraftforge.fml.common.Mod;
@@ -14,6 +16,6 @@ public final class EasyLoginForge {
         EventBuses.registerModEventBus(CommonStaticRepo.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
 
         // Run our common setup.
-        EasyLogin.init();
+        EasyLogin.init(Config.builder().sqlType(SqlType.SQLITE).build());
     }
 }
