@@ -1,17 +1,34 @@
 package com.thesilentnights.sql;
 
 import com.thesilentnights.pojo.PlayerAccount;
+import com.thesilentnights.sql.config.DatabaseConfig;
 import com.thesilentnights.sql.mapper.PlayerAccountMapper;
 import com.zaxxer.hikari.HikariConfig;
-import jakarta.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
 
 import java.io.File;
+import java.sql.Connection;
 import java.util.Optional;
 
 public class SqlLite implements DatabaseProvider{
-    @Inject
-    Mybatis mybatis;
+    private static SqlLite instance;
+    public static DatabaseProvider init(File fileToDataBase){
+        if (instance != null){
+            throw new RuntimeException(new Exception("duplicate instance creation"));
+        }
+        instance = new SqlLite(fileToDataBase);
+        return instance;
+    }
+
+    public static SqlLite getInstance(){
+        return instance;
+    }
+
+    private Mybatis mybatis;
+
+    public SqlLite(File fileToDataBase){
+        mybatis = new Mybatis(new DatabaseConfig(getSqliteConfig(fileToDataBase)));
+    }
 
     @Override
     public Optional<PlayerAccount> getAuth(String username) {
@@ -32,6 +49,11 @@ public class SqlLite implements DatabaseProvider{
     @Override
     public boolean removeAuth(String username) {
         return false;
+    }
+
+    @Override
+    public Connection getConnection() {
+        return mybatis.getSqlSessionFactory().openSession().getConnection();
     }
 
     public static HikariConfig getSqliteConfig(File fileToDataBase){

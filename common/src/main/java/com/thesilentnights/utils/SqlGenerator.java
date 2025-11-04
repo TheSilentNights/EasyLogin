@@ -1,4 +1,4 @@
-package com.thesilentnights.sql;
+package com.thesilentnights.utils;
 
 import org.apache.ibatis.jdbc.SQL;
 
