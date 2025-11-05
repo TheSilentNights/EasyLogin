@@ -5,6 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.thesilentnights.commands.ICommands;
 import com.thesilentnights.configs.Config;
 import com.thesilentnights.events.CommonEvents;
+import com.thesilentnights.events.ServerSideEvents;
 import com.thesilentnights.pojo.PlayerAccount;
 import com.thesilentnights.service.PlayerLoginAuth;
 import com.thesilentnights.sql.DatabaseChecker;
@@ -14,8 +15,8 @@ import dev.architectury.event.events.common.CommandRegistrationEvent;
 import dev.architectury.platform.Platform;
 import lombok.extern.slf4j.Slf4j;
 import net.fabricmc.api.EnvType;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
 @Slf4j
 public final class EasyLogin {
@@ -30,7 +31,7 @@ public final class EasyLogin {
             PlayerLoginAuth.init(databaseProvider);
 
             //register commands
-            CommandRegistrationEvent.EVENT.register((CommandDispatcher<ServerCommandSource> dispatcher, CommandManager.RegistrationEnvironment selection)->{
+            CommandRegistrationEvent.EVENT.register((CommandDispatcher<CommandSourceStack> dispatcher,  Commands.CommandSelection selection)->{
                 ICommands.registerCommands(dispatcher);
             });
 
@@ -41,6 +42,10 @@ public final class EasyLogin {
             if (Platform.isDevelopmentEnvironment()) {
                 test(databaseProvider);
             }
+        }
+
+        if (Platform.getEnv() == EnvType.SERVER){
+            ServerSideEvents.register();
         }
     }
 

@@ -8,14 +8,14 @@ import java.util.Optional;
 
 
 public class PlayerCache {
-    static Map<String, PlayerAccount> cacheMap = new HashMap<>();
+    private static final Map<String, PlayerAccount> cacheMap = new HashMap<>();
 
     synchronized public static void addAccount(PlayerAccount account) {
         cacheMap.put(account.getUsername(), account);
     }
 
     synchronized public static Optional<PlayerAccount> getAccount(String username) {
-        return Optional.of(cacheMap.get(username));
+        return Optional.ofNullable(cacheMap.get(username));
     }
 
     synchronized public static boolean hasAccount(String username) {
