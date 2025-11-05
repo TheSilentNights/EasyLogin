@@ -8,21 +8,21 @@ import java.util.Optional;
 
 
 public class PlayerCache {
-    private static final Map<String, PlayerAccount> cacheMap = new HashMap<>();
+    private final Map<String, PlayerAccount> cacheMap = new HashMap<>();
 
-    synchronized public static void addAccount(PlayerAccount account) {
+    synchronized public void addAccount(PlayerAccount account) {
         cacheMap.put(account.getUsername(), account);
     }
 
-    synchronized public static Optional<PlayerAccount> getAccount(String username) {
+    synchronized public Optional<PlayerAccount> getAccount(String username) {
         return Optional.ofNullable(cacheMap.get(username));
     }
 
-    synchronized public static boolean hasAccount(String username) {
+    synchronized public boolean hasAccount(String username) {
         return cacheMap.containsKey(username);
     }
 
-    synchronized public static void dropAccount(String username) {
+    synchronized public void dropAccount(String username) {
         cacheMap.remove(username);
     }
 }

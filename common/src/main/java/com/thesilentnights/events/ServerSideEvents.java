@@ -1,6 +1,5 @@
 package com.thesilentnights.events;
 
-import com.thesilentnights.repo.PlayerCache;
 import com.thesilentnights.service.PlayerLoginAuth;
 import com.thesilentnights.task.Message;
 import com.thesilentnights.task.TickTimerManager;
@@ -22,7 +21,7 @@ public class ServerSideEvents {
         });
 
         PlayerEvent.PLAYER_QUIT.register(entity -> {
-            PlayerCache.dropAccount(entity.getGameProfile().getName());
+            PlayerLoginAuth.logoutPlayer(entity);
             TickTimerManager.cancel(entity.getUUID());
         });
 

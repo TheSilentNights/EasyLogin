@@ -1,11 +1,15 @@
 package com.thesilentnights.sql;
 
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class DatabaseChecker {
 
     private final Connection connection;
@@ -21,18 +25,18 @@ public class DatabaseChecker {
         try {
             // 检查表是否存在
             if (!tableExists()) {
-                System.out.println("accounts表不存在，创建新表...");
+                log.info("accounts表不存在，正在创建...");
                 createTable();
                 connection.commit();
                 return true;
             } else {
-                System.out.println("accounts表已存在，检查表结构...");
+                log.info("accounts表已存在，正在检查表结构...");
                 boolean repaired = repairTableStructure();
                 connection.commit();
                 return repaired;
             }
         } catch (SQLException e) {
-            System.err.println("检查修复表结构时出错: " + e.getMessage());
+            log.error("检查修复表结构时出错:", e);
             return false;
         }
     }
@@ -68,7 +72,7 @@ public class DatabaseChecker {
             stmt.execute(createTableSQL);
         }
         connection.commit();
-        System.out.println("accounts表创建成功");
+        log.info("accounts表创建成功");
     }
 
     /**
@@ -97,7 +101,7 @@ public class DatabaseChecker {
             ColumnDefinition columnDef = entry.getValue();
 
             if (!columnExists(existingColumns, columnName)) {
-                System.out.println("添加缺失的列: " + columnName);
+                log.info("添加列：{}", columnName);
                 addColumn(columnName, columnDef.getDataType());
                 repaired = true;
             }
@@ -105,13 +109,13 @@ public class DatabaseChecker {
 
         // 确保username是主键
         if (!isUsernamePrimaryKey()) {
-            System.out.println("修复username主键约束...");
+            log.info("将username设置为主键");
             makeUsernamePrimaryKey();
             repaired = true;
         }
 
         if (!repaired) {
-            System.out.println("表结构完整，无需修复");
+            log.info("表结构已正确，无需修复");
         }
 
 
@@ -184,7 +188,7 @@ public class DatabaseChecker {
             }
         } catch (SQLException e) {
             // 如果上述语法不支持，尝试其他方式
-            System.out.println("设置非空约束失败: " + e.getMessage());
+            log.error("设置username非空失败: ", e);
         }
 
         // 创建唯一索引
@@ -194,7 +198,7 @@ public class DatabaseChecker {
                 stmt.execute(createIndexSQL);
             }
         } catch (SQLException e) {
-            System.out.println("创建唯一索引失败（可能已存在）: " + e.getMessage());
+            log.error("创建唯一索引失败: ", e);
         }
 
         connection.commit();
@@ -215,22 +219,22 @@ public class DatabaseChecker {
             // 检查所有必需列是否存在
             for (String column : requiredColumns) {
                 if (!columnExists(existingColumns, column)) {
-                    System.out.println("缺失列: " + column);
+                    log.info("缺少列：{}", column);
                     return false;
                 }
             }
 
             // 检查主键
             if (!isUsernamePrimaryKey()) {
-                System.out.println("username不是主键");
+                log.info("username不是主键");
                 return false;
             }
 
-            System.out.println("表结构验证通过");
+            log.info("表结构已正确");
             return true;
 
         } catch (SQLException e) {
-            System.err.println("验证表结构时出错: " + e.getMessage());
+            log.error("验证表结构失败: ", e);
             return false;
         }
     }
@@ -238,10 +242,11 @@ public class DatabaseChecker {
     /**
      * 列定义内部类
      */
+    @Getter
     private static class ColumnDefinition {
-        private String dataType;
-        private boolean isPrimaryKey;
-        private boolean isNotNull;
+        private final String dataType;
+        private final boolean isPrimaryKey;
+        private final boolean isNotNull;
 
         public ColumnDefinition(String dataType, boolean isPrimaryKey, boolean isNotNull) {
             this.dataType = dataType;
@@ -249,17 +254,6 @@ public class DatabaseChecker {
             this.isNotNull = isNotNull;
         }
 
-        public String getDataType() {
-            return dataType;
-        }
-
-        public boolean isPrimaryKey() {
-            return isPrimaryKey;
-        }
-
-        public boolean isNotNull() {
-            return isNotNull;
-        }
     }
 
 }
