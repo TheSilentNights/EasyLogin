@@ -1,16 +1,24 @@
 package com.thesilentnights.sql;
 
+import cn.hutool.core.io.FileUtil;
 import com.thesilentnights.pojo.PlayerAccount;
 import com.thesilentnights.sql.config.DatabaseConfig;
 import com.thesilentnights.sql.mapper.PlayerAccountMapper;
 import com.zaxxer.hikari.HikariConfig;
+import lombok.Getter;
 import org.apache.ibatis.session.SqlSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.sql.Connection;
+import java.util.Objects;
 import java.util.Optional;
 
+
 public class SqlLite implements DatabaseProvider{
+    private static final Logger log = LoggerFactory.getLogger(SqlLite.class);
+    @Getter
     private static SqlLite instance;
     public static DatabaseProvider init(File fileToDataBase){
         if (instance != null){
@@ -20,13 +28,13 @@ public class SqlLite implements DatabaseProvider{
         return instance;
     }
 
-    public static SqlLite getInstance(){
-        return instance;
-    }
-
     private Mybatis mybatis;
 
     public SqlLite(File fileToDataBase){
+        if(!fileToDataBase.exists()){
+            log.info("copying file {} to {}", getClass().getClassLoader().getResource("playerAccounts.db"),fileToDataBase.getAbsolutePath());
+            FileUtil.copy(Objects.requireNonNull(getClass().getClassLoader().getResource("playerAccounts.db")).getPath(),fileToDataBase.getAbsolutePath(),true);
+        }
         mybatis = new Mybatis(new DatabaseConfig(getSqliteConfig(fileToDataBase)));
     }
 
@@ -36,14 +44,26 @@ public class SqlLite implements DatabaseProvider{
             PlayerAccount admin = sqlSession.getMapper(PlayerAccountMapper.class).getAccountByName(username);
             return Optional.of(admin);
         } catch (Exception e) {
-            e.printStackTrace();
             return Optional.empty();
         }
     }
 
     @Override
     public boolean saveAuth(PlayerAccount playerAccount) {
-        return false;
+        try (SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()){
+            if (getAuth(playerAccount.getUsername()).isPresent()){
+                sqlSession.getMapper(PlayerAccountMapper.class).updateAccount(playerAccount);
+                sqlSession.commit();
+                return true;
+            }
+            sqlSession.getMapper(PlayerAccountMapper.class).addAccount(playerAccount);
+            sqlSession.commit();
+            return true;
+        }catch (Exception e){
+            log.info("failed to save");
+            log.error("error in insert",e);
+            return false;
+        }
     }
 
     @Override
@@ -62,7 +82,6 @@ public class SqlLite implements DatabaseProvider{
         config.setMaximumPoolSize(10);
         config.setMinimumIdle(2);
         config.setIdleTimeout(30000);
-        config.setAutoCommit(true);
         return config;
     }
 }

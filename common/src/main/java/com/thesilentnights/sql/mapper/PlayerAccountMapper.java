@@ -13,4 +13,24 @@ public interface PlayerAccountMapper {
 
     @Select("tables")
     void listTables();
+
+    @Select("INSERT INTO accounts " +
+            "(username, password, lastlogin_ip, lastlogin_x, lastlogin_y, lastlogin_z, lastlogin_world, uuid, email, login_timestamp) " +
+            "VALUES " +
+            "('${username}', '${password}', '${lastlogin_ip}', '${lastlogin_x}', '${lastlogin_y}', '${lastlogin_z}', '${lastlogin_world}', '${uuid}', '${email}', '${login_timestamp}')")
+    void addAccount(PlayerAccount account);
+
+    @Select("UPDATE accounts " +
+            "SET " +
+            "password='${password}', " +
+            "lastlogin_ip='${lastlogin_ip}', " +
+            "lastlogin_x='${lastlogin_x}', " +
+            "lastlogin_y='${lastlogin_y}', " +
+            "lastlogin_z='${lastlogin_z}', " +
+            "lastlogin_world='${lastlogin_world}', " +
+            "uuid='${uuid}', " +
+            "email='${email}', " +
+            "login_timestamp='${login_timestamp}' " +
+            "WHERE username='${username}'")
+    void updateAccount(PlayerAccount account);
 }

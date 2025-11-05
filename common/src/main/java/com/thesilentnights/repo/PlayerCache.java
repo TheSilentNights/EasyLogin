@@ -4,16 +4,21 @@ import com.thesilentnights.pojo.PlayerAccount;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 
 public class PlayerCache {
     static Map<String, PlayerAccount> cacheMap = new HashMap<>();
 
     synchronized public static void addAccount(PlayerAccount account) {
-        cacheMap.put(account.name(), account);
+        cacheMap.put(account.getUsername(), account);
     }
 
-    synchronized public static boolean isLoggedIn(String username) {
+    synchronized public static Optional<PlayerAccount> getAccount(String username) {
+        return Optional.of(cacheMap.get(username));
+    }
+
+    synchronized public static boolean hasAccount(String username) {
         return cacheMap.containsKey(username);
     }
 

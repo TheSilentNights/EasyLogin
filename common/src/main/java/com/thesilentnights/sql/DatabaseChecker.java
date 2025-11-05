@@ -23,10 +23,12 @@ public class DatabaseChecker {
             if (!tableExists()) {
                 System.out.println("accounts表不存在，创建新表...");
                 createTable();
+                connection.commit();
                 return true;
             } else {
                 System.out.println("accounts表已存在，检查表结构...");
                 boolean repaired = repairTableStructure();
+                connection.commit();
                 return repaired;
             }
         } catch (SQLException e) {
@@ -75,14 +77,15 @@ public class DatabaseChecker {
     private boolean repairTableStructure() throws SQLException {
         Map<String, ColumnDefinition> requiredColumns = new HashMap<>();
         requiredColumns.put("username", new ColumnDefinition("TEXT", true, true));
+        requiredColumns.put("lastlogin_ip", new ColumnDefinition("TEXT", false, false));
         requiredColumns.put("password", new ColumnDefinition("TEXT", false, true));
-        requiredColumns.put("token", new ColumnDefinition("TEXT", false, false));
         requiredColumns.put("lastlogin_x", new ColumnDefinition("NUMERIC", false, false));
         requiredColumns.put("lastlogin_y", new ColumnDefinition("NUMERIC", false, false));
         requiredColumns.put("lastlogin_z", new ColumnDefinition("NUMERIC", false, false));
         requiredColumns.put("lastlogin_world", new ColumnDefinition("TEXT", false, false));
         requiredColumns.put("uuid", new ColumnDefinition("TEXT", false, false));
         requiredColumns.put("email", new ColumnDefinition("TEXT", false, false));
+        requiredColumns.put("login_timestamp", new ColumnDefinition("TIMESTAMP", false, false));
 
         // 获取现有列信息
         List<String> existingColumns = getExistingColumns();
@@ -110,6 +113,7 @@ public class DatabaseChecker {
         if (!repaired) {
             System.out.println("表结构完整，无需修复");
         }
+
 
         return repaired;
     }
