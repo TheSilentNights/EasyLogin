@@ -1,0 +1,19 @@
+package com.thesilentnights.utils;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+
+public class TextUtil {
+    /***
+     * create MutableComponent for message sending
+     * @param chatFormatting  color
+     * @param key  message key used for translation
+     * @param args message args
+     * @return MutableComponent
+     */
+    public static MutableComponent createText(ChatFormatting chatFormatting, String key, Object... args) {
+        TranslatableComponent translatableComponent = new TranslatableComponent(key, args);
+        return translatableComponent.withStyle(chatFormatting);
+    }
+}

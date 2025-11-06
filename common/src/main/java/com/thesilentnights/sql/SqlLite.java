@@ -1,6 +1,7 @@
 package com.thesilentnights.sql;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.resource.ResourceUtil;
 import com.thesilentnights.pojo.PlayerAccount;
 import com.thesilentnights.sql.config.DatabaseConfig;
 import com.thesilentnights.sql.mapper.PlayerAccountMapper;
@@ -11,8 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
-import java.util.Objects;
 import java.util.Optional;
 
 
@@ -32,8 +33,8 @@ public class SqlLite implements DatabaseProvider{
 
     public SqlLite(File fileToDataBase){
         if(!fileToDataBase.exists()){
-            log.info("copying file {} to {}", getClass().getClassLoader().getResource("playerAccounts.db"),fileToDataBase.getAbsolutePath());
-            FileUtil.copy(Objects.requireNonNull(getClass().getClassLoader().getResource("playerAccounts.db")).getPath(),fileToDataBase.getAbsolutePath(),true);
+            log.info("copying file {} to {}", ResourceUtil.getResource("playerAccounts.db"),fileToDataBase.getAbsolutePath());
+            FileUtil.copyFile(ResourceUtil.getResourceObj("playerAccounts.db"),fileToDataBase, StandardCopyOption.REPLACE_EXISTING);
         }
         mybatis = new Mybatis(new DatabaseConfig(getSqliteConfig(fileToDataBase)));
     }

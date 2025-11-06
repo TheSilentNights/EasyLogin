@@ -25,15 +25,10 @@ public final class EasyLogin {
         //init server side database'
         if (Platform.getEnv() == EnvType.SERVER || Platform.isDevelopmentEnvironment()) {
             //init database
-            DatabaseProvider databaseProvider = SqlLite.init(FileUtil.file(Platform.getGameFolder().toFile(),"/easylogin/playerAccounts.db"));
+            DatabaseProvider databaseProvider = SqlLite.init(FileUtil.file(Platform.getGameFolder().toFile(), "playerAccounts.db"));
             new DatabaseChecker(databaseProvider.getConnection()).checkAndRepairTable();
             //init services
             PlayerLoginAuth.init(databaseProvider);
-
-            //register commands
-            CommandRegistrationEvent.EVENT.register((CommandDispatcher<CommandSourceStack> dispatcher,  Commands.CommandSelection selection)->{
-                ICommands.registerCommands(dispatcher);
-            });
 
             //register events
             CommonEvents.register();
@@ -44,7 +39,12 @@ public final class EasyLogin {
             }
         }
 
-        if (Platform.getEnv() == EnvType.SERVER){
+        CommandRegistrationEvent.EVENT.register((CommandDispatcher<CommandSourceStack> dispatcher, Commands.CommandSelection selection) -> {
+            ICommands.registerCommands(dispatcher);
+        });
+
+
+        if (Platform.getEnv() == EnvType.SERVER) {
             ServerSideEvents.register();
         }
     }

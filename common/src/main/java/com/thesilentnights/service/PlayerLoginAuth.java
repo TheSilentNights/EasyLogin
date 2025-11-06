@@ -1,5 +1,6 @@
 package com.thesilentnights.service;
 
+import com.thesilentnights.exception.AlreadyLoggedInException;
 import com.thesilentnights.pojo.PlayerAccount;
 import com.thesilentnights.repo.PlayerCache;
 import com.thesilentnights.sql.DatabaseProvider;
@@ -19,7 +20,15 @@ public class PlayerLoginAuth {
         PlayerLoginAuth.provider = provider;
     }
 
-    public static boolean authPlayerWithPwd(String username, String password) {
+    public static boolean authPlayerWithPwd(String username, String password) throws AlreadyLoggedInException {
+        if (cache.hasAccount(username)){
+            throw new AlreadyLoggedInException(username);
+        }
+        Optional<PlayerAccount> playerAccount1 = provider.getAuth(username).filter(playerAccount -> playerAccount.getPassword().equals(password));
+        if (playerAccount1.isPresent()){
+            cache.addAccount(playerAccount1.get());
+            return true;
+        }
         return false;
     }
 
@@ -35,7 +44,7 @@ public class PlayerLoginAuth {
     }
 
     public static void registerPlayer(ServerPlayer serverPlayer, String password) {
-        log.info("registerPlayer");
+        log.info("registerPlayer {}",serverPlayer.getGameProfile().getName());
         provider.saveAuth(new PlayerAccount(
                 serverPlayer.getGameProfile().getName(),
                 password,serverPlayer.getIpAddress(),
@@ -47,6 +56,7 @@ public class PlayerLoginAuth {
                 null,
                 System.currentTimeMillis()
         ));
+        cache.addAccount(provider.getAuth(serverPlayer.getGameProfile().getName()).get());
     }
 
     public static boolean shouldCancelEvent(ServerPlayer entity){

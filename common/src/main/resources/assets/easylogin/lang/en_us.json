@@ -1,0 +1,5 @@
+{
+  "title": "Tutorials",
+  "commands.login.success": "Successfully logged in %1$s! ",
+  "commands.login.failure": "password error or you logged in a wrong account %1$s"
+}
