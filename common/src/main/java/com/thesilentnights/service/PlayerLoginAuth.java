@@ -1,6 +1,6 @@
 package com.thesilentnights.service;
 
-import com.thesilentnights.events.ievents.PlayerLoginEvent;
+import com.thesilentnights.events.ievents.EasyLoginEvents;
 import com.thesilentnights.exception.AlreadyLoggedInException;
 import com.thesilentnights.pojo.PlayerAccount;
 import com.thesilentnights.repo.PlayerCache;
@@ -27,7 +27,7 @@ public class PlayerLoginAuth {
         Optional<PlayerAccount> playerAccount1 = provider.getAuth(serverPlayer.getGameProfile().getName()).filter(playerAccount -> playerAccount.getPassword().equals(password));
         if (playerAccount1.isPresent()){
             //push events
-            PlayerLoginEvent.ON_LOGIN.invoker().onLogin(playerAccount1.get(),serverPlayer);
+            EasyLoginEvents.ON_LOGIN.invoker().onLogin(playerAccount1.get(),serverPlayer);
             return true;
         }
         return false;
@@ -57,7 +57,7 @@ public class PlayerLoginAuth {
                 null,
                 System.currentTimeMillis()
         ));
-        PlayerLoginEvent.ON_LOGIN.invoker().onLogin(provider.getAuth(serverPlayer.getGameProfile().getName()).get(),serverPlayer);
+        EasyLoginEvents.ON_LOGIN.invoker().onLogin(provider.getAuth(serverPlayer.getGameProfile().getName()).get(),serverPlayer);
     }
 
     public static boolean shouldCancelEvent(ServerPlayer entity){
@@ -92,6 +92,8 @@ public class PlayerLoginAuth {
             playerAccount.setLastlogin_z(serverPlayer.getZ());
             playerAccount.setLastlogin_world(serverPlayer.getLevel().dimension().location().getNamespace());
             provider.saveAuth(playerAccount);
+            //push events
+            EasyLoginEvents.ON_LOGOUT.invoker().onLogout(playerAccount,serverPlayer);
         }
     }
 }

@@ -1,5 +1,8 @@
 package com.thesilentnights.events;
 
+import com.thesilentnights.events.ievents.EasyLoginEvents;
+import com.thesilentnights.repo.BlockPosRepo;
+import com.thesilentnights.repo.PlayerCache;
 import com.thesilentnights.service.PlayerLoginAuth;
 import com.thesilentnights.task.Message;
 import com.thesilentnights.task.TickTimerManager;
@@ -28,5 +31,15 @@ public class ServerSideEvents {
         TickEvent.SERVER_POST.register(server -> {
             TickTimerManager.tick();
         });
+
+        // custom event
+        EasyLoginEvents.ON_LOGIN.register(((account, serverPlayer) -> {
+            BlockPosRepo.removeBlockPos(account.getUsername());
+            PlayerCache.addAccount(account);
+        }));
+        EasyLoginEvents.ON_LOGOUT.register(((account, serverPlayer)  -> {
+            PlayerCache.dropAccount(serverPlayer.getGameProfile().getName());
+            BlockPosRepo.removeBlockPos(account.getUsername());
+        }));
     }
 }

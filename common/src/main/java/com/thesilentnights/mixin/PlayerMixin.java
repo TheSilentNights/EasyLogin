@@ -10,7 +10,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Rotation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -32,8 +31,7 @@ public abstract class PlayerMixin extends LivingEntity {
             if (PlayerLoginAuth.shouldCancelEvent(serverPlayer)) {
                 Optional<BlockPos> blockPos = BlockPosRepo.getBlockPos(serverPlayer.getGameProfile().getName());
                 if (blockPos.isPresent()){
-                    serverPlayer.teleportTo(blockPos.get().getX(), blockPos.get().getY(), blockPos.get().getZ());
-                    serverPlayer.rotate(Rotation.CLOCKWISE_90);
+                    serverPlayer.teleportTo(serverPlayer.getLevel(),blockPos.get().getX(), blockPos.get().getY(), blockPos.get().getZ(),0,0);
                 }else{
                     BlockPosRepo.setBlockPos(serverPlayer.getGameProfile().getName(), serverPlayer.blockPosition());
                 }

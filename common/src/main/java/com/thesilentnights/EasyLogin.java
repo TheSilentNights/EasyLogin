@@ -6,7 +6,10 @@ import com.thesilentnights.commands.ICommands;
 import com.thesilentnights.configs.Config;
 import com.thesilentnights.events.CommonEvents;
 import com.thesilentnights.events.ServerSideEvents;
+import com.thesilentnights.events.ievents.EasyLoginEvents;
 import com.thesilentnights.pojo.PlayerAccount;
+import com.thesilentnights.repo.BlockPosRepo;
+import com.thesilentnights.repo.PlayerCache;
 import com.thesilentnights.service.PlayerLoginAuth;
 import com.thesilentnights.sql.DatabaseChecker;
 import com.thesilentnights.sql.DatabaseProvider;
@@ -25,13 +28,13 @@ public final class EasyLogin {
 
     public static void init(Config config){
         //init server side database'
-        if (Platform.getEnv() == EnvType.SERVER || Platform.isDevelopmentEnvironment()) {
+        if (Platform.getEnv() == EnvType.SERVER) {
             //init database
             DatabaseProvider databaseProvider = SqlLite.init(FileUtil.file(Platform.getGameFolder().toFile(), "playerAccounts.db"));
             try {
                 new DatabaseChecker(databaseProvider.getConnection()).checkAndRepairTable();
             } catch (SQLException e) {
-                log.error("if you see this message.It's likely that the sql initialization has failed.",e);
+                log.warn("if you see this message.It's likely that the sql initialization has failed.",e);
             }
 
             log.info("init services");
@@ -41,9 +44,10 @@ public final class EasyLogin {
             log.info("init events");
             //register events
             CommonEvents.register();
+            ServerSideEvents.register();
 
             // test
-            log.debug("test");
+            log.info("test");
             if (Platform.isDevelopmentEnvironment()) {
                 test(databaseProvider);
             }
@@ -53,11 +57,51 @@ public final class EasyLogin {
             ICommands.registerCommands(dispatcher);
         });
 
-
-        if (Platform.getEnv() == EnvType.SERVER) {
-            ServerSideEvents.register();
+        if (Platform.isDevelopmentEnvironment()){
+            devServerSideLoader();
         }
     }
+
+    /***
+     * just for loading server side environment for development
+     * ignore it
+     */
+    public static void devServerSideLoader(){
+
+        //init database
+        DatabaseProvider databaseProvider = SqlLite.init(FileUtil.file(Platform.getGameFolder().toFile(), "playerAccounts.db"));
+        try {
+            new DatabaseChecker(databaseProvider.getConnection()).checkAndRepairTable();
+        } catch (SQLException e) {
+            log.warn("if you see this message.It's likely that the sql initialization has failed.",e);
+        }
+
+        log.info("debug init services");
+        //init services
+        PlayerLoginAuth.init(databaseProvider);
+
+        log.info("debug init events");
+        //register events
+        CommonEvents.register();
+        ServerSideEvents.register();
+
+        // test
+        log.info("debug test");
+        if (Platform.isDevelopmentEnvironment()) {
+            test(databaseProvider);
+        }
+
+        EasyLoginEvents.ON_LOGIN.register(((account, serverPlayer) -> {
+            BlockPosRepo.removeBlockPos(account.getUsername());
+            PlayerCache.addAccount(account);
+        }));
+        EasyLoginEvents.ON_LOGOUT.register(((account, serverPlayer)  -> {
+            PlayerCache.dropAccount(serverPlayer.getGameProfile().getName());
+            BlockPosRepo.removeBlockPos(account.getUsername());
+        }));
+    }
+
+
 
 
     private static void test(DatabaseProvider provider) {
