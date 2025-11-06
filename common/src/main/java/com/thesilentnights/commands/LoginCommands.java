@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.thesilentnights.exception.AlreadyLoggedInException;
 import com.thesilentnights.service.PlayerLoginAuth;
+import com.thesilentnights.task.TickTimerManager;
 import com.thesilentnights.utils.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -21,7 +22,7 @@ public class LoginCommands implements ICommands{
 
             boolean flag;
             try{
-                flag = PlayerLoginAuth.authPlayerWithPwd(context.getSource().getPlayerOrException().getGameProfile().getName(), StringArgumentType.getString(context, "password"));
+                flag = PlayerLoginAuth.authPlayerWithPwd(context.getSource().getPlayerOrException(), StringArgumentType.getString(context, "password"));
             }
             catch (AlreadyLoggedInException e){
                 context.getSource().sendFailure(TextUtil.createText(ChatFormatting.RED,e.getMessage()));
@@ -30,6 +31,7 @@ public class LoginCommands implements ICommands{
 
             if (flag){
                 context.getSource().sendSuccess(TextUtil.createText(ChatFormatting.GREEN,"commands.login.success", context.getSource().getPlayerOrException().getDisplayName().getString()), false);
+                TickTimerManager.cancel(context.getSource().getPlayerOrException().getUUID());
                 return 1;
             }
             else{

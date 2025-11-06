@@ -2,27 +2,27 @@ package com.thesilentnights.repo;
 
 import com.thesilentnights.pojo.PlayerAccount;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class PlayerCache {
-    private final Map<String, PlayerAccount> cacheMap = new HashMap<>();
+    private static final Map<String, PlayerAccount> cacheMap = new ConcurrentHashMap<>();
 
-    synchronized public void addAccount(PlayerAccount account) {
+     public static void addAccount(PlayerAccount account) {
         cacheMap.put(account.getUsername(), account);
     }
 
-    synchronized public Optional<PlayerAccount> getAccount(String username) {
+    public static Optional<PlayerAccount> getAccount(String username) {
         return Optional.ofNullable(cacheMap.get(username));
     }
 
-    synchronized public boolean hasAccount(String username) {
+    public static boolean hasAccount(String username) {
         return cacheMap.containsKey(username);
     }
 
-    synchronized public void dropAccount(String username) {
+    public static void dropAccount(String username) {
         cacheMap.remove(username);
     }
 }

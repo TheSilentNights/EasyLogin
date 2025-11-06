@@ -1,5 +1,6 @@
 package com.thesilentnights.service;
 
+import com.thesilentnights.events.ievents.PlayerLoginEvent;
 import com.thesilentnights.exception.AlreadyLoggedInException;
 import com.thesilentnights.pojo.PlayerAccount;
 import com.thesilentnights.repo.PlayerCache;
@@ -14,19 +15,19 @@ import java.util.Optional;
 @Slf4j
 public class PlayerLoginAuth {
     static DatabaseProvider provider;
-    private static final PlayerCache cache = new PlayerCache();
 
     public static void init(DatabaseProvider provider) {
         PlayerLoginAuth.provider = provider;
     }
 
-    public static boolean authPlayerWithPwd(String username, String password) throws AlreadyLoggedInException {
-        if (cache.hasAccount(username)){
-            throw new AlreadyLoggedInException(username);
+    public static boolean authPlayerWithPwd(ServerPlayer serverPlayer, String password) throws AlreadyLoggedInException {
+        if (PlayerCache.hasAccount(serverPlayer.getGameProfile().getName())){
+            throw new AlreadyLoggedInException(serverPlayer.getGameProfile().getName());
         }
-        Optional<PlayerAccount> playerAccount1 = provider.getAuth(username).filter(playerAccount -> playerAccount.getPassword().equals(password));
+        Optional<PlayerAccount> playerAccount1 = provider.getAuth(serverPlayer.getGameProfile().getName()).filter(playerAccount -> playerAccount.getPassword().equals(password));
         if (playerAccount1.isPresent()){
-            cache.addAccount(playerAccount1.get());
+            //push events
+            PlayerLoginEvent.ON_LOGIN.invoker().onLogin(playerAccount1.get(),serverPlayer);
             return true;
         }
         return false;
@@ -56,7 +57,7 @@ public class PlayerLoginAuth {
                 null,
                 System.currentTimeMillis()
         ));
-        cache.addAccount(provider.getAuth(serverPlayer.getGameProfile().getName()).get());
+        PlayerLoginEvent.ON_LOGIN.invoker().onLogin(provider.getAuth(serverPlayer.getGameProfile().getName()).get(),serverPlayer);
     }
 
     public static boolean shouldCancelEvent(ServerPlayer entity){
@@ -64,10 +65,10 @@ public class PlayerLoginAuth {
     }
 
     public static boolean isLoggedIn(String username, String ip) {
-        if (cache.hasAccount(username)){
+        if (PlayerCache.hasAccount(username)){
             return true;
         }
-        Optional<PlayerAccount> account = cache.getAccount(username);
+        Optional<PlayerAccount> account = PlayerCache.getAccount(username);
         return account.filter(playerAccount -> (account.get().getLastlogin_ip().equals(ip))&&(playerAccount.getLogin_timestamp() + 1000 * 60 * 60 * 24 > System.currentTimeMillis())).isPresent();
     }
 
@@ -75,9 +76,13 @@ public class PlayerLoginAuth {
         return isLoggedIn(entity.getName().getString(), entity.getIpAddress());
     }
 
+    public static Optional<PlayerAccount> getAccount(ServerPlayer entity){
+        return provider.getAuth(entity.getGameProfile().getName());
+    }
+
 
     public static void logoutPlayer(ServerPlayer serverPlayer) {
-        Optional<PlayerAccount> account = cache.getAccount(serverPlayer.getGameProfile().getName());
+        Optional<PlayerAccount> account = PlayerCache.getAccount(serverPlayer.getGameProfile().getName());
         if (account.isPresent()){
             PlayerAccount playerAccount = account.get();
             playerAccount.setLastlogin_ip(serverPlayer.getIpAddress());

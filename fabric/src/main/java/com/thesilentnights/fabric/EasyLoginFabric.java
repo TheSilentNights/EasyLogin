@@ -18,5 +18,6 @@ public final class EasyLoginFabric implements ModInitializer {
 
         EventsRegister.register();
 
+
     }
 }
