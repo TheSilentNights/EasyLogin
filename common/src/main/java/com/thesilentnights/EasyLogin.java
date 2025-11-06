@@ -18,22 +18,32 @@ import net.fabricmc.api.EnvType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
+import java.sql.SQLException;
+
 @Slf4j
 public final class EasyLogin {
 
-    public static void init(Config config) {
+    public static void init(Config config){
         //init server side database'
         if (Platform.getEnv() == EnvType.SERVER || Platform.isDevelopmentEnvironment()) {
             //init database
             DatabaseProvider databaseProvider = SqlLite.init(FileUtil.file(Platform.getGameFolder().toFile(), "playerAccounts.db"));
-            new DatabaseChecker(databaseProvider.getConnection()).checkAndRepairTable();
+            try {
+                new DatabaseChecker(databaseProvider.getConnection()).checkAndRepairTable();
+            } catch (SQLException e) {
+                log.error("if you see this message.It's likely that the sql initialization has failed.",e);
+            }
+
+            log.info("init services");
             //init services
             PlayerLoginAuth.init(databaseProvider);
 
+            log.info("init events");
             //register events
             CommonEvents.register();
 
             // test
+            log.debug("test");
             if (Platform.isDevelopmentEnvironment()) {
                 test(databaseProvider);
             }

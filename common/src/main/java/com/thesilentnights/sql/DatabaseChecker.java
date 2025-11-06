@@ -21,7 +21,7 @@ public class DatabaseChecker {
     /**
      * 检查并修复accounts表结构
      */
-    public boolean checkAndRepairTable() {
+    public boolean checkAndRepairTable() throws SQLException {
         try {
             // 检查表是否存在
             if (!tableExists()) {
@@ -37,6 +37,7 @@ public class DatabaseChecker {
             }
         } catch (SQLException e) {
             log.error("检查修复表结构时出错:", e);
+            connection.rollback();
             return false;
         }
     }
