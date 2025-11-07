@@ -77,7 +77,11 @@ public class PlayerLoginAuth {
     }
 
     public static Optional<PlayerAccount> getAccount(ServerPlayer entity){
-        return provider.getAuth(entity.getGameProfile().getName());
+        return getAccount(entity.getGameProfile().getName());
+    }
+
+    public static Optional<PlayerAccount> getAccount(String username){
+        return provider.getAuth(username);
     }
 
 

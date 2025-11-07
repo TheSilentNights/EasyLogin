@@ -2,7 +2,7 @@ package com.thesilentnights;
 
 import cn.hutool.core.io.FileUtil;
 import com.mojang.brigadier.CommandDispatcher;
-import com.thesilentnights.commands.ICommands;
+import com.thesilentnights.commands.EasyLoginCommands;
 import com.thesilentnights.configs.Config;
 import com.thesilentnights.events.CommonEvents;
 import com.thesilentnights.events.ServerSideEvents;
@@ -54,7 +54,7 @@ public final class EasyLogin {
         }
 
         CommandRegistrationEvent.EVENT.register((CommandDispatcher<CommandSourceStack> dispatcher, Commands.CommandSelection selection) -> {
-            ICommands.registerCommands(dispatcher);
+            EasyLoginCommands.register(dispatcher);
         });
 
         if (Platform.isDevelopmentEnvironment()){

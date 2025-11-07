@@ -46,6 +46,11 @@ subprojects {
             parchment("org.parchmentmc.data:parchment-${minecraft_version}:2021.12.12@zip")
         }
 
+        implementation("cn.hutool:hutool-all:${hutool_version}")
+        implementation("org.mybatis:mybatis:${mybatis_version}")
+        implementation("com.zaxxer:HikariCP:${hikaricp_version}")
+        implementation("org.xerial:sqlite-jdbc:${sqlite_version}")
+
         //lombok
         compileOnly("org.projectlombok:lombok:1.18.42")
         annotationProcessor("org.projectlombok:lombok:1.18.42")

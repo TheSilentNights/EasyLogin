@@ -1,4 +1,4 @@
-package com.thesilentnights.commands;
+package com.thesilentnights.commands.common;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -9,7 +9,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
-public class RegistrarCommands implements ICommands {
+public class RegistrarCommands implements CommonCommands {
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {

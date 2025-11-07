@@ -1,4 +1,4 @@
-package com.thesilentnights.commands;
+package com.thesilentnights.commands.common;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -10,7 +10,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
-public class LoginCommands implements ICommands{
+public class LoginCommands implements CommonCommands {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
         return Commands.literal("login").then(Commands.argument("password", StringArgumentType.string()).executes(context->{
