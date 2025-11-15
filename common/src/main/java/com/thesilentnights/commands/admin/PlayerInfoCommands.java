@@ -6,16 +6,20 @@ import com.thesilentnights.service.PlayerLoginAuth;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class PlayerInfoCommands implements AdminCommands{
+    @Autowired
+    private PlayerLoginAuth loginAuth;
+
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand(LiteralArgumentBuilder<CommandSourceStack> mainNode) {
         return mainNode
                 .then(Commands.literal("playerinfo")
                         .then(Commands.argument("playerName", StringArgumentType.string())
                                 .executes(context -> {
-                                    if (PlayerLoginAuth.hasAccount(StringArgumentType.getString(context, "playerName"))){
-                                        PlayerLoginAuth.getAccount(StringArgumentType.getString(context, "playerName")).ifPresent(account -> {
+                                    if (loginAuth.hasAccount(StringArgumentType.getString(context, "playerName"))){
+                                        loginAuth.getAccount(StringArgumentType.getString(context, "playerName")).ifPresent(account -> {
                                             context.getSource().sendSuccess(Component.nullToEmpty(account.toString()), true);
                                         });
                                         return 1;

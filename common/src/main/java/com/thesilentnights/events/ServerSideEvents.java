@@ -9,13 +9,18 @@ import com.thesilentnights.task.TickTimerManager;
 import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.event.events.common.TickEvent;
 import net.minecraft.network.chat.TextComponent;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class ServerSideEvents {
-    public static void register(){
+    @Autowired
+    PlayerLoginAuth playerLoginAuth;
+    
+    public void register(){
         PlayerEvent.PLAYER_JOIN.register(entity -> {
-            if (!PlayerLoginAuth.isLoggedIn(entity)){
-                if (PlayerLoginAuth.hasAccount(entity.getGameProfile().getName())){
+            if (!playerLoginAuth.isLoggedIn(entity)){
+                if (playerLoginAuth.hasAccount(entity.getGameProfile().getName())){
                     TickTimerManager.addTickTimer(new Message(entity,new TextComponent("please login your account by /login"), 80, true));
                 }else{
                     TickTimerManager.addTickTimer(new Message(entity,new TextComponent("please register your account by /register"), 80, true));
@@ -24,7 +29,7 @@ public class ServerSideEvents {
         });
 
         PlayerEvent.PLAYER_QUIT.register(entity -> {
-            PlayerLoginAuth.logoutPlayer(entity);
+            playerLoginAuth.logoutPlayer(entity);
             TickTimerManager.cancel(entity.getUUID());
         });
 

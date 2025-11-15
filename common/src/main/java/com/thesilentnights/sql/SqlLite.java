@@ -7,29 +7,20 @@ import com.thesilentnights.sql.config.DatabaseConfig;
 import com.thesilentnights.sql.mapper.PlayerAccountMapper;
 import com.zaxxer.hikari.HikariConfig;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.util.Optional;
 
-
+@Slf4j
 public class SqlLite implements DatabaseProvider{
-    private static final Logger log = LoggerFactory.getLogger(SqlLite.class);
     @Getter
     private static SqlLite instance;
-    public static DatabaseProvider init(File fileToDataBase){
-        if (instance != null){
-            throw new RuntimeException(new Exception("duplicate instance creation"));
-        }
-        instance = new SqlLite(fileToDataBase);
-        return instance;
-    }
 
-    private Mybatis mybatis;
+    private final Mybatis mybatis;
 
     public SqlLite(File fileToDataBase){
         if(!fileToDataBase.exists()){

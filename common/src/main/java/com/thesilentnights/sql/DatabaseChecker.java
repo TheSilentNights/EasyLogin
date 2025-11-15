@@ -2,6 +2,8 @@ package com.thesilentnights.sql;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,42 +12,40 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
+@Service
 public class DatabaseChecker {
-
-    private final Connection connection;
-
-    public DatabaseChecker(Connection connection) {
-        this.connection = connection;
-    }
+    @Autowired
+    private DatabaseProvider provider;
 
     /**
      * 检查并修复accounts表结构
      */
     public boolean checkAndRepairTable() throws SQLException {
+        Connection connection = provider.getConnection();
         try {
             // 检查表是否存在
-            if (!tableExists()) {
+            if (!tableExists(connection)) {
                 log.info("accounts表不存在，正在创建...");
-                createTable();
-                connection.commit();
+                createTable(connection);
                 return true;
             } else {
                 log.info("accounts表已存在，正在检查表结构...");
-                boolean repaired = repairTableStructure();
-                connection.commit();
-                return repaired;
+                return repairTableStructure(connection);
             }
         } catch (SQLException e) {
             log.error("检查修复表结构时出错:", e);
             connection.rollback();
             return false;
+        } finally {
+            connection.commit();
+            connection.close();
         }
     }
 
     /**
      * 检查表是否存在
      */
-    private boolean tableExists() throws SQLException {
+    private boolean tableExists(Connection connection) throws SQLException {
         DatabaseMetaData metaData = connection.getMetaData();
         ResultSet tables = metaData.getTables(null, null, "accounts", new String[]{"TABLE"});
         boolean exists = tables.next();
@@ -56,7 +56,7 @@ public class DatabaseChecker {
     /**
      * 创建accounts表
      */
-    private void createTable() throws SQLException {
+    private void createTable(Connection connection) throws SQLException {
         String createTableSQL =
                 "CREATE TABLE accounts (" +
                         "username TEXT PRIMARY KEY NOT NULL, " +
@@ -79,7 +79,7 @@ public class DatabaseChecker {
     /**
      * 修复表结构，添加缺失的列
      */
-    private boolean repairTableStructure() throws SQLException {
+    private boolean repairTableStructure(Connection connection) throws SQLException {
         Map<String, ColumnDefinition> requiredColumns = new HashMap<>();
         requiredColumns.put("username", new ColumnDefinition("TEXT", true, true));
         requiredColumns.put("lastlogin_ip", new ColumnDefinition("TEXT", false, false));
@@ -93,7 +93,7 @@ public class DatabaseChecker {
         requiredColumns.put("login_timestamp", new ColumnDefinition("TIMESTAMP", false, false));
 
         // 获取现有列信息
-        List<String> existingColumns = getExistingColumns();
+        List<String> existingColumns = getExistingColumns(connection);
         boolean repaired = false;
 
         // 检查并添加缺失的列
@@ -103,15 +103,15 @@ public class DatabaseChecker {
 
             if (!columnExists(existingColumns, columnName)) {
                 log.info("添加列：{}", columnName);
-                addColumn(columnName, columnDef.getDataType());
+                addColumn(columnName, columnDef.getDataType(), connection);
                 repaired = true;
             }
         }
 
         // 确保username是主键
-        if (!isUsernamePrimaryKey()) {
+        if (!isUsernamePrimaryKey(connection)) {
             log.info("将username设置为主键");
-            makeUsernamePrimaryKey();
+            makeUsernamePrimaryKey(connection);
             repaired = true;
         }
 
@@ -126,7 +126,7 @@ public class DatabaseChecker {
     /**
      * 获取现有列名列表
      */
-    private List<String> getExistingColumns() throws SQLException {
+    private List<String> getExistingColumns(Connection connection) throws SQLException {
         List<String> columns = new ArrayList<>();
         DatabaseMetaData metaData = connection.getMetaData();
 
@@ -149,7 +149,7 @@ public class DatabaseChecker {
     /**
      * 添加列到表中
      */
-    private void addColumn(String columnName, String dataType) throws SQLException {
+    private void addColumn(String columnName, String dataType, Connection connection) throws SQLException {
         String alterSQL = "ALTER TABLE accounts ADD COLUMN " + columnName + " " + dataType;
 
         try (Statement stmt = connection.createStatement()) {
@@ -161,7 +161,7 @@ public class DatabaseChecker {
     /**
      * 检查username是否是主键
      */
-    private boolean isUsernamePrimaryKey() throws SQLException {
+    private boolean isUsernamePrimaryKey(Connection connection) throws SQLException {
         DatabaseMetaData metaData = connection.getMetaData();
 
         try (ResultSet primaryKeys = metaData.getPrimaryKeys(null, null, "accounts")) {
@@ -178,7 +178,7 @@ public class DatabaseChecker {
     /**
      * 将username设置为主键
      */
-    private void makeUsernamePrimaryKey() throws SQLException {
+    private void makeUsernamePrimaryKey(Connection connection) throws SQLException {
         // 这是一个复杂的操作，可能需要重建表
         // 这里简化处理，确保username有唯一约束
         try {
@@ -208,14 +208,14 @@ public class DatabaseChecker {
     /**
      * 验证表结构是否正确
      */
-    public boolean verifyTableStructure() {
+    public boolean verifyTableStructure(Connection connection) {
         try {
             String[] requiredColumns = {
                     "username", "password", "token", "lastlogin_x",
                     "lastlogin_y", "lastlogin_z", "lastlogin_world", "uuid", "email"
             };
 
-            List<String> existingColumns = getExistingColumns();
+            List<String> existingColumns = getExistingColumns(connection);
 
             // 检查所有必需列是否存在
             for (String column : requiredColumns) {
@@ -226,7 +226,7 @@ public class DatabaseChecker {
             }
 
             // 检查主键
-            if (!isUsernamePrimaryKey()) {
+            if (!isUsernamePrimaryKey(connection)) {
                 log.info("username不是主键");
                 return false;
             }

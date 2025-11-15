@@ -1,5 +1,6 @@
 package com.thesilentnights.fabric.events;
 
+import com.thesilentnights.EasyLogin;
 import com.thesilentnights.service.PlayerLoginAuth;
 import lombok.extern.slf4j.Slf4j;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
@@ -10,10 +11,12 @@ import net.minecraft.world.InteractionResult;
 
 @Slf4j
 public class EventsRegister {
+    static PlayerLoginAuth loginAuth = EasyLogin.context.getBean(PlayerLoginAuth.class);
+    
     public static void register(){
         AttackBlockCallback.EVENT.register((playerEntity, world, hand, blockPos, direction) -> {
             log.info("block attack event");
-            if (PlayerLoginAuth.shouldCancelEvent(playerEntity)){
+            if (loginAuth.shouldCancelEvent(playerEntity)){
                 log.info("block attack event canceled");
                 return InteractionResult.FAIL;
 
@@ -21,19 +24,19 @@ public class EventsRegister {
             return InteractionResult.PASS;
         });
         AttackEntityCallback.EVENT.register((playerEntity, world, hand, entity, entityHitResult) -> {
-            if (PlayerLoginAuth.shouldCancelEvent(playerEntity)){
+            if (loginAuth.shouldCancelEvent(playerEntity)){
                 return InteractionResult.FAIL;
             }
             return InteractionResult.PASS;
         });
         UseBlockCallback.EVENT.register((playerEntity, world, hand, blockHitResult) -> {
-            if (PlayerLoginAuth.shouldCancelEvent(playerEntity)){
+            if (loginAuth.shouldCancelEvent(playerEntity)){
                 return InteractionResult.FAIL;
             }
             return InteractionResult.PASS;
         });
         UseEntityCallback.EVENT.register((playerEntity, world, hand, entity, entityHitResult) -> {
-            if (PlayerLoginAuth.shouldCancelEvent(playerEntity)){
+            if (loginAuth.shouldCancelEvent(playerEntity)){
                 return InteractionResult.FAIL;
             }
             return InteractionResult.PASS;

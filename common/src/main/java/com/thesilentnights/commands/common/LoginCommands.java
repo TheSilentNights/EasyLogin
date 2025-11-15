@@ -9,20 +9,26 @@ import com.thesilentnights.utils.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LoginCommands implements CommonCommands {
+    @Autowired
+    private PlayerLoginAuth loginAuth;
+    
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
         return Commands.literal("login").then(Commands.argument("password", StringArgumentType.string()).executes(context->{
             //if not registered
-            if (!PlayerLoginAuth.hasAccount(context.getSource().getPlayerOrException().getGameProfile().getName())){
+            if (!loginAuth.hasAccount(context.getSource().getPlayerOrException().getGameProfile().getName())){
                 context.getSource().sendFailure(TextUtil.createText(ChatFormatting.RED,"you haven't registered"));
                 return 0;
             }
 
             boolean flag;
             try{
-                flag = PlayerLoginAuth.authPlayerWithPwd(context.getSource().getPlayerOrException(), StringArgumentType.getString(context, "password"));
+                flag = loginAuth.authPlayerWithPwd(context.getSource().getPlayerOrException(), StringArgumentType.getString(context, "password"));
             }
             catch (AlreadyLoggedInException e){
                 context.getSource().sendFailure(TextUtil.createText(ChatFormatting.RED,e.getMessage()));

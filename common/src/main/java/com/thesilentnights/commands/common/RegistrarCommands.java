@@ -8,8 +8,13 @@ import com.thesilentnights.utils.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class RegistrarCommands implements CommonCommands {
+    @Autowired
+    PlayerLoginAuth loginAuth;
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
@@ -20,11 +25,11 @@ public class RegistrarCommands implements CommonCommands {
                                     String password = StringArgumentType.getString(context, "password");
                                     String repeatPassword = StringArgumentType.getString(context, "repeatPassword");
                                     if (password.equals(repeatPassword)) {
-                                        if (PlayerLoginAuth.hasAccount(context.getSource().getPlayerOrException().getGameProfile().getName())){
+                                        if (loginAuth.hasAccount(context.getSource().getPlayerOrException().getGameProfile().getName())){
                                             context.getSource().getPlayerOrException().sendMessage(TextUtil.createText(ChatFormatting.RED, "the account has already been registered"), context.getSource().getPlayerOrException().getUUID());
                                             return 0;
                                         }
-                                        PlayerLoginAuth.registerPlayer(context.getSource().getPlayerOrException(), password);
+                                        loginAuth.registerPlayer(context.getSource().getPlayerOrException(), password);
                                         context.getSource().getPlayerOrException().sendMessage(TextUtil.createText(ChatFormatting.GREEN, "register success"), context.getSource().getPlayerOrException().getUUID());
                                         TickTimerManager.cancel(context.getSource().getPlayerOrException().getUUID());
                                         return 1;

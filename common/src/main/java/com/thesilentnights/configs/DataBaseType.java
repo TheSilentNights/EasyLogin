@@ -1,6 +1,6 @@
 package com.thesilentnights.configs;
 
-public enum SqlType {
+public enum DataBaseType {
     SQLITE,
-    MYSQL,
+    MYSQL
 }
