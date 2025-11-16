@@ -21,7 +21,7 @@ public class LoginCommands implements CommonCommands {
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
         return Commands.literal("login").then(Commands.argument("password", StringArgumentType.string()).executes(context->{
             //if not registered
-            if (!loginAuth.hasAccount(context.getSource().getPlayerOrException().getGameProfile().getName())){
+            if (!loginAuth.hasAccount(context.getSource().getPlayerOrException().getUUID())){
                 context.getSource().sendFailure(TextUtil.createText(ChatFormatting.RED,"you haven't registered"));
                 return 0;
             }

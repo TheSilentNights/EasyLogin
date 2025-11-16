@@ -20,7 +20,7 @@ public class ServerSideEvents {
     public void register(){
         PlayerEvent.PLAYER_JOIN.register(entity -> {
             if (!playerLoginAuth.isLoggedIn(entity)){
-                if (playerLoginAuth.hasAccount(entity.getGameProfile().getName())){
+                if (playerLoginAuth.hasAccount(entity.getUUID())){
                     TickTimerManager.addTickTimer(new Message(entity,new TextComponent("please login your account by /login"), 80, true));
                 }else{
                     TickTimerManager.addTickTimer(new Message(entity,new TextComponent("please register your account by /register"), 80, true));
@@ -43,7 +43,7 @@ public class ServerSideEvents {
             PlayerCache.addAccount(account);
         }));
         EasyLoginEvents.ON_LOGOUT.register(((account, serverPlayer)  -> {
-            PlayerCache.dropAccount(serverPlayer.getGameProfile().getName());
+            PlayerCache.dropAccount(serverPlayer.getUUID());
             BlockPosRepo.removeBlockPos(account.getUsername());
         }));
     }

@@ -59,14 +59,14 @@ public class DatabaseChecker {
     private void createTable(Connection connection) throws SQLException {
         String createTableSQL =
                 "CREATE TABLE accounts (" +
-                        "username TEXT PRIMARY KEY NOT NULL, " +
+                        "uuid TEXT PRIMARY KEY NOT NULL, " +
                         "password TEXT NOT NULL, " +
                         "token TEXT, " +
                         "lastlogin_x NUMERIC, " +
                         "lastlogin_y NUMERIC, " +
                         "lastlogin_z NUMERIC, " +
                         "lastlogin_world TEXT, " +
-                        "uuid TEXT, " +
+                        "username TEXT, " +
                         "email TEXT)";
 
         try (Statement stmt = connection.createStatement()) {
@@ -81,14 +81,14 @@ public class DatabaseChecker {
      */
     private boolean repairTableStructure(Connection connection) throws SQLException {
         Map<String, ColumnDefinition> requiredColumns = new HashMap<>();
-        requiredColumns.put("username", new ColumnDefinition("TEXT", true, true));
+        requiredColumns.put("username", new ColumnDefinition("TEXT", false, true));
         requiredColumns.put("lastlogin_ip", new ColumnDefinition("TEXT", false, false));
         requiredColumns.put("password", new ColumnDefinition("TEXT", false, true));
         requiredColumns.put("lastlogin_x", new ColumnDefinition("NUMERIC", false, false));
         requiredColumns.put("lastlogin_y", new ColumnDefinition("NUMERIC", false, false));
         requiredColumns.put("lastlogin_z", new ColumnDefinition("NUMERIC", false, false));
         requiredColumns.put("lastlogin_world", new ColumnDefinition("TEXT", false, false));
-        requiredColumns.put("uuid", new ColumnDefinition("TEXT", false, false));
+        requiredColumns.put("uuid", new ColumnDefinition("TEXT", true, true));
         requiredColumns.put("email", new ColumnDefinition("TEXT", false, false));
         requiredColumns.put("login_timestamp", new ColumnDefinition("TIMESTAMP", false, false));
 
@@ -109,9 +109,9 @@ public class DatabaseChecker {
         }
 
         // 确保username是主键
-        if (!isUsernamePrimaryKey(connection)) {
-            log.info("将username设置为主键");
-            makeUsernamePrimaryKey(connection);
+        if (!isUUIDPrimaryKey(connection)) {
+            log.info("将uuid设置为主键");
+            makeUUIDPrimaryKey(connection);
             repaired = true;
         }
 
@@ -161,13 +161,13 @@ public class DatabaseChecker {
     /**
      * 检查username是否是主键
      */
-    private boolean isUsernamePrimaryKey(Connection connection) throws SQLException {
+    private boolean isUUIDPrimaryKey(Connection connection) throws SQLException {
         DatabaseMetaData metaData = connection.getMetaData();
 
         try (ResultSet primaryKeys = metaData.getPrimaryKeys(null, null, "accounts")) {
             while (primaryKeys.next()) {
                 String columnName = primaryKeys.getString("COLUMN_NAME");
-                if ("username".equalsIgnoreCase(columnName)) {
+                if ("uuid".equalsIgnoreCase(columnName)) {
                     return true;
                 }
             }
@@ -178,23 +178,23 @@ public class DatabaseChecker {
     /**
      * 将username设置为主键
      */
-    private void makeUsernamePrimaryKey(Connection connection) throws SQLException {
+    private void makeUUIDPrimaryKey(Connection connection) throws SQLException {
         // 这是一个复杂的操作，可能需要重建表
         // 这里简化处理，确保username有唯一约束
         try {
             // 先确保username非空
-            String alterSQL = "ALTER TABLE accounts ALTER COLUMN username SET NOT NULL";
+            String alterSQL = "ALTER TABLE accounts ALTER COLUMN uuid SET NOT NULL";
             try (Statement stmt = connection.createStatement()) {
                 stmt.execute(alterSQL);
             }
         } catch (SQLException e) {
             // 如果上述语法不支持，尝试其他方式
-            log.error("设置username非空失败: ", e);
+            log.error("设置uuid非空失败: ", e);
         }
 
         // 创建唯一索引
         try {
-            String createIndexSQL = "CREATE UNIQUE INDEX idx_username ON accounts(username)";
+            String createIndexSQL = "CREATE UNIQUE INDEX idx_uuid ON accounts(uuid)";
             try (Statement stmt = connection.createStatement()) {
                 stmt.execute(createIndexSQL);
             }
@@ -226,7 +226,7 @@ public class DatabaseChecker {
             }
 
             // 检查主键
-            if (!isUsernamePrimaryKey(connection)) {
+            if (!isUUIDPrimaryKey(connection)) {
                 log.info("username不是主键");
                 return false;
             }

@@ -14,6 +14,7 @@ import java.io.File;
 import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 public class SqlLite implements DatabaseProvider{
@@ -31,7 +32,7 @@ public class SqlLite implements DatabaseProvider{
     }
 
     @Override
-    public Optional<PlayerAccount> getAuth(String username) {
+    public Optional<PlayerAccount> getAuthByName(String username) {
         try (SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()) {
             PlayerAccount admin = sqlSession.getMapper(PlayerAccountMapper.class).getAccountByName(username);
             return Optional.of(admin);
@@ -41,9 +42,21 @@ public class SqlLite implements DatabaseProvider{
     }
 
     @Override
+    public Optional<PlayerAccount> getAuthByUUID(String uuid) {
+        try (SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()) {
+            PlayerAccount admin = sqlSession.getMapper(PlayerAccountMapper.class).getAccountByUUID(uuid);
+            return Optional.of(admin);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+
+    @Override
     public boolean saveAuth(PlayerAccount playerAccount) {
         try (SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()){
-            if (getAuth(playerAccount.getUsername()).isPresent()){
+            if (getAuthByUUID(playerAccount.getUuid()).isPresent()){
+                log.info("ref");
                 sqlSession.getMapper(PlayerAccountMapper.class).updateAccount(playerAccount);
                 sqlSession.commit();
                 return true;
@@ -59,7 +72,7 @@ public class SqlLite implements DatabaseProvider{
     }
 
     @Override
-    public boolean removeAuth(String username) {
+    public boolean removeAuth(UUID uuid) {
         return false;
     }
 

@@ -11,6 +11,11 @@ public interface PlayerAccountMapper {
             "WHERE username='${username}'")
     PlayerAccount getAccountByName(String username);
 
+    @Select("SELECT * " +
+            "FROM accounts "+
+    "WHERE uuid='${uuid}'")
+    PlayerAccount getAccountByUUID(String uuid);
+
     @Select("tables")
     void listTables();
 
@@ -28,9 +33,9 @@ public interface PlayerAccountMapper {
             "lastlogin_y='${lastlogin_y}', " +
             "lastlogin_z='${lastlogin_z}', " +
             "lastlogin_world='${lastlogin_world}', " +
-            "uuid='${uuid}', " +
+            "username='${username}', " +
             "email='${email}', " +
             "login_timestamp='${login_timestamp}' " +
-            "WHERE username='${username}'")
+            "WHERE uuid='${uuid}'")
     void updateAccount(PlayerAccount account);
 }

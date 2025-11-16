@@ -11,6 +11,7 @@ import com.thesilentnights.repo.BlockPosRepo;
 import com.thesilentnights.repo.PlayerCache;
 import com.thesilentnights.sql.DatabaseChecker;
 import com.thesilentnights.sql.DatabaseProvider;
+import com.thesilentnights.task.TickTimerManager;
 import dev.architectury.event.events.common.CommandRegistrationEvent;
 import dev.architectury.platform.Platform;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.sql.SQLException;
+import java.util.UUID;
 
 @Slf4j
 public final class EasyLogin {
@@ -79,10 +81,11 @@ public final class EasyLogin {
 
             EasyLoginEvents.ON_LOGIN.register(((account, serverPlayer) -> {
                 BlockPosRepo.removeBlockPos(account.getUsername());
+                TickTimerManager.cancel(serverPlayer.getUUID());
                 PlayerCache.addAccount(account);
             }));
             EasyLoginEvents.ON_LOGOUT.register(((account, serverPlayer) -> {
-                PlayerCache.dropAccount(serverPlayer.getGameProfile().getName());
+                PlayerCache.dropAccount(serverPlayer.getUUID());
                 BlockPosRepo.removeBlockPos(account.getUsername());
             }));
 
@@ -99,8 +102,8 @@ public final class EasyLogin {
     private static void test(ApplicationContext context) {
         DatabaseProvider provider = context.getBean(DatabaseProvider.class);
         //test
-        provider.saveAuth(new PlayerAccount("admin", "admin", "127.0.0.1", 0, 0, 0, "world", "admin", "admin", System.currentTimeMillis()));
-        provider.getAuth("admin").ifPresent(playerAccount -> log.info(playerAccount.toString()));
+        provider.saveAuth(new PlayerAccount("admin", "admin", "127.0.0.1", 0, 0, 0, "world", UUID.randomUUID().toString(), "admin", System.currentTimeMillis()));
+        provider.getAuthByName("admin").ifPresent(playerAccount -> log.info(playerAccount.toString()));
     }
 }
 

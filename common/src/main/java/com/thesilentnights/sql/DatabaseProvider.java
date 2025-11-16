@@ -4,10 +4,12 @@ import com.thesilentnights.pojo.PlayerAccount;
 
 import java.sql.Connection;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface DatabaseProvider {
-    Optional<PlayerAccount> getAuth(String username);
+    Optional<PlayerAccount> getAuthByUUID(String uuid);
+    Optional<PlayerAccount> getAuthByName(String name);
     boolean saveAuth(PlayerAccount playerAccount);
-    boolean removeAuth(String username);
+    boolean removeAuth(UUID uuid);
     Connection getConnection();
 }

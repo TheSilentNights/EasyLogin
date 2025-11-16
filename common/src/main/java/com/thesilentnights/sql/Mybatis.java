@@ -3,12 +3,14 @@ package com.thesilentnights.sql;
 import com.thesilentnights.sql.config.DatabaseConfig;
 import com.thesilentnights.sql.mapper.PlayerAccountMapper;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.Getter;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
+@Getter
 public class Mybatis {
     private final SqlSessionFactory sqlSessionFactory;
 
@@ -24,7 +26,4 @@ public class Mybatis {
         return sqlSessionFactory != null;
     }
 
-    public  SqlSessionFactory getSqlSessionFactory() {
-        return sqlSessionFactory;
-    }
 }
