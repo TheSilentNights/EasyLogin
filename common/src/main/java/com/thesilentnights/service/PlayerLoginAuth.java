@@ -2,6 +2,7 @@ package com.thesilentnights.service;
 
 import com.thesilentnights.events.ievents.EasyLoginEvents;
 import com.thesilentnights.exception.AlreadyLoggedInException;
+import com.thesilentnights.exception.PasswordDoesNotMatchException;
 import com.thesilentnights.pojo.PlayerAccount;
 import com.thesilentnights.repo.PlayerCache;
 import com.thesilentnights.sql.DatabaseProvider;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Slf4j
@@ -21,10 +23,10 @@ public class PlayerLoginAuth {
     private DatabaseProvider provider;
 
     public boolean authPlayerWithPwd(ServerPlayer serverPlayer, String password) throws AlreadyLoggedInException {
-        if (PlayerCache.hasAccount(serverPlayer.getGameProfile().getName())) {
+        if (PlayerCache.hasAccount(serverPlayer.getUUID())) {
             throw new AlreadyLoggedInException(serverPlayer.getGameProfile().getName());
         }
-        Optional<PlayerAccount> playerAccount1 = provider.getAuth(serverPlayer.getGameProfile().getName()).filter(playerAccount -> playerAccount.getPassword().equals(password));
+        Optional<PlayerAccount> playerAccount1 = provider.getAuthByUUID(serverPlayer.getUUID().toString()).filter(playerAccount -> playerAccount.getPassword().equals(password));
         if (playerAccount1.isPresent()) {
             //push events
             EasyLoginEvents.ON_LOGIN.invoker().onLogin(playerAccount1.get(), serverPlayer);
@@ -33,8 +35,8 @@ public class PlayerLoginAuth {
         return false;
     }
 
-    public boolean hasAccount(String username) {
-        return provider.getAuth(username).isPresent();
+    public boolean hasAccount(UUID uuid) {
+        return provider.getAuthByUUID(uuid.toString()).isPresent();
     }
 
     public boolean shouldCancelEvent(Player entity) {
@@ -44,8 +46,12 @@ public class PlayerLoginAuth {
         return false;
     }
 
-    public void registerPlayer(ServerPlayer serverPlayer, String password) {
+    public void registerPlayer(ServerPlayer serverPlayer, String password ,String repeat) throws PasswordDoesNotMatchException {
         log.info("registerPlayer {}", serverPlayer.getGameProfile().getName());
+        if (!password.equals(repeat)){
+            throw new PasswordDoesNotMatchException(password,repeat);
+        }
+
         provider.saveAuth(new PlayerAccount(
                 serverPlayer.getGameProfile().getName(),
                 password, serverPlayer.getIpAddress(),
@@ -57,36 +63,41 @@ public class PlayerLoginAuth {
                 null,
                 System.currentTimeMillis()
         ));
-        EasyLoginEvents.ON_LOGIN.invoker().onLogin(provider.getAuth(serverPlayer.getGameProfile().getName()).get(), serverPlayer);
+        Optional<PlayerAccount> auth = provider.getAuthByUUID(serverPlayer.getUUID().toString());
+        if (auth.isEmpty()){
+            log.atError().log("sql error found in registering player");
+        }else{
+            EasyLoginEvents.ON_LOGIN.invoker().onLogin(auth.get(), serverPlayer);
+        }
     }
 
     public boolean shouldCancelEvent(ServerPlayer entity) {
         return !isLoggedIn(entity);
     }
 
-    public boolean isLoggedIn(String username, String ip) {
-        if (PlayerCache.hasAccount(username)) {
+    public boolean isLoggedIn(UUID uuid, String ip) {
+        if (PlayerCache.hasAccount(uuid)) {
             return true;
         }
-        Optional<PlayerAccount> account = PlayerCache.getAccount(username);
+        Optional<PlayerAccount> account = PlayerCache.getAccount(uuid);
         return account.filter(playerAccount -> (account.get().getLastlogin_ip().equals(ip)) && (playerAccount.getLogin_timestamp() + 1000 * 60 * 60 * 24 > System.currentTimeMillis())).isPresent();
     }
 
     public boolean isLoggedIn(ServerPlayer entity) {
-        return isLoggedIn(entity.getName().getString(), entity.getIpAddress());
+        return isLoggedIn(entity.getUUID(), entity.getIpAddress());
     }
 
     public Optional<PlayerAccount> getAccount(ServerPlayer entity) {
-        return getAccount(entity.getGameProfile().getName());
+        return getAccount(entity.getUUID());
     }
 
-    public Optional<PlayerAccount> getAccount(String username) {
-        return provider.getAuth(username);
+    public Optional<PlayerAccount> getAccount(UUID uuid) {
+        return provider.getAuthByUUID(uuid.toString());
     }
 
 
     public void logoutPlayer(ServerPlayer serverPlayer) {
-        Optional<PlayerAccount> account = PlayerCache.getAccount(serverPlayer.getGameProfile().getName());
+        Optional<PlayerAccount> account = PlayerCache.getAccount(serverPlayer.getUUID());
         if (account.isPresent()) {
             PlayerAccount playerAccount = account.get();
             playerAccount.setLastlogin_ip(serverPlayer.getIpAddress());
