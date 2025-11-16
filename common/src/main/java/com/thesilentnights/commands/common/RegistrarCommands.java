@@ -24,10 +24,14 @@ public class RegistrarCommands implements CommonCommands {
                                 .executes(context -> {
                                     String password = StringArgumentType.getString(context, "password");
                                     String repeatPassword = StringArgumentType.getString(context, "repeatPassword");
+
+
                                     if (loginAuth.hasAccount(context.getSource().getPlayerOrException().getUUID())) {
                                         context.getSource().getPlayerOrException().sendMessage(TextUtil.createText(ChatFormatting.RED, "the account has already been registered"), context.getSource().getPlayerOrException().getUUID());
                                         return 0;
                                     }
+
+
                                     try {
                                         loginAuth.registerPlayer(context.getSource().getPlayerOrException(), password,repeatPassword);
                                         context.getSource().getPlayerOrException().sendMessage(TextUtil.createText(ChatFormatting.GREEN, "register success"), context.getSource().getPlayerOrException().getUUID());

@@ -16,4 +16,8 @@ public class TextUtil {
         TranslatableComponent translatableComponent = new TranslatableComponent(key, args);
         return translatableComponent.withStyle(chatFormatting);
     }
+
+    public static MutableComponent createText(String key, Object... args) {
+        return new TranslatableComponent(key, args);
+    }
 }
