@@ -6,7 +6,6 @@ import com.thesilentnights.pojo.PlayerAccount;
 import com.thesilentnights.sql.config.DatabaseConfig;
 import com.thesilentnights.sql.mapper.PlayerAccountMapper;
 import com.zaxxer.hikari.HikariConfig;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
 
@@ -18,8 +17,6 @@ import java.util.UUID;
 
 @Slf4j
 public class SqlLite implements DatabaseProvider{
-    @Getter
-    private static SqlLite instance;
 
     private final Mybatis mybatis;
 

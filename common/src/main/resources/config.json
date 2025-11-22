@@ -1,0 +1,7 @@
+{
+  "allowed_database_type": "SQLITE MYSQL",
+  "dataBaseType": "SQLITE",
+
+  "pathToDatabase_requirement": "starts from the server dictionary",
+  "pathToDatabase": "/easylogin/config.json"
+}
