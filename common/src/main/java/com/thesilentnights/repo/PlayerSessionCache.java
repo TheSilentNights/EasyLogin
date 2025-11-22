@@ -2,6 +2,7 @@ package com.thesilentnights.repo;
 
 import com.thesilentnights.pojo.PlayerAccount;
 import com.thesilentnights.pojo.PlayerSession;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Map;
 import java.util.UUID;
@@ -12,6 +13,14 @@ public class PlayerSessionCache {
 
     public static void scheduleDrop(PlayerAccount account) {
         forRemoval.put(UUID.fromString(account.getUuid()),new PlayerSession(account,60*60*20));
+    }
+
+    public static boolean hasSession(ServerPlayer serverPlayer){
+        return forRemoval.containsKey(serverPlayer.getUUID());
+    }
+
+    public static PlayerSession getSession(UUID key){
+        return forRemoval.get(key);
     }
 
     public static void tick() {

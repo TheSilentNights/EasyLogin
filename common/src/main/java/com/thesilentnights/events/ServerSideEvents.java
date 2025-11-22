@@ -3,6 +3,7 @@ package com.thesilentnights.events;
 import com.thesilentnights.events.ievents.EasyLoginEvents;
 import com.thesilentnights.repo.BlockPosRepo;
 import com.thesilentnights.repo.PlayerCache;
+import com.thesilentnights.repo.PlayerSessionCache;
 import com.thesilentnights.service.PlayerLoginService;
 import com.thesilentnights.task.KickPlayer;
 import com.thesilentnights.task.Message;
@@ -20,7 +21,9 @@ public class ServerSideEvents {
     
     public void register(){
         PlayerEvent.PLAYER_JOIN.register(entity -> {
-            if (!playerLoginService.isLoggedIn(entity)){
+            if (PlayerSessionCache.hasSession(entity)){
+                EasyLoginEvents.ON_LOGIN.invoker().onLogin(PlayerSessionCache.getSession(entity.getUUID()).getAccount(),entity);
+            }else{
                 if (playerLoginService.hasAccount(entity.getUUID())){
                     TickTimerManager.addTickTimer(new Message(entity,new TextComponent("please login your account by /login"), 80, true));
                 }else{
@@ -37,6 +40,7 @@ public class ServerSideEvents {
 
         TickEvent.SERVER_POST.register(server -> {
             TickTimerManager.tick();
+            PlayerSessionCache.tick();
         });
 
         // custom event
