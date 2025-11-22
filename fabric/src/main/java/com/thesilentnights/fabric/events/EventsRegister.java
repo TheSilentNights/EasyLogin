@@ -1,7 +1,7 @@
 package com.thesilentnights.fabric.events;
 
 import com.thesilentnights.EasyLogin;
-import com.thesilentnights.service.PlayerLoginAuth;
+import com.thesilentnights.service.PlayerLoginService;
 import lombok.extern.slf4j.Slf4j;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
@@ -11,7 +11,7 @@ import net.minecraft.world.InteractionResult;
 
 @Slf4j
 public class EventsRegister {
-    static PlayerLoginAuth loginAuth = EasyLogin.context.getBean(PlayerLoginAuth.class);
+    static PlayerLoginService loginAuth = EasyLogin.context.getBean(PlayerLoginService.class);
     
     public static void register(){
         AttackBlockCallback.EVENT.register((playerEntity, world, hand, blockPos, direction) -> {

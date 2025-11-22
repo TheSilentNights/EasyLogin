@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-public class PlayerLoginAuth {
+public class PlayerLoginService {
     @Autowired
     private DatabaseProvider provider;
 
@@ -46,6 +46,10 @@ public class PlayerLoginAuth {
         return false;
     }
 
+    public boolean isLoggedIn(ServerPlayer serverPlayer){
+        return PlayerCache.hasAccount(serverPlayer.getUUID());
+    }
+
     public void registerPlayer(ServerPlayer serverPlayer, String password ,String repeat) throws PasswordDoesNotMatchException {
         log.info("registerPlayer {}", serverPlayer.getGameProfile().getName());
         if (!password.equals(repeat)){
@@ -71,32 +75,18 @@ public class PlayerLoginAuth {
         }
     }
 
-    public boolean shouldCancelEvent(ServerPlayer entity) {
-        return !isLoggedIn(entity);
-    }
 
-    public boolean isLoggedIn(UUID uuid, String ip) {
-        if (PlayerCache.hasAccount(uuid)) {
-            return true;
-        }
-        Optional<PlayerAccount> account = PlayerCache.getAccount(uuid);
-        return account.filter(playerAccount -> (account.get().getLastlogin_ip().equals(ip)) && (playerAccount.getLogin_timestamp() + 1000 * 60 * 60 * 24 > System.currentTimeMillis())).isPresent();
-    }
-
-    public boolean isLoggedIn(ServerPlayer entity) {
-        return isLoggedIn(entity.getUUID(), entity.getIpAddress());
-    }
-
-    public Optional<PlayerAccount> getAccount(ServerPlayer entity) {
-        return getAccount(entity.getUUID());
-    }
 
     public Optional<PlayerAccount> getAccount(UUID uuid) {
         return provider.getAuthByUUID(uuid.toString());
     }
 
-
-    public void logoutPlayer(ServerPlayer serverPlayer) {
+    /**
+     *
+     * @param serverPlayer targetPlayer
+     * @param proactive whether the action is made by a player or is automatically triggered by logout event
+     */
+    public void logoutPlayer(ServerPlayer serverPlayer,boolean proactive) {
         Optional<PlayerAccount> account = PlayerCache.getAccount(serverPlayer.getUUID());
         if (account.isPresent()) {
             PlayerAccount playerAccount = account.get();

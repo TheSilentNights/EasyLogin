@@ -6,7 +6,6 @@ import com.thesilentnights.configs.SpringConfig;
 import com.thesilentnights.events.CommonEvents;
 import com.thesilentnights.events.ServerSideEvents;
 import com.thesilentnights.events.ievents.EasyLoginEvents;
-import com.thesilentnights.pojo.PlayerAccount;
 import com.thesilentnights.repo.BlockPosRepo;
 import com.thesilentnights.repo.PlayerCache;
 import com.thesilentnights.sql.DatabaseChecker;
@@ -22,7 +21,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.sql.SQLException;
-import java.util.UUID;
 
 @Slf4j
 public final class EasyLogin {
@@ -81,11 +79,11 @@ public final class EasyLogin {
 
             EasyLoginEvents.ON_LOGIN.register(((account, serverPlayer) -> {
                 BlockPosRepo.removeBlockPos(account.getUsername());
-                TickTimerManager.cancel(serverPlayer.getUUID());
+                TickTimerManager.cancelPlayer(serverPlayer.getUUID());
                 PlayerCache.addAccount(account);
             }));
             EasyLoginEvents.ON_LOGOUT.register(((account, serverPlayer) -> {
-                PlayerCache.dropAccount(serverPlayer.getUUID());
+                PlayerCache.dropAccount(serverPlayer.getUUID(),true);
                 BlockPosRepo.removeBlockPos(account.getUsername());
             }));
 
@@ -102,7 +100,6 @@ public final class EasyLogin {
     private static void test(ApplicationContext context) {
         DatabaseProvider provider = context.getBean(DatabaseProvider.class);
         //test
-        provider.saveAuth(new PlayerAccount("admin", "admin", "127.0.0.1", 0, 0, 0, "world", UUID.randomUUID().toString(), "admin", System.currentTimeMillis()));
         provider.getAuthByName("admin").ifPresent(playerAccount -> log.info(playerAccount.toString()));
     }
 }

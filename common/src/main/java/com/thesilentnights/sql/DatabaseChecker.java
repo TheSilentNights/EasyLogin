@@ -59,15 +59,19 @@ public class DatabaseChecker {
     private void createTable(Connection connection) throws SQLException {
         String createTableSQL =
                 "CREATE TABLE accounts (" +
-                        "uuid TEXT PRIMARY KEY NOT NULL, " +
-                        "password TEXT NOT NULL, " +
-                        "token TEXT, " +
-                        "lastlogin_x NUMERIC, " +
-                        "lastlogin_y NUMERIC, " +
-                        "lastlogin_z NUMERIC, " +
-                        "lastlogin_world TEXT, " +
-                        "username TEXT, " +
-                        "email TEXT)";
+                        "    uuid            TEXT      PRIMARY KEY" +
+                        "                              UNIQUE" +
+                        "                              NOT NULL," +
+                        "    password        TEXT      NOT NULL," +
+                        "    lastlogin_x     NUMERIC," +
+                        "    lastlogin_y     NUMERIC," +
+                        "    lastlogin_z     NUMERIC," +
+                        "    lastlogin_ip    TEXT," +
+                        "    lastlogin_world TEXT," +
+                        "    name            TEXT," +
+                        "    email           TEXT," +
+                        "    login_timestamp TIMESTAMP " +
+                        ");";
 
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(createTableSQL);
@@ -81,7 +85,7 @@ public class DatabaseChecker {
      */
     private boolean repairTableStructure(Connection connection) throws SQLException {
         Map<String, ColumnDefinition> requiredColumns = new HashMap<>();
-        requiredColumns.put("username", new ColumnDefinition("TEXT", false, true));
+        requiredColumns.put("username", new ColumnDefinition("TEXT", false,true));
         requiredColumns.put("lastlogin_ip", new ColumnDefinition("TEXT", false, false));
         requiredColumns.put("password", new ColumnDefinition("TEXT", false, true));
         requiredColumns.put("lastlogin_x", new ColumnDefinition("NUMERIC", false, false));

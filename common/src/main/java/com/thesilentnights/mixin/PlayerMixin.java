@@ -3,7 +3,7 @@ package com.thesilentnights.mixin;
 
 import com.thesilentnights.EasyLogin;
 import com.thesilentnights.repo.BlockPosRepo;
-import com.thesilentnights.service.PlayerLoginAuth;
+import com.thesilentnights.service.PlayerLoginService;
 import lombok.extern.slf4j.Slf4j;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,7 +23,7 @@ import java.util.Optional;
 @Mixin(Player.class)
 public abstract class PlayerMixin extends LivingEntity {
     @Unique
-    PlayerLoginAuth easylogin$playerLoginAuth = EasyLogin.context.getBean(PlayerLoginAuth.class);
+    PlayerLoginService easylogin$playerLoginService = EasyLogin.context.getBean(PlayerLoginService.class);
     protected PlayerMixin(EntityType<? extends LivingEntity> entityType, Level level) {
         super(entityType, level);
     }
@@ -32,7 +32,7 @@ public abstract class PlayerMixin extends LivingEntity {
     public void tick(CallbackInfo ci) {
         //log.info("tick");
         if ((Object) this instanceof ServerPlayer serverPlayer) {
-            if (easylogin$playerLoginAuth.shouldCancelEvent(serverPlayer)) {
+            if (easylogin$playerLoginService.shouldCancelEvent(serverPlayer)) {
                 Optional<BlockPos> blockPos = BlockPosRepo.getBlockPos(serverPlayer.getGameProfile().getName());
                 if (blockPos.isPresent()){
                     serverPlayer.teleportTo(serverPlayer.getLevel(),blockPos.get().getX(), blockPos.get().getY(), blockPos.get().getZ(),0,0);

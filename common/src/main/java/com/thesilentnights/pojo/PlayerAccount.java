@@ -16,5 +16,4 @@ public class PlayerAccount {
     String uuid;
     String email;
     Long login_timestamp;
-
 }

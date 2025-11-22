@@ -54,6 +54,7 @@ public class SqlLite implements DatabaseProvider{
         try (SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()){
             if (getAuthByUUID(playerAccount.getUuid()).isPresent()){
                 log.info("ref");
+                log.info(playerAccount.toString());
                 sqlSession.getMapper(PlayerAccountMapper.class).updateAccount(playerAccount);
                 sqlSession.commit();
                 return true;

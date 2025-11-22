@@ -3,7 +3,7 @@ package com.thesilentnights.commands.admin;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.thesilentnights.pojo.PlayerAccount;
-import com.thesilentnights.service.PlayerLoginAuth;
+import com.thesilentnights.service.PlayerLoginService;
 import com.thesilentnights.utils.TextUtil;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class PlayerInfoCommands implements AdminCommands {
     @Autowired
-    private PlayerLoginAuth loginAuth;
+    private PlayerLoginService loginAuth;
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand(LiteralArgumentBuilder<CommandSourceStack> mainNode) {

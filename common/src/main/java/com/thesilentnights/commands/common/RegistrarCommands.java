@@ -3,7 +3,7 @@ package com.thesilentnights.commands.common;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.thesilentnights.exception.PasswordDoesNotMatchException;
-import com.thesilentnights.service.PlayerLoginAuth;
+import com.thesilentnights.service.PlayerLoginService;
 import com.thesilentnights.utils.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RegistrarCommands implements CommonCommands {
     @Autowired
-    PlayerLoginAuth loginAuth;
+    PlayerLoginService loginAuth;
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {

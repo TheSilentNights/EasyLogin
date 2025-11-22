@@ -12,8 +12,8 @@ public interface PlayerAccountMapper {
     PlayerAccount getAccountByName(String username);
 
     @Select("SELECT * " +
-            "FROM accounts "+
-    "WHERE uuid='${uuid}'")
+            "FROM accounts " +
+            "WHERE uuid='${uuid}'")
     PlayerAccount getAccountByUUID(String uuid);
 
     @Select("tables")
@@ -35,7 +35,7 @@ public interface PlayerAccountMapper {
             "lastlogin_world='${lastlogin_world}', " +
             "username='${username}', " +
             "email='${email}', " +
-            "login_timestamp='${login_timestamp}' " +
+            "login_timestamp='${login_timestamp}'" +
             "WHERE uuid='${uuid}'")
     void updateAccount(PlayerAccount account);
 }

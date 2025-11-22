@@ -3,8 +3,7 @@ package com.thesilentnights.commands.common;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.thesilentnights.exception.AlreadyLoggedInException;
-import com.thesilentnights.service.PlayerLoginAuth;
-import com.thesilentnights.task.TickTimerManager;
+import com.thesilentnights.service.PlayerLoginService;
 import com.thesilentnights.utils.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoginCommands implements CommonCommands {
     @Autowired
-    private PlayerLoginAuth loginAuth;
+    private PlayerLoginService loginAuth;
     
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
@@ -37,7 +36,7 @@ public class LoginCommands implements CommonCommands {
 
             if (flag){
                 context.getSource().sendSuccess(TextUtil.createText(ChatFormatting.GREEN,"commands.login.success", context.getSource().getPlayerOrException().getDisplayName().getString()), false);
-                TickTimerManager.cancel(context.getSource().getPlayerOrException().getUUID());
+
                 return 1;
             }
             else{

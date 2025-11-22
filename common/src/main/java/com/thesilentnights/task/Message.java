@@ -10,7 +10,7 @@ public class Message implements TickTimer {
     Component message;
     long delay;
     boolean isLoop;
-    long tickCount;
+    long tickCount = 0;
 
     public Message(ServerPlayer serverPlayer, Component message, long delay,boolean isLoop) {
         this.serverPlayer = serverPlayer;
@@ -26,7 +26,7 @@ public class Message implements TickTimer {
             if (isLoop){
                 this.tickCount = 0;
             }else{
-                TickTimerManager.cancel(this.serverPlayer.getUUID());
+                TickTimerManager.cancel(this.serverPlayer.getUUID(),TickType.MESSAGE);
             }
         }
     }
@@ -34,6 +34,11 @@ public class Message implements TickTimer {
     @Override
     public UUID getUUId() {
         return serverPlayer.getUUID();
+    }
+
+    @Override
+    public TickType getTickType() {
+        return TickType.MESSAGE;
     }
 
 

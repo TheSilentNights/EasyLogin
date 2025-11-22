@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PlayerCache {
     private static final Map<UUID, PlayerAccount> cacheMap = new ConcurrentHashMap<>();
 
-     public static void addAccount(PlayerAccount account) {
+    public static void addAccount(PlayerAccount account) {
         cacheMap.put(UUID.fromString(account.getUuid()), account);
     }
 
@@ -23,7 +23,10 @@ public class PlayerCache {
         return cacheMap.containsKey(uuid);
     }
 
-    public static void dropAccount(UUID uuid) {
+    public static void dropAccount(UUID uuid, boolean tempDrop) {
+        if (tempDrop){
+            PlayerSessionCache.scheduleDrop(cacheMap.get(uuid));
+        }
         cacheMap.remove(uuid);
     }
 }
