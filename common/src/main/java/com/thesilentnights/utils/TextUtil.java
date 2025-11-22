@@ -17,6 +17,11 @@ public class TextUtil {
         return translatableComponent.withStyle(chatFormatting);
     }
 
+    public static MutableComponent createBold(ChatFormatting color, String key,Object... args){
+        TranslatableComponent translatableComponent = new TranslatableComponent(key, args);
+        return translatableComponent.withStyle(ChatFormatting.BOLD).withStyle(color);
+    }
+
     public static MutableComponent createText(String key, Object... args) {
         return new TranslatableComponent(key, args);
     }
