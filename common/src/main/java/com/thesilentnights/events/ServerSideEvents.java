@@ -21,7 +21,8 @@ public class ServerSideEvents {
     
     public void register(){
         PlayerEvent.PLAYER_JOIN.register(entity -> {
-            if (PlayerSessionCache.hasSession(entity)){
+            if (PlayerSessionCache.hasSession(entity) && PlayerSessionCache.getSession(entity.getUUID()).getAccount().getLastlogin_ip().equals(entity.getIpAddress())){
+                entity.sendMessage(new TextComponent("already logged in!"),entity.getUUID());
                 EasyLoginEvents.ON_LOGIN.invoker().onLogin(PlayerSessionCache.getSession(entity.getUUID()).getAccount(),entity);
             }else{
                 if (playerLoginService.hasAccount(entity.getUUID())){
