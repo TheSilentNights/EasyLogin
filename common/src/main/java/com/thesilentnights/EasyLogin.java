@@ -5,12 +5,8 @@ import com.thesilentnights.commands.EasyLoginCommands;
 import com.thesilentnights.configs.SpringConfig;
 import com.thesilentnights.events.CommonEvents;
 import com.thesilentnights.events.ServerSideEvents;
-import com.thesilentnights.events.ievents.EasyLoginEvents;
-import com.thesilentnights.repo.BlockPosRepo;
-import com.thesilentnights.repo.PlayerCache;
 import com.thesilentnights.sql.DatabaseChecker;
 import com.thesilentnights.sql.DatabaseProvider;
-import com.thesilentnights.task.TickTimerManager;
 import dev.architectury.event.events.common.CommandRegistrationEvent;
 import dev.architectury.platform.Platform;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +25,7 @@ public final class EasyLogin {
     public static void init(){
         //init server side database'
         if (Platform.getEnv() == EnvType.SERVER) {
+            log.info("loaded");
             DatabaseProvider databaseProvider = context.getBean(DatabaseProvider.class);
             //init database
             try {
@@ -76,16 +73,6 @@ public final class EasyLogin {
             if (Platform.isDevelopmentEnvironment()) {
                 test(context);
             }
-
-            EasyLoginEvents.ON_LOGIN.register(((account, serverPlayer) -> {
-                BlockPosRepo.removeBlockPos(account.getUsername());
-                TickTimerManager.cancelPlayer(serverPlayer.getUUID());
-                PlayerCache.addAccount(account);
-            }));
-            EasyLoginEvents.ON_LOGOUT.register(((account, serverPlayer) -> {
-                PlayerCache.dropAccount(serverPlayer.getUUID(),true);
-                BlockPosRepo.removeBlockPos(account.getUsername());
-            }));
 
         } catch (Exception e) {
             throw new RuntimeException(e);

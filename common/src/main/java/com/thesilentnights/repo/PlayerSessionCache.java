@@ -2,16 +2,19 @@ package com.thesilentnights.repo;
 
 import com.thesilentnights.pojo.PlayerAccount;
 import com.thesilentnights.pojo.PlayerSession;
+import lombok.extern.slf4j.Slf4j;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 public class PlayerSessionCache {
     private static final Map<UUID, PlayerSession> forRemoval = new ConcurrentHashMap<>();
 
     public static void scheduleDrop(PlayerAccount account) {
+        log.info(account.toString());
         forRemoval.put(UUID.fromString(account.getUuid()),new PlayerSession(account,60*60*20));
     }
 

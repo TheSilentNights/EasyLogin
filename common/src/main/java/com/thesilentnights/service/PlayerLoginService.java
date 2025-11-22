@@ -41,7 +41,7 @@ public class PlayerLoginService {
 
     public boolean shouldCancelEvent(Player entity) {
         if (entity instanceof ServerPlayer entity1) {
-            return shouldCancelEvent(entity1);
+            return !isLoggedIn(entity1);
         }
         return false;
     }
