@@ -39,6 +39,10 @@ public class PlayerLoginService {
         return provider.getAuthByUUID(uuid.toString()).isPresent();
     }
 
+    public boolean hasAccount(String username){
+        return provider.getAuthByName(username).isPresent();
+    }
+
     public boolean shouldCancelEvent(Player entity) {
         if (entity instanceof ServerPlayer entity1) {
             return !isLoggedIn(entity1);
@@ -79,6 +83,10 @@ public class PlayerLoginService {
 
     public Optional<PlayerAccount> getAccount(UUID uuid) {
         return provider.getAuthByUUID(uuid.toString());
+    }
+
+    public Optional<PlayerAccount> getAccount(String username){
+        return provider.getAuthByName(username);
     }
 
     /**
