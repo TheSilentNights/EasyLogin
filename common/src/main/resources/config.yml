@@ -1,0 +1,3 @@
+dataBaseType: "SQLITE"
+pathToDatabase: "/easylogin/playerAccounts.db"
+enableKickOther: true

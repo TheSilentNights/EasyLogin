@@ -76,7 +76,7 @@ processResources {
 
 shadowJar {
     configurations = [project.configurations.shadowBundle]
-
+    exclude "META-INF/versions/**/*.*"
     archiveClassifier = 'dev-shadow'
 }
 
