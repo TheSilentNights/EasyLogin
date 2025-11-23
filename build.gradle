@@ -60,6 +60,14 @@ subprojects {
         compileOnly("org.projectlombok:lombok:1.18.42")
         annotationProcessor("org.projectlombok:lombok:1.18.42")
 
+        // https://mvnrepository.com/artifact/tools.jackson.core/jackson-core
+        implementation("tools.jackson.core:jackson-core:3.0.2")
+        // https://mvnrepository.com/artifact/tools.jackson.core/jackson-databind
+        implementation("tools.jackson.core:jackson-databind:3.0.2")
+        // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
+        implementation("com.fasterxml.jackson.core:jackson-annotations:3.0-rc5")
+
+
         // https://mvnrepository.com/artifact/junit/junit
         testImplementation("junit:junit:4.13.2")
 

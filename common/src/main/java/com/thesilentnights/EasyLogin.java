@@ -25,8 +25,6 @@ public final class EasyLogin {
     public static void init(){
         //init server side database'
         if (Platform.getEnv() == EnvType.SERVER) {
-            log.info("loaded");
-            DatabaseProvider databaseProvider = context.getBean(DatabaseProvider.class);
             //init database
             try {
                 context.getBean(DatabaseChecker.class).checkAndRepairTable();

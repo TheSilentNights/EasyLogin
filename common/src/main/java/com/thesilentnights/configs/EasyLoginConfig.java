@@ -2,19 +2,17 @@ package com.thesilentnights.configs;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
-import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.JsonReader;
 import com.thesilentnights.repo.CommonStaticRepo;
 import dev.architectury.platform.Platform;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 
 @Slf4j
 @Data
@@ -22,29 +20,24 @@ import java.io.IOException;
 public class EasyLoginConfig {
     DataBaseType dataBaseType;
     String pathToDatabase;
+    boolean enableKickOther;
 
     public static EasyLoginConfig readFromConfigFile() {
         File configFile = FileUtil.file(Platform.getGameFolder().toFile(), CommonStaticRepo.configPath);
+        File readme = FileUtil.file(Platform.getGameFolder().toFile(),CommonStaticRepo.readmePath);
+        //create readme if not exists
+        if (!readme.exists()){
+            FileUtil.copyFile(ResourceUtil.getResourceObj("./readme.txt"),readme);
+        }
+        //create config.json
         if (!configFile.exists()) {
             FileUtil.copyFile(ResourceUtil.getResourceObj(CommonStaticRepo.configResourcePath), configFile);
-            try {
-                JsonReader jsonReader = new JsonReader(new FileReader(configFile));
-                EasyLoginConfig o = new Gson().fromJson(jsonReader, EasyLoginConfig.class);
-                jsonReader.close();
-                return o;
-            } catch (JsonSyntaxException e) {
-                log.atError().setCause(e).log("configuration is not valid");
-            } catch (IOException e) {
-                log.atError().log("error occurred while reading configuration {}", e);
-            }
         }
 
+        //read from configs
         try {
-            JsonReader jsonReader = new JsonReader(new FileReader(configFile));
-            EasyLoginConfig o = new Gson().fromJson(jsonReader, EasyLoginConfig.class);
-            jsonReader.close();
-            return o;
-        } catch (IOException e) {
+            return new ObjectMapper().readValue(configFile, EasyLoginConfig.class);
+        } catch (JacksonException e) {
             log.atError().log("file not found");
             return getDefaultConfig();
         } catch (JsonIOException | JsonSyntaxException e) {
@@ -60,7 +53,8 @@ public class EasyLoginConfig {
                 FileUtil.file(
                         Platform.getGameFolder().toFile(),
                         "easylogin/playerAccounts.db"
-                ).getAbsolutePath()
+                ).getAbsolutePath(),
+                false
         );
     }
 

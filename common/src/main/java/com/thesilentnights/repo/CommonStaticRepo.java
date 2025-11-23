@@ -5,4 +5,5 @@ public class CommonStaticRepo {
     public static final String configPath = "/easylogin/config.json";
     public static final String defaultSqlitePath = "/easylogin/playerAccounts.db";
     public static final String configResourcePath = "/easylogin/config.json";
+    public static final String readmePath = "/easylogin/readme.txt";
 }
