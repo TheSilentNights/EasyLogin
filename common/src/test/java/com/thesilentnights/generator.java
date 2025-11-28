@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thesilentnights.configs.DataBaseType;
 import com.thesilentnights.configs.EasyLoginConfig;
 import com.thesilentnights.repo.CommonStaticRepo;
+import org.apache.ibatis.jdbc.SQL;
 import org.junit.Test;
 
 import java.io.File;
@@ -18,6 +19,33 @@ public class generator {
                 CommonStaticRepo.defaultSqlitePath,
                 true
         ));
+    }
 
+    @Test
+    public void generateSql(){
+        SQL accounts = new SQL() {{
+            INSERT_INTO("accounts");
+            VALUES(
+                    "username, password, lastlogin_ip, lastlogin_x, lastlogin_y, lastlogin_z, lastlogin_world, uuid, email, login_timestamp",
+                    "#{username}, #{password},#{lastlogin_ip},#{lastlogin_x},#{lastlogin_y},#{lastlogin_z},#{lastlogin_world},#{uuid},#{email},#{login_timestamp}"
+            );
+        }};
+        SQL updateAll = new SQL(){{
+            UPDATE("accounts");
+            SET(
+                    "username=#{username}",
+                    "password=#{password}",
+                    "lastlogin_ip=#{lastlogin_ip}",
+                    "lastlogin_world=#{lastlogin_world}",
+                    "lastlogin_x=#{lastlogin_x}",
+                    "lastlogin_y=#{lastlogin_y}",
+                    "lastlogin_z=#{lastlogin_z}",
+                    "uuid=#{uuid}",
+                    "email=#{email}",
+                    "login_timestamp=#{login_timestamp}"
+            );
+        }};
+        System.out.println(updateAll);
+        System.out.println(accounts);
     }
 }

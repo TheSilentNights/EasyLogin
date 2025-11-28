@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thesilentnights.sql.mapper.PlayerAccountMapper">
+    <update id="updateAccount">
+        UPDATE accounts
+        SET username=#{username}, password=#{password}, lastlogin_ip=#{lastlogin_ip},
+        lastlogin_world=#{lastlogin_world}, lastlogin_x=#{lastlogin_x}, lastlogin_y=#{lastlogin_y},
+        lastlogin_z=#{lastlogin_z}, uuid=#{uuid}, email=#{email}, login_timestamp=#{login_timestamp}
+    </update>
+    <select id="getAccountByName" resultType="com.thesilentnights.pojo.PlayerAccount">
+        select * from accounts where username=#{username}
+    </select>
+    <select id="getAccountByUUID" resultType="com.thesilentnights.pojo.PlayerAccount">
+        select * from accounts where uuid=#{uuid}
+    </select>
+    <insert id="addAccount">
+        INSERT INTO accounts
+        (username, password, lastlogin_ip, lastlogin_x, lastlogin_y, lastlogin_z, lastlogin_world, uuid, email,
+        login_timestamp)
+        VALUES (#{username},
+        #{password},#{lastlogin_ip},#{lastlogin_x},#{lastlogin_y},#{lastlogin_z},#{lastlogin_world},#{uuid},#{email},#{login_timestamp})
+    </insert>
+</mapper>

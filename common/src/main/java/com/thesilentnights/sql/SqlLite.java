@@ -53,7 +53,6 @@ public class SqlLite implements DatabaseProvider{
     public boolean saveAuth(PlayerAccount playerAccount) {
         try (SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()){
             if (getAuthByUUID(playerAccount.getUuid()).isPresent()){
-                log.info("ref");
                 log.info(playerAccount.toString());
                 sqlSession.getMapper(PlayerAccountMapper.class).updateAccount(playerAccount);
                 sqlSession.commit();
@@ -63,7 +62,7 @@ public class SqlLite implements DatabaseProvider{
             sqlSession.commit();
             return true;
         }catch (Exception e){
-            log.info("failed to save");
+            log.error("failed to save");
             log.error("error in insert",e);
             return false;
         }
