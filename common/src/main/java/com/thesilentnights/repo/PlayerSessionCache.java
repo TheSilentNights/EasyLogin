@@ -15,7 +15,7 @@ public class PlayerSessionCache {
 
     public static void scheduleDrop(PlayerAccount account) {
         log.info(account.toString());
-        forRemoval.put(UUID.fromString(account.getUuid()), new PlayerSession(account, 60 * 60 * 20));
+        forRemoval.put(account.getUuid(), new PlayerSession(account, 60 * 60 * 20));
     }
 
     public static boolean hasSession(ServerPlayer serverPlayer) {

@@ -14,7 +14,7 @@ public class PlayerCache {
     private static final Map<UUID, PlayerAccount> cacheMap = new ConcurrentHashMap<>();
 
     public static void addAccount(PlayerAccount account) {
-        cacheMap.put(UUID.fromString(account.getUuid()), account);
+        cacheMap.put(account.getUuid(), account);
     }
 
     public static Optional<PlayerAccount> getAccount(UUID uuid) {

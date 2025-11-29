@@ -39,7 +39,7 @@ public class SqlLite implements DatabaseProvider {
     }
 
     @Override
-    public Optional<PlayerAccount> getAuthByUUID(String uuid) {
+    public Optional<PlayerAccount> getAuthByUUID(UUID uuid) {
         try (SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()) {
             PlayerAccount admin = sqlSession.getMapper(PlayerAccountMapper.class).getAccountByUUID(uuid);
             return Optional.of(admin);

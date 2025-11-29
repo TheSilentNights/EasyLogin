@@ -26,7 +26,7 @@ public class PlayerLoginService {
         if (PlayerCache.hasAccount(serverPlayer.getUUID())) {
             throw new AlreadyLoggedInException(serverPlayer.getGameProfile().getName());
         }
-        Optional<PlayerAccount> playerAccount1 = provider.getAuthByUUID(serverPlayer.getUUID().toString()).filter(playerAccount -> playerAccount.getPassword().equals(password));
+        Optional<PlayerAccount> playerAccount1 = provider.getAuthByUUID(serverPlayer.getUUID()).filter(playerAccount -> playerAccount.getPassword().equals(password));
         if (playerAccount1.isPresent()) {
             //push events
             EasyLoginEvents.ON_LOGIN.invoker().onLogin(playerAccount1.get(), serverPlayer);
@@ -36,7 +36,7 @@ public class PlayerLoginService {
     }
 
     public static boolean hasAccount(UUID uuid) {
-        return provider.getAuthByUUID(uuid.toString()).isPresent();
+        return provider.getAuthByUUID(uuid).isPresent();
     }
 
     public static boolean hasAccount(String username) {
@@ -60,18 +60,24 @@ public class PlayerLoginService {
             throw new PasswordDoesNotMatchException(password, repeat);
         }
 
-        provider.saveAuth(new PlayerAccount(
+        boolean flag = provider.saveAuth(new PlayerAccount(
                 serverPlayer.getGameProfile().getName(),
                 password, serverPlayer.getIpAddress(),
                 serverPlayer.getX(),
                 serverPlayer.getY(),
                 serverPlayer.getZ(),
                 serverPlayer.getLevel().dimension().location().getNamespace(),
-                serverPlayer.getUUID().toString(),
+                serverPlayer.getUUID(),
                 null,
                 System.currentTimeMillis()
         ));
-        Optional<PlayerAccount> auth = provider.getAuthByUUID(serverPlayer.getUUID().toString());
+
+        if(!flag){
+            log.error("error occurred while saving auth");
+            return;
+        }
+
+        Optional<PlayerAccount> auth = provider.getAuthByUUID(serverPlayer.getUUID());
         if (auth.isEmpty()) {
             log.atError().log("sql error found in registering player");
         } else {
@@ -81,7 +87,7 @@ public class PlayerLoginService {
 
 
     public static Optional<PlayerAccount> getAccount(UUID uuid) {
-        return provider.getAuthByUUID(uuid.toString());
+        return provider.getAuthByUUID(uuid);
     }
 
     public static Optional<PlayerAccount> getAccount(String username) {

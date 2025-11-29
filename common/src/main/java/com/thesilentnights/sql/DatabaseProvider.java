@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface DatabaseProvider {
-    Optional<PlayerAccount> getAuthByUUID(String uuid);
+    Optional<PlayerAccount> getAuthByUUID(UUID uuid);
 
     Optional<PlayerAccount> getAuthByName(String name);
 

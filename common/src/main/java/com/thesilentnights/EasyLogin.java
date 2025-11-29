@@ -39,6 +39,7 @@ public final class EasyLogin {
             }
         }
 
+
         CommandRegistrationEvent.EVENT.register((CommandDispatcher<CommandSourceStack> dispatcher, Commands.CommandSelection selection) -> {
             EasyLoginCommands.register(dispatcher);
         });

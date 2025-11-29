@@ -19,7 +19,7 @@ public class MySql implements DatabaseProvider {
     }
 
     @Override
-    public Optional<PlayerAccount> getAuthByUUID(String uuid) {
+    public Optional<PlayerAccount> getAuthByUUID(UUID uuid) {
         try (SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()) {
             return Optional.ofNullable(sqlSession.getMapper(PlayerAccountMapper.class).getAccountByUUID(uuid));
         } catch (Exception e) {

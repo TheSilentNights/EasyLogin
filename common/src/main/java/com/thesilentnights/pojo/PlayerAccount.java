@@ -3,6 +3,8 @@ package com.thesilentnights.pojo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 public class PlayerAccount {
@@ -13,7 +15,7 @@ public class PlayerAccount {
     double lastlogin_y;
     double lastlogin_z;
     String lastlogin_world;
-    String uuid;
+    UUID uuid;
     String email;
     Long login_timestamp;
 }
