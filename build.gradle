@@ -51,17 +51,12 @@ subprojects {
         implementation("com.zaxxer:HikariCP:${hikaricp_version}")
         implementation("org.xerial:sqlite-jdbc:${sqlite_version}")
 
-
-
-        // https://mvnrepository.com/artifact/org.springframework/spring-context
-        implementation("org.springframework:spring-context:6.2.13")
-
         //lombok
         compileOnly("org.projectlombok:lombok:1.18.42")
         annotationProcessor("org.projectlombok:lombok:1.18.42")
 
 // https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml
-        implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.20.0")
+        implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${jackson_yaml_version}")
 
 
         // https://mvnrepository.com/artifact/junit/junit

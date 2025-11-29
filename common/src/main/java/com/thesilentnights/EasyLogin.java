@@ -1,45 +1,41 @@
 package com.thesilentnights;
 
+import cn.hutool.core.io.FileUtil;
 import com.mojang.brigadier.CommandDispatcher;
 import com.thesilentnights.commands.EasyLoginCommands;
-import com.thesilentnights.configs.SpringConfig;
+import com.thesilentnights.configs.EasyLoginConfig;
 import com.thesilentnights.events.CommonEvents;
 import com.thesilentnights.events.ServerSideEvents;
+import com.thesilentnights.service.PlayerLoginService;
 import com.thesilentnights.sql.DatabaseChecker;
 import com.thesilentnights.sql.DatabaseProvider;
+import com.thesilentnights.sql.MySql;
+import com.thesilentnights.sql.SqlLite;
 import dev.architectury.event.events.common.CommandRegistrationEvent;
 import dev.architectury.platform.Platform;
 import lombok.extern.slf4j.Slf4j;
 import net.fabricmc.api.EnvType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.sql.SQLException;
 
 @Slf4j
 public final class EasyLogin {
-    public static final ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
 
     public static void init(){
         //init server side database'
         if (Platform.getEnv() == EnvType.SERVER) {
             //init database
-            try {
-                context.getBean(DatabaseChecker.class).checkAndRepairTable();
-            } catch (SQLException e) {
-                log.warn("if you see this message.It's likely that the sql initialization has failed.",e);
-            }
-
+            initialize();
             //register events
-            context.getBean(CommonEvents.class).register();
-            context.getBean(ServerSideEvents.class).register();
+            CommonEvents.register();
+            ServerSideEvents.register();
 
             // test
             log.info("test");
             if (Platform.isDevelopmentEnvironment()) {
-                test(context);
+                test();
             }
         }
 
@@ -48,7 +44,7 @@ public final class EasyLogin {
         });
 
         if (Platform.isDevelopmentEnvironment()){
-            devServerSideLoader(context);
+            devServerSideLoader();
         }
     }
 
@@ -56,21 +52,17 @@ public final class EasyLogin {
      * just for loading server side environment for development
      * ignore it
      */
-    public static void devServerSideLoader(ApplicationContext context){
+    public static void devServerSideLoader(){
 
         try {
-            context.getBean(DatabaseChecker.class).checkAndRepairTable();
-
+            initialize();
             log.info("debug init events");
             //register events
-            context.getBean(CommonEvents.class).register();
-            context.getBean(ServerSideEvents.class).register();
+            CommonEvents.register();
+            ServerSideEvents.register();
 
             // test
             log.info("debug test");
-            if (Platform.isDevelopmentEnvironment()) {
-                test(context);
-            }
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -78,14 +70,31 @@ public final class EasyLogin {
     }
 
 
+    private static void initialize(){
+        EasyLoginConfig easyLoginConfig = EasyLoginConfig.readFromConfigFile();
+        DatabaseProvider provider = null;
+        try {
+            switch (easyLoginConfig.getDataBaseType()){
+                case SQLITE -> {
+                    provider = new SqlLite(FileUtil.file(Platform.getGameFolder().toString(),easyLoginConfig.getPathToDatabase()));
+                }case MYSQL -> {
+                    provider = new MySql(easyLoginConfig.getPathToDatabase());
+                }
+            }
+            new DatabaseChecker(provider).checkAndRepairTable();
+
+            PlayerLoginService.init(provider);
+        } catch (SQLException e) {
+            log.warn("if you see this message.It's likely that the sql initialization has failed.",e);
+        }
+    }
 
 
 
 
-    private static void test(ApplicationContext context) {
-        DatabaseProvider provider = context.getBean(DatabaseProvider.class);
+
+    private static void test() {
         //test
-        provider.getAuthByName("admin").ifPresent(playerAccount -> log.info(playerAccount.toString()));
     }
 }
 

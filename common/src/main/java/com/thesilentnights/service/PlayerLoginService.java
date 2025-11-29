@@ -9,20 +9,20 @@ import com.thesilentnights.sql.DatabaseProvider;
 import lombok.extern.slf4j.Slf4j;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.UUID;
 
 
 @Slf4j
-@Service
 public class PlayerLoginService {
-    @Autowired
-    private DatabaseProvider provider;
+    private static DatabaseProvider provider;
 
-    public boolean authPlayerWithPwd(ServerPlayer serverPlayer, String password) throws AlreadyLoggedInException {
+    public static void init(DatabaseProvider databaseProvider){
+        provider = databaseProvider;
+    }
+
+    public static boolean authPlayerWithPwd(ServerPlayer serverPlayer, String password) throws AlreadyLoggedInException {
         if (PlayerCache.hasAccount(serverPlayer.getUUID())) {
             throw new AlreadyLoggedInException(serverPlayer.getGameProfile().getName());
         }
@@ -35,26 +35,26 @@ public class PlayerLoginService {
         return false;
     }
 
-    public boolean hasAccount(UUID uuid) {
+    public static boolean hasAccount(UUID uuid) {
         return provider.getAuthByUUID(uuid.toString()).isPresent();
     }
 
-    public boolean hasAccount(String username){
+    public static boolean hasAccount(String username){
         return provider.getAuthByName(username).isPresent();
     }
 
-    public boolean shouldCancelEvent(Player entity) {
+    public static boolean shouldCancelEvent(Player entity) {
         if (entity instanceof ServerPlayer entity1) {
             return !isLoggedIn(entity1);
         }
         return false;
     }
 
-    public boolean isLoggedIn(ServerPlayer serverPlayer){
+    public static boolean isLoggedIn(ServerPlayer serverPlayer){
         return PlayerCache.hasAccount(serverPlayer.getUUID());
     }
 
-    public void registerPlayer(ServerPlayer serverPlayer, String password ,String repeat) throws PasswordDoesNotMatchException {
+    public static void registerPlayer(ServerPlayer serverPlayer, String password ,String repeat) throws PasswordDoesNotMatchException {
         log.info("registerPlayer {}", serverPlayer.getGameProfile().getName());
         if (!password.equals(repeat)){
             throw new PasswordDoesNotMatchException(password,repeat);
@@ -81,11 +81,11 @@ public class PlayerLoginService {
 
 
 
-    public Optional<PlayerAccount> getAccount(UUID uuid) {
+    public static Optional<PlayerAccount> getAccount(UUID uuid) {
         return provider.getAuthByUUID(uuid.toString());
     }
 
-    public Optional<PlayerAccount> getAccount(String username){
+    public static Optional<PlayerAccount> getAccount(String username){
         return provider.getAuthByName(username);
     }
 
@@ -94,7 +94,7 @@ public class PlayerLoginService {
      * @param serverPlayer targetPlayer
      * @param proactive whether the action is made by a player or is automatically triggered by logout event
      */
-    public void logoutPlayer(ServerPlayer serverPlayer,boolean proactive) {
+    public static void logoutPlayer(ServerPlayer serverPlayer,boolean proactive) {
         Optional<PlayerAccount> account = PlayerCache.getAccount(serverPlayer.getUUID());
         if (account.isPresent()) {
             PlayerAccount playerAccount = account.get();

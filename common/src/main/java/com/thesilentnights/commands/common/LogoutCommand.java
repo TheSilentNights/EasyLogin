@@ -7,9 +7,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
-import org.springframework.stereotype.Component;
 
-@Component
 public class LogoutCommand implements CommonCommands{
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {

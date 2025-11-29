@@ -8,13 +8,8 @@ import com.thesilentnights.utils.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public class RegistrarCommands implements CommonCommands {
-    @Autowired
-    PlayerLoginService loginAuth;
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
@@ -26,14 +21,15 @@ public class RegistrarCommands implements CommonCommands {
                                     String repeatPassword = StringArgumentType.getString(context, "repeatPassword");
 
 
-                                    if (loginAuth.hasAccount(context.getSource().getPlayerOrException().getUUID())) {
+                                    if (PlayerLoginService.hasAccount(context.getSource().getPlayerOrException().getUUID())) {
+
                                         context.getSource().getPlayerOrException().sendMessage(TextUtil.createText(ChatFormatting.RED, "the account has already been registered"), context.getSource().getPlayerOrException().getUUID());
                                         return 0;
                                     }
 
 
                                     try {
-                                        loginAuth.registerPlayer(context.getSource().getPlayerOrException(), password,repeatPassword);
+                                        PlayerLoginService.registerPlayer(context.getSource().getPlayerOrException(), password,repeatPassword);
                                         context.getSource().getPlayerOrException().sendMessage(TextUtil.createText(ChatFormatting.GREEN, "register success"), context.getSource().getPlayerOrException().getUUID());
                                         return 1;
                                     } catch (PasswordDoesNotMatchException e) {

@@ -2,8 +2,6 @@ package com.thesilentnights.sql;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,10 +10,13 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@Service
 public class DatabaseChecker {
-    @Autowired
+
     private DatabaseProvider provider;
+
+    public DatabaseChecker(DatabaseProvider provider) {
+        this.provider = provider;
+    }
 
     /**
      * 检查并修复accounts表结构

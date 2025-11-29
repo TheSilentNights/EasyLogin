@@ -11,21 +11,18 @@ import com.thesilentnights.task.TickTimerManager;
 import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.event.events.common.TickEvent;
 import net.minecraft.network.chat.TextComponent;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
+
 public class ServerSideEvents {
-    @Autowired
-    PlayerLoginService playerLoginService;
+
     
-    public void register(){
+    public static void register(){
         PlayerEvent.PLAYER_JOIN.register(entity -> {
             if (PlayerSessionCache.hasSession(entity) && PlayerSessionCache.getSession(entity.getUUID()).getAccount().getLastlogin_ip().equals(entity.getIpAddress())){
                 entity.sendMessage(new TextComponent("already logged in!"),entity.getUUID());
                 EasyLoginEvents.ON_LOGIN.invoker().onLogin(PlayerSessionCache.getSession(entity.getUUID()).getAccount(),entity);
             }else{
-                if (playerLoginService.hasAccount(entity.getUUID())){
+                if (PlayerLoginService.hasAccount(entity.getUUID())){
                     TickTimerManager.addTickTimer(new Message(entity,new TextComponent("please login your account by /login"), 80, true));
                 }else{
                     TickTimerManager.addTickTimer(new Message(entity,new TextComponent("please register your account by /register"), 80, true));
@@ -35,7 +32,7 @@ public class ServerSideEvents {
         });
 
         PlayerEvent.PLAYER_QUIT.register(entity -> {
-            playerLoginService.logoutPlayer(entity,false);
+            PlayerLoginService.logoutPlayer(entity,false);
             TickTimerManager.cancelPlayer(entity.getUUID());
         });
 

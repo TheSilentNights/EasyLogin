@@ -1,53 +1,42 @@
 package com.thesilentnights.sql;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.resource.ResourceUtil;
 import com.thesilentnights.pojo.PlayerAccount;
 import com.thesilentnights.sql.mapper.PlayerAccountMapper;
 import com.zaxxer.hikari.HikariConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
 
-import java.io.File;
-import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.util.Optional;
 import java.util.UUID;
 
-
 @Slf4j
-public class SqlLite implements DatabaseProvider{
-
+public class MySql implements DatabaseProvider {
     private final Mybatis mybatis;
 
-    public SqlLite(File fileToDataBase){
-        if(!fileToDataBase.exists()){
-            log.info("copying file {} to {}", ResourceUtil.getResource("playerAccounts.db"),fileToDataBase.getAbsolutePath());
-            FileUtil.copyFile(ResourceUtil.getResourceObj("playerAccounts.db"),fileToDataBase, StandardCopyOption.REPLACE_EXISTING);
-        }
-        mybatis = new Mybatis(getSqliteConfig(fileToDataBase));
-    }
-
-    @Override
-    public Optional<PlayerAccount> getAuthByName(String username) {
-        try (SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()) {
-            PlayerAccount admin = sqlSession.getMapper(PlayerAccountMapper.class).getAccountByName(username);
-            return Optional.of(admin);
-        } catch (Exception e) {
-            return Optional.empty();
-        }
+    public MySql(String url) {
+        mybatis = new Mybatis(getMysqlConfig(url));
     }
 
     @Override
     public Optional<PlayerAccount> getAuthByUUID(String uuid) {
-        try (SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()) {
-            PlayerAccount admin = sqlSession.getMapper(PlayerAccountMapper.class).getAccountByUUID(uuid);
-            return Optional.of(admin);
-        } catch (Exception e) {
+        try(SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()){
+            return Optional.ofNullable(sqlSession.getMapper(PlayerAccountMapper.class).getAccountByUUID(uuid));
+        }catch (Exception e){
+            log.error("error while doing select",e);
             return Optional.empty();
         }
     }
 
+    @Override
+    public Optional<PlayerAccount> getAuthByName(String name) {
+        try(SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()){
+            return Optional.ofNullable(sqlSession.getMapper(PlayerAccountMapper.class).getAccountByName(name));
+        }catch (Exception e){
+            log.error("error while doing select",e);
+            return Optional.empty();
+        }
+    }
 
     @Override
     public boolean saveAuth(PlayerAccount playerAccount) {
@@ -75,12 +64,12 @@ public class SqlLite implements DatabaseProvider{
 
     @Override
     public Connection getConnection() {
-        return mybatis.getSqlSessionFactory().openSession().getConnection();
+        return null;
     }
 
-    public static HikariConfig getSqliteConfig(File fileToDataBase){
+    private static HikariConfig getMysqlConfig(String url) {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:sqlite:" + fileToDataBase.getAbsolutePath());
+        config.setJdbcUrl(url);
         config.setMaximumPoolSize(10);
         config.setMinimumIdle(2);
         config.setIdleTimeout(30000);

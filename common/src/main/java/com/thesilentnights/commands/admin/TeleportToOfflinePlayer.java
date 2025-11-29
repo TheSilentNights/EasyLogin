@@ -9,15 +9,11 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Component
 public class TeleportToOfflinePlayer implements AdminCommands{
-    @Autowired
-    PlayerLoginService playerLoginService;
+
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand(LiteralArgumentBuilder<CommandSourceStack> mainNode) {
         return mainNode
@@ -27,8 +23,8 @@ public class TeleportToOfflinePlayer implements AdminCommands{
                                     ServerPlayer playerOrException = commandContext.getSource().getPlayerOrException();
                                     String targetName = StringArgumentType.getString(commandContext, "targetName");
                                     //check the player is offline
-                                    if (playerLoginService.hasAccount(targetName) && commandContext.getSource().getServer().getPlayerList().getPlayerByName(targetName) == null){
-                                        Optional<PlayerAccount> account = playerLoginService.getAccount(targetName);
+                                    if (PlayerLoginService.hasAccount(targetName) && commandContext.getSource().getServer().getPlayerList().getPlayerByName(targetName) == null){
+                                        Optional<PlayerAccount> account = PlayerLoginService.getAccount(targetName);
                                         if (account.isPresent()){
                                             PlayerAccount playerAccount = account.get();
                                             playerOrException.teleportTo(playerAccount.getLastlogin_x(),playerAccount.getLastlogin_y(),playerAccount.getLastlogin_z());

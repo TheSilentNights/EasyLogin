@@ -60,10 +60,17 @@ dependencies {
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
 
+
     include("cn.hutool:hutool-all:${hutool_version}")
     include("org.mybatis:mybatis:${mybatis_version}")
     include("com.zaxxer:HikariCP:${hikaricp_version}")
     include("org.xerial:sqlite-jdbc:${sqlite_version}")
+    include("commons-logging:commons-logging:${log_version}")
+    include("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${jackson_yaml_version}")
+
+
+
+
 }
 
 processResources {

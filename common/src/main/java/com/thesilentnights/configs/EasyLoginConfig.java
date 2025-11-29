@@ -41,11 +41,6 @@ public class EasyLoginConfig {
             log.atError().log("file not found {}",e);
             return getDefaultConfig();
         }
-//        } catch (JsonIOException | JsonSyntaxException e) {
-//            log.atError().setCause(e).log("error loading configuration");
-//            log.atError().log("using default config instead");
-//            return getDefaultConfig();
-//        }
     }
 
     public static EasyLoginConfig getDefaultConfig() {

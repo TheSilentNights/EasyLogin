@@ -1,7 +1,7 @@
 package com.thesilentnights.sql;
 
-import com.thesilentnights.sql.config.DatabaseConfig;
 import com.thesilentnights.sql.mapper.PlayerAccountMapper;
+import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.Getter;
 import org.apache.ibatis.mapping.Environment;
@@ -14,16 +14,12 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 public class Mybatis {
     private final SqlSessionFactory sqlSessionFactory;
 
-    public Mybatis(DatabaseConfig config) {
-        HikariDataSource hikariDataSource = new HikariDataSource(config.config());
+    public Mybatis(HikariConfig config) {
+        HikariDataSource hikariDataSource = new HikariDataSource(config);
         Environment environment = new Environment("dev",new JdbcTransactionFactory(),hikariDataSource);
         Configuration configuration = new Configuration(environment);
         configuration.addMapper(PlayerAccountMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
-    }
-
-    public boolean isInitialized(){
-        return sqlSessionFactory != null;
     }
 
 }
