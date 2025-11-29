@@ -5,9 +5,8 @@
 <mapper namespace="com.thesilentnights.sql.mapper.PlayerAccountMapper">
     <update id="updateAccount" parameterType="com.thesilentnights.pojo.PlayerAccount">
         UPDATE accounts
-        SET username=#{username}, password=#{password}, lastlogin_ip=#{lastlogin_ip},
-        lastlogin_world=#{lastlogin_world}, lastlogin_x=#{lastlogin_x}, lastlogin_y=#{lastlogin_y},
-        lastlogin_z=#{lastlogin_z}, uuid=#{uuid}, email=#{email}, login_timestamp=#{login_timestamp}
+        SET username=#{username}, password=#{password}, lastlogin_ip=#{lastlogin_ip}, lastlogin_world=#{lastlogin_world}, lastlogin_x=#{lastlogin_x}, lastlogin_y=#{lastlogin_y}, lastlogin_z=#{lastlogin_z}, email=#{email}, login_timestamp=#{login_timestamp}
+        where uuid=#{uuid}
     </update>
     <select id="getAccountByName" resultType="com.thesilentnights.pojo.PlayerAccount">
         select * from accounts where username=#{username}

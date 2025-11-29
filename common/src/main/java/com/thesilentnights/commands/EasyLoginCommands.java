@@ -6,7 +6,7 @@ import com.thesilentnights.commands.common.CommonCommands;
 import net.minecraft.commands.CommandSourceStack;
 
 public interface EasyLoginCommands {
-    static void register(CommandDispatcher<CommandSourceStack> dispatcher){
+    static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         AdminCommands.register(dispatcher);
         CommonCommands.registerCommands(dispatcher);
     }

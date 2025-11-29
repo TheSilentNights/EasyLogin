@@ -23,7 +23,7 @@ import java.sql.SQLException;
 @Slf4j
 public final class EasyLogin {
 
-    public static void init(){
+    public static void init() {
         //init server side database'
         if (Platform.getEnv() == EnvType.SERVER) {
             //init database
@@ -43,7 +43,7 @@ public final class EasyLogin {
             EasyLoginCommands.register(dispatcher);
         });
 
-        if (Platform.isDevelopmentEnvironment()){
+        if (Platform.isDevelopmentEnvironment()) {
             devServerSideLoader();
         }
     }
@@ -52,7 +52,7 @@ public final class EasyLogin {
      * just for loading server side environment for development
      * ignore it
      */
-    public static void devServerSideLoader(){
+    public static void devServerSideLoader() {
 
         try {
             initialize();
@@ -70,14 +70,15 @@ public final class EasyLogin {
     }
 
 
-    private static void initialize(){
+    private static void initialize() {
         EasyLoginConfig easyLoginConfig = EasyLoginConfig.readFromConfigFile();
         DatabaseProvider provider = null;
         try {
-            switch (easyLoginConfig.getDataBaseType()){
+            switch (easyLoginConfig.getDataBaseType()) {
                 case SQLITE -> {
-                    provider = new SqlLite(FileUtil.file(Platform.getGameFolder().toString(),easyLoginConfig.getPathToDatabase()));
-                }case MYSQL -> {
+                    provider = new SqlLite(FileUtil.file(Platform.getGameFolder().toString(), easyLoginConfig.getPathToDatabase()));
+                }
+                case MYSQL -> {
                     provider = new MySql(easyLoginConfig.getPathToDatabase());
                 }
             }
@@ -85,12 +86,9 @@ public final class EasyLogin {
 
             PlayerLoginService.init(provider);
         } catch (SQLException e) {
-            log.warn("if you see this message.It's likely that the sql initialization has failed.",e);
+            log.warn("if you see this message.It's likely that the sql initialization has failed.", e);
         }
     }
-
-
-
 
 
     private static void test() {

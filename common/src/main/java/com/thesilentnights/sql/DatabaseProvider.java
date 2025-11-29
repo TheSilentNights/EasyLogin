@@ -8,8 +8,12 @@ import java.util.UUID;
 
 public interface DatabaseProvider {
     Optional<PlayerAccount> getAuthByUUID(String uuid);
+
     Optional<PlayerAccount> getAuthByName(String name);
+
     boolean saveAuth(PlayerAccount playerAccount);
+
     boolean removeAuth(UUID uuid);
+
     Connection getConnection();
 }

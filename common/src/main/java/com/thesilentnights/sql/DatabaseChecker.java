@@ -86,7 +86,7 @@ public class DatabaseChecker {
      */
     private boolean repairTableStructure(Connection connection) throws SQLException {
         Map<String, ColumnDefinition> requiredColumns = new HashMap<>();
-        requiredColumns.put("username", new ColumnDefinition("TEXT", false,true));
+        requiredColumns.put("username", new ColumnDefinition("TEXT", false, true));
         requiredColumns.put("lastlogin_ip", new ColumnDefinition("TEXT", false, false));
         requiredColumns.put("password", new ColumnDefinition("TEXT", false, true));
         requiredColumns.put("lastlogin_x", new ColumnDefinition("NUMERIC", false, false));

@@ -10,10 +10,11 @@ public class EasyLoginEvents {
     public static final Event<PlayerLoginEvent> ON_LOGIN = EventFactory.createLoop();
     public static final Event<PlayerLogoutEvent> ON_LOGOUT = EventFactory.createLoop();
 
-    public interface PlayerLoginEvent{
+    public interface PlayerLoginEvent {
         void onLogin(PlayerAccount account, ServerPlayer serverPlayer);
     }
-    public interface PlayerLogoutEvent{
+
+    public interface PlayerLogoutEvent {
         void onLogout(PlayerAccount account, ServerPlayer serverPlayer);
     }
 }

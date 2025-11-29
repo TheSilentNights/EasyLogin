@@ -26,7 +26,7 @@ public class PlayerCache {
     }
 
     public static void dropAccount(UUID uuid, boolean tempDrop) {
-        if (tempDrop){
+        if (tempDrop) {
             PlayerAccount uuid1 = cacheMap.get(uuid);
             PlayerSessionCache.scheduleDrop(uuid1);
         }

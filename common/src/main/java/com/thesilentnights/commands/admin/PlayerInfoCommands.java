@@ -20,7 +20,7 @@ public class PlayerInfoCommands implements AdminCommands {
                         .then(Commands.argument("playerName", StringArgumentType.string())
                                 .executes(context -> {
                                     Optional<PlayerAccount> account = PlayerLoginService.getAccount(UUID.fromString(StringArgumentType.getString(context, "playerName")));
-                                    if (account.isPresent()){
+                                    if (account.isPresent()) {
                                         context.getSource().sendFailure(TextUtil.createText(account.get().toString()));
                                         return 1;
                                     }

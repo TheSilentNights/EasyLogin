@@ -29,11 +29,11 @@ public class RegistrarCommands implements CommonCommands {
 
 
                                     try {
-                                        PlayerLoginService.registerPlayer(context.getSource().getPlayerOrException(), password,repeatPassword);
+                                        PlayerLoginService.registerPlayer(context.getSource().getPlayerOrException(), password, repeatPassword);
                                         context.getSource().getPlayerOrException().sendMessage(TextUtil.createText(ChatFormatting.GREEN, "register success"), context.getSource().getPlayerOrException().getUUID());
                                         return 1;
                                     } catch (PasswordDoesNotMatchException e) {
-                                        context.getSource().sendFailure(TextUtil.createText(ChatFormatting.RED,"password does not match"));
+                                        context.getSource().sendFailure(TextUtil.createText(ChatFormatting.RED, "password does not match"));
                                         return 0;
                                     }
                                 })));

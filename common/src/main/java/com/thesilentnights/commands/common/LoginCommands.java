@@ -13,29 +13,27 @@ public class LoginCommands implements CommonCommands {
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
-        return Commands.literal("login").then(Commands.argument("password", StringArgumentType.string()).executes(context->{
+        return Commands.literal("login").then(Commands.argument("password", StringArgumentType.string()).executes(context -> {
             //if not registered
-            if (!PlayerLoginService.hasAccount(context.getSource().getPlayerOrException().getUUID())){
-                context.getSource().sendFailure(TextUtil.createText(ChatFormatting.RED,"you haven't registered"));
+            if (!PlayerLoginService.hasAccount(context.getSource().getPlayerOrException().getUUID())) {
+                context.getSource().sendFailure(TextUtil.createText(ChatFormatting.RED, "you haven't registered"));
                 return 0;
             }
 
             boolean flag;
-            try{
+            try {
                 flag = PlayerLoginService.authPlayerWithPwd(context.getSource().getPlayerOrException(), StringArgumentType.getString(context, "password"));
-            }
-            catch (AlreadyLoggedInException e){
-                context.getSource().sendFailure(TextUtil.createText(ChatFormatting.RED,e.getMessage()));
+            } catch (AlreadyLoggedInException e) {
+                context.getSource().sendFailure(TextUtil.createText(ChatFormatting.RED, e.getMessage()));
                 return 0;
             }
 
-            if (flag){
-                context.getSource().sendSuccess(TextUtil.createText(ChatFormatting.GREEN,"commands.login.success", context.getSource().getPlayerOrException().getDisplayName().getString()), false);
+            if (flag) {
+                context.getSource().sendSuccess(TextUtil.createText(ChatFormatting.GREEN, "commands.login.success", context.getSource().getPlayerOrException().getDisplayName().getString()), false);
 
                 return 1;
-            }
-            else{
-                context.getSource().sendFailure(TextUtil.createText(ChatFormatting.RED,"commands.login.failure", context.getSource().getPlayerOrException().getDisplayName().getString()));
+            } else {
+                context.getSource().sendFailure(TextUtil.createText(ChatFormatting.RED, "commands.login.failure", context.getSource().getPlayerOrException().getDisplayName().getString()));
                 return 0;
             }
         }));

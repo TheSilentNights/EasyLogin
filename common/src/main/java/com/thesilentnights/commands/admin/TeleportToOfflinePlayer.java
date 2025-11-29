@@ -12,29 +12,29 @@ import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Optional;
 
-public class TeleportToOfflinePlayer implements AdminCommands{
+public class TeleportToOfflinePlayer implements AdminCommands {
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand(LiteralArgumentBuilder<CommandSourceStack> mainNode) {
         return mainNode
                 .then(Commands.literal("teleport")
-                        .then(Commands.argument("targetName",StringArgumentType.string())
+                        .then(Commands.argument("targetName", StringArgumentType.string())
                                 .executes(commandContext -> {
                                     ServerPlayer playerOrException = commandContext.getSource().getPlayerOrException();
                                     String targetName = StringArgumentType.getString(commandContext, "targetName");
                                     //check the player is offline
-                                    if (PlayerLoginService.hasAccount(targetName) && commandContext.getSource().getServer().getPlayerList().getPlayerByName(targetName) == null){
+                                    if (PlayerLoginService.hasAccount(targetName) && commandContext.getSource().getServer().getPlayerList().getPlayerByName(targetName) == null) {
                                         Optional<PlayerAccount> account = PlayerLoginService.getAccount(targetName);
-                                        if (account.isPresent()){
+                                        if (account.isPresent()) {
                                             PlayerAccount playerAccount = account.get();
-                                            playerOrException.teleportTo(playerAccount.getLastlogin_x(),playerAccount.getLastlogin_y(),playerAccount.getLastlogin_z());
+                                            playerOrException.teleportTo(playerAccount.getLastlogin_x(), playerAccount.getLastlogin_y(), playerAccount.getLastlogin_z());
                                             return 1;
-                                        }else{
-                                            commandContext.getSource().sendFailure(TextUtil.createBold(ChatFormatting.RED,"player does not exists"));
+                                        } else {
+                                            commandContext.getSource().sendFailure(TextUtil.createBold(ChatFormatting.RED, "player does not exists"));
                                             return 0;
                                         }
                                     }
-                                    commandContext.getSource().sendFailure(TextUtil.createBold(ChatFormatting.RED,"player does not exists"));
+                                    commandContext.getSource().sendFailure(TextUtil.createBold(ChatFormatting.RED, "player does not exists"));
                                     return 0;
                                 })
                         )

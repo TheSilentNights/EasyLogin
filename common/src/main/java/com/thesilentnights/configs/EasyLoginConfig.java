@@ -38,7 +38,7 @@ public class EasyLoginConfig {
         try {
             return new ObjectMapper(CommonStaticRepo.ymlFactory).readValue(configFile, EasyLoginConfig.class);
         } catch (Exception e) {
-            log.atError().log("file not found {}",e);
+            log.atError().log("file not found {}", e);
             return getDefaultConfig();
         }
     }

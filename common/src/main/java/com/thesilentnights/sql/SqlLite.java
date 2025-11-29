@@ -16,14 +16,14 @@ import java.util.UUID;
 
 
 @Slf4j
-public class SqlLite implements DatabaseProvider{
+public class SqlLite implements DatabaseProvider {
 
     private final Mybatis mybatis;
 
-    public SqlLite(File fileToDataBase){
-        if(!fileToDataBase.exists()){
-            log.info("copying file {} to {}", ResourceUtil.getResource("playerAccounts.db"),fileToDataBase.getAbsolutePath());
-            FileUtil.copyFile(ResourceUtil.getResourceObj("playerAccounts.db"),fileToDataBase, StandardCopyOption.REPLACE_EXISTING);
+    public SqlLite(File fileToDataBase) {
+        if (!fileToDataBase.exists()) {
+            log.info("copying file {} to {}", ResourceUtil.getResource("playerAccounts.db"), fileToDataBase.getAbsolutePath());
+            FileUtil.copyFile(ResourceUtil.getResourceObj("playerAccounts.db"), fileToDataBase, StandardCopyOption.REPLACE_EXISTING);
         }
         mybatis = new Mybatis(getSqliteConfig(fileToDataBase));
     }
@@ -51,8 +51,8 @@ public class SqlLite implements DatabaseProvider{
 
     @Override
     public boolean saveAuth(PlayerAccount playerAccount) {
-        try (SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()){
-            if (getAuthByUUID(playerAccount.getUuid()).isPresent()){
+        try (SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()) {
+            if (getAuthByUUID(playerAccount.getUuid()).isPresent()) {
                 log.info(playerAccount.toString());
                 sqlSession.getMapper(PlayerAccountMapper.class).updateAccount(playerAccount);
                 sqlSession.commit();
@@ -61,9 +61,9 @@ public class SqlLite implements DatabaseProvider{
             sqlSession.getMapper(PlayerAccountMapper.class).addAccount(playerAccount);
             sqlSession.commit();
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("failed to save");
-            log.error("error in insert",e);
+            log.error("error in insert", e);
             return false;
         }
     }
@@ -78,7 +78,7 @@ public class SqlLite implements DatabaseProvider{
         return mybatis.getSqlSessionFactory().openSession().getConnection();
     }
 
-    public static HikariConfig getSqliteConfig(File fileToDataBase){
+    public static HikariConfig getSqliteConfig(File fileToDataBase) {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:sqlite:" + fileToDataBase.getAbsolutePath());
         config.setMaximumPoolSize(10);

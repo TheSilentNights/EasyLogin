@@ -6,7 +6,7 @@ import net.minecraft.commands.CommandSourceStack;
 
 
 public interface CommonCommands {
-    static void registerCommands(CommandDispatcher<CommandSourceStack> commandDispatcher){
+    static void registerCommands(CommandDispatcher<CommandSourceStack> commandDispatcher) {
         commandDispatcher.register(new LoginCommands().getCommand());
         commandDispatcher.register(new RegistrarCommands().getCommand());
         commandDispatcher.register(new LogoutCommand().getCommand());

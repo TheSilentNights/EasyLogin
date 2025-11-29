@@ -30,9 +30,9 @@ public abstract class PlayerMixin extends LivingEntity {
         if ((Object) this instanceof ServerPlayer serverPlayer) {
             if (PlayerLoginService.shouldCancelEvent(serverPlayer)) {
                 Optional<BlockPos> blockPos = BlockPosRepo.getBlockPos(serverPlayer.getGameProfile().getName());
-                if (blockPos.isPresent()){
-                    serverPlayer.teleportTo(serverPlayer.getLevel(),blockPos.get().getX(), blockPos.get().getY(), blockPos.get().getZ(),0,0);
-                }else{
+                if (blockPos.isPresent()) {
+                    serverPlayer.teleportTo(serverPlayer.getLevel(), blockPos.get().getX(), blockPos.get().getY(), blockPos.get().getZ(), 0, 0);
+                } else {
                     BlockPosRepo.setBlockPos(serverPlayer.getGameProfile().getName(), serverPlayer.blockPosition());
                 }
             }

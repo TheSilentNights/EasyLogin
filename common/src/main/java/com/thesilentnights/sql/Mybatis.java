@@ -16,7 +16,7 @@ public class Mybatis {
 
     public Mybatis(HikariConfig config) {
         HikariDataSource hikariDataSource = new HikariDataSource(config);
-        Environment environment = new Environment("dev",new JdbcTransactionFactory(),hikariDataSource);
+        Environment environment = new Environment("dev", new JdbcTransactionFactory(), hikariDataSource);
         Configuration configuration = new Configuration(environment);
         configuration.addMapper(PlayerAccountMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);

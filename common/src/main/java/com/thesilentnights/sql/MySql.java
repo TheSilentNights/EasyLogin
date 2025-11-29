@@ -20,28 +20,28 @@ public class MySql implements DatabaseProvider {
 
     @Override
     public Optional<PlayerAccount> getAuthByUUID(String uuid) {
-        try(SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()){
+        try (SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()) {
             return Optional.ofNullable(sqlSession.getMapper(PlayerAccountMapper.class).getAccountByUUID(uuid));
-        }catch (Exception e){
-            log.error("error while doing select",e);
+        } catch (Exception e) {
+            log.error("error while doing select", e);
             return Optional.empty();
         }
     }
 
     @Override
     public Optional<PlayerAccount> getAuthByName(String name) {
-        try(SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()){
+        try (SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()) {
             return Optional.ofNullable(sqlSession.getMapper(PlayerAccountMapper.class).getAccountByName(name));
-        }catch (Exception e){
-            log.error("error while doing select",e);
+        } catch (Exception e) {
+            log.error("error while doing select", e);
             return Optional.empty();
         }
     }
 
     @Override
     public boolean saveAuth(PlayerAccount playerAccount) {
-        try (SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()){
-            if (getAuthByUUID(playerAccount.getUuid()).isPresent()){
+        try (SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()) {
+            if (getAuthByUUID(playerAccount.getUuid()).isPresent()) {
                 log.info(playerAccount.toString());
                 sqlSession.getMapper(PlayerAccountMapper.class).updateAccount(playerAccount);
                 sqlSession.commit();
@@ -50,9 +50,9 @@ public class MySql implements DatabaseProvider {
             sqlSession.getMapper(PlayerAccountMapper.class).addAccount(playerAccount);
             sqlSession.commit();
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("failed to save");
-            log.error("error in insert",e);
+            log.error("error in insert", e);
             return false;
         }
     }

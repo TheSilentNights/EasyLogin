@@ -15,24 +15,23 @@ import net.minecraft.network.chat.TextComponent;
 
 public class ServerSideEvents {
 
-    
-    public static void register(){
+    public static void register() {
         PlayerEvent.PLAYER_JOIN.register(entity -> {
-            if (PlayerSessionCache.hasSession(entity) && PlayerSessionCache.getSession(entity.getUUID()).getAccount().getLastlogin_ip().equals(entity.getIpAddress())){
-                entity.sendMessage(new TextComponent("already logged in!"),entity.getUUID());
-                EasyLoginEvents.ON_LOGIN.invoker().onLogin(PlayerSessionCache.getSession(entity.getUUID()).getAccount(),entity);
-            }else{
-                if (PlayerLoginService.hasAccount(entity.getUUID())){
-                    TickTimerManager.addTickTimer(new Message(entity,new TextComponent("please login your account by /login"), 80, true));
-                }else{
-                    TickTimerManager.addTickTimer(new Message(entity,new TextComponent("please register your account by /register"), 80, true));
+            if (PlayerSessionCache.hasSession(entity) && PlayerSessionCache.getSession(entity.getUUID()).getAccount().getLastlogin_ip().equals(entity.getIpAddress())) {
+                entity.sendMessage(new TextComponent("already logged in!"), entity.getUUID());
+                EasyLoginEvents.ON_LOGIN.invoker().onLogin(PlayerSessionCache.getSession(entity.getUUID()).getAccount(), entity);
+            } else {
+                if (PlayerLoginService.hasAccount(entity.getUUID())) {
+                    TickTimerManager.addTickTimer(new Message(entity, new TextComponent("please login your account by /login"), 80, true));
+                } else {
+                    TickTimerManager.addTickTimer(new Message(entity, new TextComponent("please register your account by /register"), 80, true));
                 }
-                TickTimerManager.addTickTimer(new KickPlayer(entity,60*20));
+                TickTimerManager.addTickTimer(new KickPlayer(entity, 60 * 20));
             }
         });
 
         PlayerEvent.PLAYER_QUIT.register(entity -> {
-            PlayerLoginService.logoutPlayer(entity,false);
+            PlayerLoginService.logoutPlayer(entity, false);
             TickTimerManager.cancelPlayer(entity.getUUID());
         });
 
@@ -47,8 +46,8 @@ public class ServerSideEvents {
             PlayerCache.addAccount(account);
             TickTimerManager.cancelPlayer(serverPlayer.getUUID());
         }));
-        EasyLoginEvents.ON_LOGOUT.register(((account, serverPlayer)  -> {
-            PlayerCache.dropAccount(serverPlayer.getUUID(),true);
+        EasyLoginEvents.ON_LOGOUT.register(((account, serverPlayer) -> {
+            PlayerCache.dropAccount(serverPlayer.getUUID(), true);
             BlockPosRepo.removeBlockPos(account.getUsername());
         }));
 

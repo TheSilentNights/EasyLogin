@@ -8,14 +8,14 @@ import dev.architectury.event.events.common.PlayerEvent;
 public class CommonEvents {
 
 
-    public static void register(){
+    public static void register() {
         actionEvent();
     }
 
-    private static void actionEvent(){
+    private static void actionEvent() {
         //PlayerEntity player, ItemEntity entity, ItemStack stack
-        PlayerEvent.PICKUP_ITEM_PRE.register((player, entity, stack)->{
-            if (PlayerLoginService.shouldCancelEvent(player)){
+        PlayerEvent.PICKUP_ITEM_PRE.register((player, entity, stack) -> {
+            if (PlayerLoginService.shouldCancelEvent(player)) {
                 return EventResult.interruptFalse();
             }
             return EventResult.pass();

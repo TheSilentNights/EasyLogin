@@ -15,21 +15,19 @@ public class PlayerSessionCache {
 
     public static void scheduleDrop(PlayerAccount account) {
         log.info(account.toString());
-        forRemoval.put(UUID.fromString(account.getUuid()),new PlayerSession(account,60*60*20));
+        forRemoval.put(UUID.fromString(account.getUuid()), new PlayerSession(account, 60 * 60 * 20));
     }
 
-    public static boolean hasSession(ServerPlayer serverPlayer){
+    public static boolean hasSession(ServerPlayer serverPlayer) {
         return forRemoval.containsKey(serverPlayer.getUUID());
     }
 
-    public static PlayerSession getSession(UUID key){
+    public static PlayerSession getSession(UUID key) {
         return forRemoval.get(key);
     }
 
     public static void tick() {
-        if (forRemoval.isEmpty()) {
-            return;
-        } else {
+        if (!forRemoval.isEmpty()) {
             forRemoval.forEach((uuid, playerSession) -> {
                 if (playerSession.getLeftTime() > 0) {
                     playerSession.setLeftTime(playerSession.getLeftTime() - 1);
