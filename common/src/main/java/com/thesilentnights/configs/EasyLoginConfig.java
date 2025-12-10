@@ -3,6 +3,7 @@ package com.thesilentnights.configs;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thesilentnights.pojo.MailAccountEntry;
 import com.thesilentnights.repo.CommonStaticRepo;
 import dev.architectury.platform.Platform;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,7 @@ public class EasyLoginConfig {
     DataBaseType dataBaseType;
     String pathToDatabase;
     boolean enableKickOther;
+    MailAccountEntry mailAccountEntry;
 
     public static EasyLoginConfig readFromConfigFile() {
         File configFile = FileUtil.file(Platform.getGameFolder().toFile(), CommonStaticRepo.configPath);
@@ -33,6 +35,7 @@ public class EasyLoginConfig {
         if (!configFile.exists()) {
             FileUtil.copyFile(ResourceUtil.getResourceObj(CommonStaticRepo.configResourcePath), configFile);
         }
+
 
         //read from configs
         try {
@@ -50,7 +53,8 @@ public class EasyLoginConfig {
                         Platform.getGameFolder().toFile(),
                         "easylogin/playerAccounts.db"
                 ).getAbsolutePath(),
-                false
+                false,
+                new MailAccountEntry()
         );
     }
 

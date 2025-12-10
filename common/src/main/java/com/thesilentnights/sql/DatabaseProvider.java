@@ -11,7 +11,7 @@ public interface DatabaseProvider {
 
     Optional<PlayerAccount> getAuthByName(String name);
 
-    boolean saveAuth(PlayerAccount playerAccount);
+    boolean saveAccount(PlayerAccount playerAccount);
 
     boolean removeAuth(UUID uuid);
 

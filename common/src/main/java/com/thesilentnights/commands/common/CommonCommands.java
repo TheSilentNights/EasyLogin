@@ -10,6 +10,7 @@ public interface CommonCommands {
         commandDispatcher.register(new LoginCommands().getCommand());
         commandDispatcher.register(new RegistrarCommands().getCommand());
         commandDispatcher.register(new LogoutCommand().getCommand());
+        commandDispatcher.register(new RecoverCommands().getCommand());
     }
 
     LiteralArgumentBuilder<CommandSourceStack> getCommand();

@@ -17,7 +17,6 @@ import java.util.UUID;
 
 @Slf4j
 public class SqlLite implements DatabaseProvider {
-
     private final Mybatis mybatis;
 
     public SqlLite(File fileToDataBase) {
@@ -50,7 +49,7 @@ public class SqlLite implements DatabaseProvider {
 
 
     @Override
-    public boolean saveAuth(PlayerAccount playerAccount) {
+    public boolean saveAccount(PlayerAccount playerAccount) {
         try (SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()) {
             if (getAuthByUUID(playerAccount.getUuid()).isPresent()) {
                 log.info(playerAccount.toString());

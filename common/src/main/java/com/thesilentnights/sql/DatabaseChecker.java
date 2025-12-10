@@ -69,7 +69,7 @@ public class DatabaseChecker {
                         "    lastlogin_z     NUMERIC," +
                         "    lastlogin_ip    TEXT," +
                         "    lastlogin_world TEXT," +
-                        "    name            TEXT," +
+                        "    username            TEXT," +
                         "    email           TEXT," +
                         "    login_timestamp TIMESTAMP " +
                         ");";

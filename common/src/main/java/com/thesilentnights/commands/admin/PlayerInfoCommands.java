@@ -3,7 +3,7 @@ package com.thesilentnights.commands.admin;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.thesilentnights.pojo.PlayerAccount;
-import com.thesilentnights.service.PlayerLoginService;
+import com.thesilentnights.service.AccountService;
 import com.thesilentnights.utils.TextUtil;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -19,7 +19,7 @@ public class PlayerInfoCommands implements AdminCommands {
                 .then(Commands.literal("playerinfo")
                         .then(Commands.argument("playerName", StringArgumentType.string())
                                 .executes(context -> {
-                                    Optional<PlayerAccount> account = PlayerLoginService.getAccount(UUID.fromString(StringArgumentType.getString(context, "playerName")));
+                                    Optional<PlayerAccount> account = AccountService.getAccount(UUID.fromString(StringArgumentType.getString(context, "playerName")));
                                     if (account.isPresent()) {
                                         context.getSource().sendFailure(TextUtil.createText(account.get().toString()));
                                         return 1;

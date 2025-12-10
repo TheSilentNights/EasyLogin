@@ -1,11 +1,10 @@
-package com.thesilentnights.task;
+package com.thesilentnights.service.task;
 
+import com.thesilentnights.service.TaskService;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
-import java.util.UUID;
-
-public class Message implements TickTimer {
+public class Message implements Task {
     ServerPlayer serverPlayer;
     Component message;
     long delay;
@@ -27,19 +26,9 @@ public class Message implements TickTimer {
             if (isLoop) {
                 this.tickCount = 0;
             } else {
-                TickTimerManager.cancel(this.serverPlayer.getUUID(), TickType.MESSAGE);
+                TaskService.cancelTask(TaskService.generateTaskIdentifier(serverPlayer.getUUID(), TaskService.TaskType.MESSAGE));
             }
         }
-    }
-
-    @Override
-    public UUID getUUId() {
-        return serverPlayer.getUUID();
-    }
-
-    @Override
-    public TickType getTickType() {
-        return TickType.MESSAGE;
     }
 
 

@@ -1,12 +1,11 @@
-package com.thesilentnights.task;
+package com.thesilentnights.service.task;
 
+import com.thesilentnights.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import net.minecraft.server.level.ServerPlayer;
 
-import java.util.UUID;
-
 @Slf4j
-public class KickPlayer implements TickTimer {
+public class KickPlayer implements Task {
     ServerPlayer serverPlayer;
     long delay;
     long tickCount = 0;
@@ -22,17 +21,7 @@ public class KickPlayer implements TickTimer {
         if (this.tickCount >= this.delay) {
             serverPlayer.disconnect();
             log.info("player {} has been kicked due to timeout in login", serverPlayer.getGameProfile().getName());
-            TickTimerManager.cancel(serverPlayer.getUUID(), TickType.KICK);
+            TaskService.cancelTask(TaskService.generateTaskIdentifier(serverPlayer.getUUID(), TaskService.TaskType.KICK_PLAYER));
         }
-    }
-
-    @Override
-    public UUID getUUId() {
-        return serverPlayer.getUUID();
-    }
-
-    @Override
-    public TickType getTickType() {
-        return TickType.KICK;
     }
 }

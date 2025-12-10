@@ -1,5 +1,0 @@
-{
-  "dataBaseType": "SQLITE",
-  "enableKickOther": true,
-  "pathToDatabase": "/easylogin/playerAccounts.db"
-}

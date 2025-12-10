@@ -6,7 +6,12 @@ import com.thesilentnights.commands.EasyLoginCommands;
 import com.thesilentnights.configs.EasyLoginConfig;
 import com.thesilentnights.events.CommonEvents;
 import com.thesilentnights.events.ServerSideEvents;
-import com.thesilentnights.service.PlayerLoginService;
+import com.thesilentnights.repo.CommonStaticRepo;
+import com.thesilentnights.service.EmailService;
+import com.thesilentnights.service.AccountService;
+import com.thesilentnights.service.TaskService;
+import com.thesilentnights.service.TimerService;
+import com.thesilentnights.service.task.CleanUp;
 import com.thesilentnights.sql.DatabaseChecker;
 import com.thesilentnights.sql.DatabaseProvider;
 import com.thesilentnights.sql.MySql;
@@ -25,49 +30,18 @@ public final class EasyLogin {
 
     public static void init() {
         //init server side database'
-        if (Platform.getEnv() == EnvType.SERVER) {
+        if (Platform.getEnv() == EnvType.SERVER || Platform.isDevelopmentEnvironment()) {
             //init database
             initialize();
             //register events
             CommonEvents.register();
             ServerSideEvents.register();
-
-            // test
-            log.info("test");
-            if (Platform.isDevelopmentEnvironment()) {
-                test();
-            }
         }
-
 
         CommandRegistrationEvent.EVENT.register((CommandDispatcher<CommandSourceStack> dispatcher, Commands.CommandSelection selection) -> {
             EasyLoginCommands.register(dispatcher);
         });
 
-        if (Platform.isDevelopmentEnvironment()) {
-            devServerSideLoader();
-        }
-    }
-
-    /***
-     * just for loading server side environment for development
-     * ignore it
-     */
-    public static void devServerSideLoader() {
-
-        try {
-            initialize();
-            log.info("debug init events");
-            //register events
-            CommonEvents.register();
-            ServerSideEvents.register();
-
-            // test
-            log.info("debug test");
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
 
@@ -85,15 +59,18 @@ public final class EasyLogin {
             }
             new DatabaseChecker(provider).checkAndRepairTable();
 
-            PlayerLoginService.init(provider);
+            AccountService.init(provider);
+            EmailService.init(easyLoginConfig);
         } catch (SQLException e) {
             log.warn("if you see this message.It's likely that the sql initialization has failed.", e);
         }
+
+        CleanUp cleanUp = new CleanUp(CommonStaticRepo.cleanUpDelayTick);
+        cleanUp.addCleanUpMethods((Void t) -> {
+            TimerService.cleanExpired();
+        });
+        TaskService.addTask("cleanUp", cleanUp);
     }
 
-
-    private static void test() {
-        //test
-    }
 }
 

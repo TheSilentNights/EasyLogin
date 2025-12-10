@@ -2,7 +2,7 @@ package com.thesilentnights.mixin;
 
 
 import com.thesilentnights.repo.BlockPosRepo;
-import com.thesilentnights.service.PlayerLoginService;
+import com.thesilentnights.service.ActionCheckService;
 import lombok.extern.slf4j.Slf4j;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -28,7 +28,7 @@ public abstract class PlayerMixin extends LivingEntity {
     public void tick(CallbackInfo ci) {
         //log.info("tick");
         if ((Object) this instanceof ServerPlayer serverPlayer) {
-            if (PlayerLoginService.shouldCancelEvent(serverPlayer)) {
+            if (ActionCheckService.shouldCancelEvent(serverPlayer)) {
                 Optional<BlockPos> blockPos = BlockPosRepo.getBlockPos(serverPlayer.getGameProfile().getName());
                 if (blockPos.isPresent()) {
                     serverPlayer.teleportTo(serverPlayer.getLevel(), blockPos.get().getX(), blockPos.get().getY(), blockPos.get().getZ(), 0, 0);

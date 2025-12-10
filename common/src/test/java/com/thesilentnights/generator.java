@@ -3,6 +3,7 @@ package com.thesilentnights;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thesilentnights.configs.DataBaseType;
 import com.thesilentnights.configs.EasyLoginConfig;
+import com.thesilentnights.pojo.MailAccountEntry;
 import com.thesilentnights.repo.CommonStaticRepo;
 import org.apache.ibatis.jdbc.SQL;
 import org.junit.Test;
@@ -17,7 +18,8 @@ public class generator {
         mapper.writeValue(new File("./config.yml"),new EasyLoginConfig(
                 DataBaseType.SQLITE,
                 CommonStaticRepo.defaultSqlitePath,
-                true
+                true,
+                new MailAccountEntry()
         ));
     }
 

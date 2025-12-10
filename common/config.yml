@@ -1,3 +1,12 @@
 dataBaseType: "SQLITE"
 pathToDatabase: "/easylogin/playerAccounts.db"
 enableKickOther: true
+mailAccountEntry:
+  user: null
+  password: null
+  host: null
+  port: 0
+  from: null
+  enableSSL: false
+  starttlsEnable: false
+  timeout: 0

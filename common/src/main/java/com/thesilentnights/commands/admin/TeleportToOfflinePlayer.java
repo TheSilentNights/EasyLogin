@@ -3,7 +3,7 @@ package com.thesilentnights.commands.admin;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.thesilentnights.pojo.PlayerAccount;
-import com.thesilentnights.service.PlayerLoginService;
+import com.thesilentnights.service.AccountService;
 import com.thesilentnights.utils.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -23,8 +23,8 @@ public class TeleportToOfflinePlayer implements AdminCommands {
                                     ServerPlayer playerOrException = commandContext.getSource().getPlayerOrException();
                                     String targetName = StringArgumentType.getString(commandContext, "targetName");
                                     //check the player is offline
-                                    if (PlayerLoginService.hasAccount(targetName) && commandContext.getSource().getServer().getPlayerList().getPlayerByName(targetName) == null) {
-                                        Optional<PlayerAccount> account = PlayerLoginService.getAccount(targetName);
+                                    if (AccountService.hasAccount(targetName) && commandContext.getSource().getServer().getPlayerList().getPlayerByName(targetName) == null) {
+                                        Optional<PlayerAccount> account = AccountService.getAccount(targetName);
                                         if (account.isPresent()) {
                                             PlayerAccount playerAccount = account.get();
                                             playerOrException.teleportTo(playerAccount.getLastlogin_x(), playerAccount.getLastlogin_y(), playerAccount.getLastlogin_z());

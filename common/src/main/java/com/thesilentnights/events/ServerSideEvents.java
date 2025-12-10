@@ -4,10 +4,10 @@ import com.thesilentnights.events.ievents.EasyLoginEvents;
 import com.thesilentnights.repo.BlockPosRepo;
 import com.thesilentnights.repo.PlayerCache;
 import com.thesilentnights.repo.PlayerSessionCache;
-import com.thesilentnights.service.PlayerLoginService;
-import com.thesilentnights.task.KickPlayer;
-import com.thesilentnights.task.Message;
-import com.thesilentnights.task.TickTimerManager;
+import com.thesilentnights.service.AccountService;
+import com.thesilentnights.service.TaskService;
+import com.thesilentnights.service.task.KickPlayer;
+import com.thesilentnights.service.task.Message;
 import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.event.events.common.TickEvent;
 import net.minecraft.network.chat.TextComponent;
@@ -21,22 +21,23 @@ public class ServerSideEvents {
                 entity.sendMessage(new TextComponent("already logged in!"), entity.getUUID());
                 EasyLoginEvents.ON_LOGIN.invoker().onLogin(PlayerSessionCache.getSession(entity.getUUID()).getAccount(), entity);
             } else {
-                if (PlayerLoginService.hasAccount(entity.getUUID())) {
-                    TickTimerManager.addTickTimer(new Message(entity, new TextComponent("please login your account by /login"), 80, true));
+                if (AccountService.hasAccount(entity.getUUID())) {
+                    TaskService.addTask(TaskService.generateTaskIdentifier(entity.getUUID(), TaskService.TaskType.MESSAGE), new Message(entity, new TextComponent("please login your account by /login"), 80, true));
                 } else {
-                    TickTimerManager.addTickTimer(new Message(entity, new TextComponent("please register your account by /register"), 80, true));
+                    TaskService.addTask(TaskService.generateTaskIdentifier(entity.getUUID(), TaskService.TaskType.MESSAGE), new Message(entity, new TextComponent("please register your account by /register"), 80, true));
                 }
-                TickTimerManager.addTickTimer(new KickPlayer(entity, 60 * 20));
+                TaskService.addTask(TaskService.generateTaskIdentifier(entity.getUUID(), TaskService.TaskType.KICK_PLAYER), new KickPlayer(entity, 60 * 20));
             }
         });
 
         PlayerEvent.PLAYER_QUIT.register(entity -> {
-            PlayerLoginService.logoutPlayer(entity, false);
-            TickTimerManager.cancelPlayer(entity.getUUID());
+            AccountService.logoutPlayer(entity, false);
+            TaskService.cancelPlayer(entity.getUUID());
+
         });
 
         TickEvent.SERVER_POST.register(server -> {
-            TickTimerManager.tick();
+            TaskService.tick();
             PlayerSessionCache.tick();
         });
 
@@ -44,7 +45,7 @@ public class ServerSideEvents {
         EasyLoginEvents.ON_LOGIN.register(((account, serverPlayer) -> {
             BlockPosRepo.removeBlockPos(account.getUsername());
             PlayerCache.addAccount(account);
-            TickTimerManager.cancelPlayer(serverPlayer.getUUID());
+            TaskService.cancelPlayer(serverPlayer.getUUID());
         }));
         EasyLoginEvents.ON_LOGOUT.register(((account, serverPlayer) -> {
             PlayerCache.dropAccount(serverPlayer.getUUID(), true);

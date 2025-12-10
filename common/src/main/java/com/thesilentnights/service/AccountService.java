@@ -8,21 +8,20 @@ import com.thesilentnights.repo.PlayerCache;
 import com.thesilentnights.sql.DatabaseProvider;
 import lombok.extern.slf4j.Slf4j;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 
 import java.util.Optional;
 import java.util.UUID;
 
 
 @Slf4j
-public class PlayerLoginService {
+public class AccountService {
     private static DatabaseProvider provider;
 
     public static void init(DatabaseProvider databaseProvider) {
         provider = databaseProvider;
     }
 
-    public static boolean authPlayerWithPwd(ServerPlayer serverPlayer, String password) throws AlreadyLoggedInException {
+    public static boolean loginWithPassword(ServerPlayer serverPlayer, String password) throws AlreadyLoggedInException {
         if (PlayerCache.hasAccount(serverPlayer.getUUID())) {
             throw new AlreadyLoggedInException(serverPlayer.getGameProfile().getName());
         }
@@ -43,16 +42,6 @@ public class PlayerLoginService {
         return provider.getAuthByName(username).isPresent();
     }
 
-    public static boolean shouldCancelEvent(Player entity) {
-        if (entity instanceof ServerPlayer entity1) {
-            return !isLoggedIn(entity1);
-        }
-        return false;
-    }
-
-    public static boolean isLoggedIn(ServerPlayer serverPlayer) {
-        return PlayerCache.hasAccount(serverPlayer.getUUID());
-    }
 
     public static void registerPlayer(ServerPlayer serverPlayer, String password, String repeat) throws PasswordDoesNotMatchException {
         log.info("registerPlayer {}", serverPlayer.getGameProfile().getName());
@@ -60,7 +49,7 @@ public class PlayerLoginService {
             throw new PasswordDoesNotMatchException(password, repeat);
         }
 
-        boolean flag = provider.saveAuth(new PlayerAccount(
+        boolean flag = provider.saveAccount(new PlayerAccount(
                 serverPlayer.getGameProfile().getName(),
                 password, serverPlayer.getIpAddress(),
                 serverPlayer.getX(),
@@ -72,7 +61,7 @@ public class PlayerLoginService {
                 System.currentTimeMillis()
         ));
 
-        if(!flag){
+        if (!flag) {
             log.error("error occurred while saving auth");
             return;
         }
@@ -94,6 +83,10 @@ public class PlayerLoginService {
         return provider.getAuthByName(username);
     }
 
+    public static void updateAccount(PlayerAccount playerAccount){
+        provider.saveAccount(playerAccount);
+    }
+
     /**
      *
      * @param serverPlayer targetPlayer
@@ -109,7 +102,7 @@ public class PlayerLoginService {
             playerAccount.setLastlogin_y(serverPlayer.getY());
             playerAccount.setLastlogin_z(serverPlayer.getZ());
             playerAccount.setLastlogin_world(serverPlayer.getLevel().dimension().location().getNamespace());
-            provider.saveAuth(playerAccount);
+            provider.saveAccount(playerAccount);
             //push events
             EasyLoginEvents.ON_LOGOUT.invoker().onLogout(playerAccount, serverPlayer);
         }

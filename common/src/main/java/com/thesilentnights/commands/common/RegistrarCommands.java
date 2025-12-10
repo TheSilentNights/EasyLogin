@@ -3,7 +3,7 @@ package com.thesilentnights.commands.common;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.thesilentnights.exception.PasswordDoesNotMatchException;
-import com.thesilentnights.service.PlayerLoginService;
+import com.thesilentnights.service.AccountService;
 import com.thesilentnights.utils.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -21,7 +21,7 @@ public class RegistrarCommands implements CommonCommands {
                                     String repeatPassword = StringArgumentType.getString(context, "repeatPassword");
 
 
-                                    if (PlayerLoginService.hasAccount(context.getSource().getPlayerOrException().getUUID())) {
+                                    if (AccountService.hasAccount(context.getSource().getPlayerOrException().getUUID())) {
 
                                         context.getSource().getPlayerOrException().sendMessage(TextUtil.createText(ChatFormatting.RED, "the account has already been registered"), context.getSource().getPlayerOrException().getUUID());
                                         return 0;
@@ -29,7 +29,7 @@ public class RegistrarCommands implements CommonCommands {
 
 
                                     try {
-                                        PlayerLoginService.registerPlayer(context.getSource().getPlayerOrException(), password, repeatPassword);
+                                        AccountService.registerPlayer(context.getSource().getPlayerOrException(), password, repeatPassword);
                                         context.getSource().getPlayerOrException().sendMessage(TextUtil.createText(ChatFormatting.GREEN, "register success"), context.getSource().getPlayerOrException().getUUID());
                                         return 1;
                                     } catch (PasswordDoesNotMatchException e) {

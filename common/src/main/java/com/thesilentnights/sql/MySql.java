@@ -39,7 +39,7 @@ public class MySql implements DatabaseProvider {
     }
 
     @Override
-    public boolean saveAuth(PlayerAccount playerAccount) {
+    public boolean saveAccount(PlayerAccount playerAccount) {
         try (SqlSession sqlSession = mybatis.getSqlSessionFactory().openSession()) {
             if (getAuthByUUID(playerAccount.getUuid()).isPresent()) {
                 log.info(playerAccount.toString());

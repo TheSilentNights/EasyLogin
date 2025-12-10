@@ -3,7 +3,7 @@ package com.thesilentnights.commands.common;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.thesilentnights.exception.AlreadyLoggedInException;
-import com.thesilentnights.service.PlayerLoginService;
+import com.thesilentnights.service.AccountService;
 import com.thesilentnights.utils.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -15,14 +15,14 @@ public class LoginCommands implements CommonCommands {
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
         return Commands.literal("login").then(Commands.argument("password", StringArgumentType.string()).executes(context -> {
             //if not registered
-            if (!PlayerLoginService.hasAccount(context.getSource().getPlayerOrException().getUUID())) {
+            if (!AccountService.hasAccount(context.getSource().getPlayerOrException().getUUID())) {
                 context.getSource().sendFailure(TextUtil.createText(ChatFormatting.RED, "you haven't registered"));
                 return 0;
             }
 
             boolean flag;
             try {
-                flag = PlayerLoginService.authPlayerWithPwd(context.getSource().getPlayerOrException(), StringArgumentType.getString(context, "password"));
+                flag = AccountService.loginWithPassword(context.getSource().getPlayerOrException(), StringArgumentType.getString(context, "password"));
             } catch (AlreadyLoggedInException e) {
                 context.getSource().sendFailure(TextUtil.createText(ChatFormatting.RED, e.getMessage()));
                 return 0;
