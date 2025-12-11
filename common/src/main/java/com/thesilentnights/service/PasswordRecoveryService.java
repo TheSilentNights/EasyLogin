@@ -10,10 +10,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class PasswordRecoveryService {
     static Map<UUID, String> code = new HashMap<>();
@@ -41,8 +38,16 @@ public class PasswordRecoveryService {
         if (code.containsKey(uuid) && account.isPresent()){
             if (confirmCode.equals(code.get(uuid))){
                 code.remove(uuid);
-                context.getSource().sendSuccess(new TranslatableComponent("commands.password.recover.success",account.get().getPassword()),false);
-                return true;
+                //generate temp password
+                String generate = new RandomGenerator(5).generate();
+                Optional<PlayerAccount> account1 = AccountService.getAccount(uuid);
+                if (account1.isPresent()){
+                    PlayerAccount playerAccount = account1.get();
+                    playerAccount.setPassword(generate);
+                    AccountService.updateAccount(playerAccount);
+                    context.getSource().sendSuccess(new TranslatableComponent("commands.password.recover.success"),true);
+                    return true;
+                }
             }
         }
         return false;

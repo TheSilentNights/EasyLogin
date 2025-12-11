@@ -9,9 +9,6 @@ import com.thesilentnights.configs.EasyLoginConfig;
 import com.thesilentnights.pojo.PlayerAccount;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.Optional;
@@ -50,6 +47,7 @@ public class EmailService {
     public static boolean bindEmail(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         String email = StringArgumentType.getString(context, "email");
         String emailConfirm = StringArgumentType.getString(context, "emailConfirm");
+        //check the consistence
         if (email.equals(emailConfirm) && isValidEmail(email)){
             Optional<PlayerAccount> account1 = AccountService.getAccount(context.getSource().getPlayerOrException().getUUID());
 
@@ -57,14 +55,14 @@ public class EmailService {
                 PlayerAccount playerAccount = account1.get();
                 playerAccount.setEmail(email);
                 AccountService.updateAccount(playerAccount);
+                return true;
             }else{
                 context.getSource().sendFailure(
                         new TranslatableComponent("commands.email.bind.failure").withStyle(ChatFormatting.RED).withStyle(ChatFormatting.BOLD)
                 );
-                return false;
             }
         }
-
+        return false;
     }
 
     public static boolean isValidEmail(String email) {

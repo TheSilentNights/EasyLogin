@@ -10,7 +10,11 @@ public class RecoverCommands implements CommonCommands {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
         return Commands.literal("recover")
-                .then(Commands.argument("emailConfirm", StringArgumentType.greedyString())
-                        .executes(context -> PasswordRecoveryService.recoveryPassword(context) ? 1 : 0));
+                .then(Commands.literal("send")
+                        .then(Commands.argument("emailConfirm", StringArgumentType.greedyString())
+                                .executes(context -> PasswordRecoveryService.recoveryPassword(context) ? 1 : 0)))
+                .then(Commands.literal("check")
+                        .then(Commands.argument("confirmCode", StringArgumentType.greedyString())
+                                .executes(context -> PasswordRecoveryService.confirmRecover(context) ? 1 : 0)));
     }
 }

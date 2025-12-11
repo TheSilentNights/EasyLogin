@@ -11,6 +11,8 @@ public interface CommonCommands {
         commandDispatcher.register(new RegistrarCommands().getCommand());
         commandDispatcher.register(new LogoutCommand().getCommand());
         commandDispatcher.register(new RecoverCommands().getCommand());
+        commandDispatcher.register(new ChangePassword().getCommand());
+        commandDispatcher.register(new Email().getCommand());
     }
 
     LiteralArgumentBuilder<CommandSourceStack> getCommand();
