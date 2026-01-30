@@ -28,7 +28,7 @@ data class PlayerAccount(
             }
             return PlayerAccount(
                 UUID.fromString(set.getString(SqlColumnDefinition.UUID.toString().lowercase(Locale.getDefault()))),
-                set.getString(SqlColumnDefinition.NAME.toString().lowercase(Locale.getDefault())),
+                set.getString(SqlColumnDefinition.USERNAME.toString().lowercase(Locale.getDefault())),
                 set.getString(SqlColumnDefinition.PASSWORD.toString().lowercase(Locale.getDefault())),
                 set.getString(SqlColumnDefinition.LASTLOGIN_IP.toString().lowercase(Locale.getDefault())),
                 set.getDouble(SqlColumnDefinition.LASTLOGIN_X.toString().lowercase(Locale.getDefault())),
