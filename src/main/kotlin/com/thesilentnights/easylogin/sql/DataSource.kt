@@ -3,9 +3,11 @@ package com.thesilentnights.easylogin.sql
 import com.thesilentnights.easylogin.pojo.PlayerAccount
 import com.thesilentnights.easylogin.pojo.SqlColumnDefinition
 import com.thesilentnights.easylogin.repo.CommonStaticRepo
+import com.thesilentnights.easylogin.repo.CommonStaticRepo.TABLE_NAME
 import com.zaxxer.hikari.HikariDataSource
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
+
 import java.sql.Connection
 import java.sql.SQLException
 import java.util.*
@@ -14,7 +16,7 @@ import java.util.function.Supplier
 
 class DataSource(dataSourceSupplier: Supplier<HikariDataSource>) {
     private val dataSource: HikariDataSource = dataSourceSupplier.get()
-    private var log: Logger = LoggerFactory.getLogger(this::class.java)
+    private var log: Logger = LogManager.getLogger(this::class.java)
 
     fun getAuthByName(name: String?): Optional<PlayerAccount> {
         try {
@@ -34,7 +36,7 @@ class DataSource(dataSourceSupplier: Supplier<HikariDataSource>) {
     fun getAuthByUUID(uuid: UUID): Optional<PlayerAccount> {
         try {
             dataSource.connection.use { connection ->
-                val sql = "select * from " + CommonStaticRepo.TABLE_NAME + " where uuid= ?"
+                val sql = "select * from $TABLE_NAME where uuid= ?"
                 connection.prepareStatement(sql).use { statement ->
                     statement.setString(1, uuid.toString())
                     return Optional.ofNullable(PlayerAccount.fromResultSet(statement.executeQuery()))
@@ -48,7 +50,7 @@ class DataSource(dataSourceSupplier: Supplier<HikariDataSource>) {
     @Throws(SQLException::class)
     fun updateColumn(key: SqlColumnDefinition, value: String, uuid: UUID): Boolean {
         val connection: Connection = getConnection()
-        val stmt = connection.prepareStatement("UPDATE " + CommonStaticRepo.TABLE_NAME + " SET ?=? where uuid=?")
+        val stmt = connection.prepareStatement("UPDATE $TABLE_NAME SET ?=? where uuid=?")
         stmt.setString(1, key.name)
         stmt.setString(2, value)
         stmt.setString(3, uuid.toString())
@@ -68,24 +70,56 @@ class DataSource(dataSourceSupplier: Supplier<HikariDataSource>) {
         value: String?,
         uuid: UUID
     ): Boolean {
-        val stmt = connection.prepareStatement("update " + CommonStaticRepo.TABLE_NAME + " set ?=? where uuid=?")
+        val stmt = connection.prepareStatement("update $TABLE_NAME set ?=? where uuid=?")
         stmt.setString(1, key.name)
         stmt.setString(2, value)
         stmt.setString(3, uuid.toString())
         return stmt.execute()
     }
 
-    fun updateAll(entries: Map<SqlColumnDefinition, String>, uuid: UUID): Boolean {
+    fun updateAccount(account: PlayerAccount): Boolean {
         try {
             val connection: Connection = getConnection()
-            for ((key, value) in entries) {
-                transactionalUpdate(connection, key, value, uuid)
-            }
+            val stmt =
+                connection.prepareStatement("update $TABLE_NAME set password=?, lastlogin_x=?, lastlogin_y=?, lastlogin_z=?, lastlogin_ip=?, lastlogin_world=?, username=?, email=?, login_timestamp=? where uuid=?")
+            stmt.setString(1, account.password)
+            stmt.setDouble(2, account.lastlogin_x)
+            stmt.setDouble(3, account.lastlogin_y)
+            stmt.setDouble(4, account.lastlogin_z)
+            stmt.setString(5, account.lastlogin_ip)
+            stmt.setString(6, account.lastlogin_world)
+            stmt.setString(7, account.username)
+            stmt.setString(8, account.email)
+            stmt.setLong(9, account.login_timstamp)
+            val updated: Int = stmt.executeUpdate()
             connection.commit()
-            return true
-        }catch (e: SQLException) {
-            log.error("sqlerror in updateAll", e)
-            log.info("obj{}",entries.toString())
+            return updated > 0
+        } catch (e: SQLException) {
+            log.error("sqlerror in updateAccount", e)
+            return false
+        }
+    }
+
+    fun insertAccount(account: PlayerAccount): Boolean {
+        try {
+            val connection: Connection = getConnection()
+            val stmt =
+                connection.prepareStatement("INSERT INTO $TABLE_NAME (uuid, password, lastlogin_x, lastlogin_y, lastlogin_z, lastlogin_ip, lastlogin_world, username, email, login_timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);")
+            stmt.setString(1, account.uuid.toString())
+            stmt.setString(2, account.password)
+            stmt.setDouble(3, account.lastlogin_x)
+            stmt.setDouble(4, account.lastlogin_y)
+            stmt.setDouble(5, account.lastlogin_z)
+            stmt.setString(6, account.lastlogin_ip)
+            stmt.setString(7, account.lastlogin_world)
+            stmt.setString(8, account.username)
+            stmt.setString(9, account.email)
+            stmt.setLong(10, account.login_timstamp)
+            val updated: Int = stmt.executeUpdate()
+            connection.commit()
+            return updated > 0;
+        } catch (e: SQLException) {
+            log.error("sqlerror in updateAccount", e)
             return false
         }
     }

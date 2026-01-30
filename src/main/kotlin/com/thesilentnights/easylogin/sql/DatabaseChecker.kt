@@ -14,7 +14,7 @@ import java.sql.SQLException
 import java.util.*
 
 class DatabaseChecker(private val provider: DataSource?) {
-    private val log: Logger= LogManager.getLogger(DatabaseChecker::class.java)
+    private val log: Logger = LogManager.getLogger(DatabaseChecker::class.java)
 
     fun checkDatabase() {
         if (provider == null) {
