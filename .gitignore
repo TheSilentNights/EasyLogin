@@ -27,3 +27,6 @@ gradle-app.setting
 #idea
 .idea
 
+#kotlin
+.kotlin
+
