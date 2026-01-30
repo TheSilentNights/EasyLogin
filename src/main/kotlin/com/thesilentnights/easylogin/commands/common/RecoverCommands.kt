@@ -18,7 +18,7 @@ class RecoverCommands : CommonCommands {
                             "emailConfirm",
                             StringArgumentType.greedyString()
                         )
-                            .executes(Command { context: CommandContext<CommandSourceStack?>? ->
+                            .executes(Command { context: CommandContext<CommandSourceStack> ->
                                 if (PasswordRecoveryService.recoveryPassword(
                                         context
                                     )
@@ -33,7 +33,7 @@ class RecoverCommands : CommonCommands {
                             "confirmCode",
                             StringArgumentType.greedyString()
                         )
-                            .executes { context: CommandContext<CommandSourceStack?>? ->
+                            .executes { context: CommandContext<CommandSourceStack> ->
                                 if (PasswordRecoveryService.confirmRecover(
                                         context
                                     )

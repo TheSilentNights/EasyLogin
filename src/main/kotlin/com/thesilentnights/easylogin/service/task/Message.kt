@@ -1,6 +1,6 @@
 package com.thesilentnights.easylogin.service.task
 
-import com.thesilentnights.service.TaskService
+import com.thesilentnights.easylogin.service.TaskService
 import net.minecraft.server.level.ServerPlayer
 
 class Message(serverPlayer: ServerPlayer, message: net.minecraft.network.chat.Component, delay: Long, isLoop: Boolean) :

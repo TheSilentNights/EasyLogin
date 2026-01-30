@@ -64,9 +64,9 @@ object LoginService {
 
     @Throws(CommandSyntaxException::class)
     fun register(context: CommandContext<CommandSourceStack>): Boolean {
-        val serverPlayer: ServerPlayer = context.getSource().getPlayerOrException()
-        val password: kotlin.String = StringArgumentType.getString(context, "password")
-        val repeat: kotlin.String = StringArgumentType.getString(context, "repeat")
+        val serverPlayer: ServerPlayer = context.getSource().playerOrException
+        val password: String = StringArgumentType.getString(context, "password")
+        val repeat: String = StringArgumentType.getString(context, "repeat")
 
         if (password != repeat) {
             context.getSource().sendFailure(
@@ -92,7 +92,7 @@ object LoginService {
         )
 
         val auth: java.util.Optional<PlayerAccount> = AccountService.getAccount(serverPlayer.getUUID())
-        if (auth.isEmpty()) {
+        if (auth.isEmpty) {
             log.atError().log("sql error found in registering player")
             return false
         } else {

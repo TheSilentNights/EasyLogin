@@ -13,7 +13,7 @@ import java.util.function.Consumer
 
 object ChangePasswordService {
     @Throws(CommandSyntaxException::class)
-    fun changePassword(context: CommandContext<CommandSourceStack?>): Boolean {
+    fun changePassword(context: CommandContext<CommandSourceStack>): Boolean {
         if (!isLoggedIn(context.getSource()!!.playerOrException.getUUID())) {
             context.getSource()!!.sendFailure(
                 TranslatableComponent("commands.password.change.failure.unlogged").withStyle(ChatFormatting.BOLD)

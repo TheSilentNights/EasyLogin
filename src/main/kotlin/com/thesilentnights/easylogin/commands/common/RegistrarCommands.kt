@@ -11,9 +11,9 @@ class RegistrarCommands : CommonCommands {
     override val command: LiteralArgumentBuilder<CommandSourceStack>
         get() = Commands.literal("register")
             .then(
-                Commands.argument<String?>("password", StringArgumentType.string())
+                Commands.argument("password", StringArgumentType.string())
                     .then(
-                        Commands.argument<String?>(
+                        Commands.argument(
                             "repeat",
                             StringArgumentType.string()
                         )

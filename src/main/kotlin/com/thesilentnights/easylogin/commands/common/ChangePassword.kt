@@ -20,7 +20,7 @@ class ChangePassword : CommonCommands {
                             "newPasswordConfirm",
                             StringArgumentType.greedyString()
                         )
-                            .executes { context: CommandContext<CommandSourceStack?>? ->
+                            .executes { context: CommandContext<CommandSourceStack> ->
                                 if (ChangePasswordService.changePassword(
                                         context
                                     )
