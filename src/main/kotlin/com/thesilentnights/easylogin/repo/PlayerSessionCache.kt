@@ -12,9 +12,9 @@ import java.util.*
 
 object PlayerSessionCache {
     private val log: Logger = LogManager.getLogger(PlayerSessionCache::class.java)
-    private val sessions: Cache<String, PlayerSession?> = Caffeine.newBuilder().maximumSize(60).expireAfterAccess(
+    private val sessions: Cache<String, PlayerSession> = Caffeine.newBuilder().maximumSize(60).expireAfterAccess(
         Duration.ofSeconds((5 * 60).toLong())
-    ).build<String, PlayerSession>()
+    ).build()
 
     fun scheduleDrop(account: PlayerAccount) {
         PlayerSessionCache.log.info(account.toString())

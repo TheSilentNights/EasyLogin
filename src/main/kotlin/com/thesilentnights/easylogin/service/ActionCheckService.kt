@@ -13,7 +13,7 @@ object ActionCheckService {
         return false
     }
 
-    fun isLoggedIn(uuid: UUID?): Boolean {
+    fun isLoggedIn(uuid: UUID): Boolean {
         return hasAccount(uuid)
     }
 }

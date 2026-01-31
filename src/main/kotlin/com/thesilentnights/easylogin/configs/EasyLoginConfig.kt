@@ -1,74 +1,25 @@
-package com.thesilentnights.easylogin.configs;
+package com.thesilentnights.easylogin.configs
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.resource.ResourceUtil;
-import com.fasterxml.jackson.databind.DatabindException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.thesilentnights.pojo.MailAccountEntry;
-import com.thesilentnights.repo.CommonStaticRepo;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import net.minecraftforge.common.ForgeConfigSpec
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+object EasyLoginConfig {
+    val log: Logger = LogManager.getLogger(EasyLoginConfig::class.java)
+    val config: ForgeConfigSpec
+    val dataBaseType: ForgeConfigSpec.EnumValue<DataBaseType>
+    val pathToDatabase: ForgeConfigSpec.ConfigValue<String>
+    val enableKickOther: ForgeConfigSpec.BooleanValue
+    val loginTimeoutTick: ForgeConfigSpec.ConfigValue<Long>
 
-@Slf4j
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class EasyLoginConfig {
-
-    DataBaseType dataBaseType;
-    String pathToDatabase;
-    boolean enableKickOther;
-    MailAccountEntry mailAccountEntry;
-    Long loginTimeoutTick;
-
-    public static EasyLoginConfig readFromConfigFile() {
-        File configFile = FileUtil.file(CommonStaticRepo.GAME_DIR, CommonStaticRepo.configPath);
-        File readme = FileUtil.file(CommonStaticRepo.GAME_DIR, CommonStaticRepo.readmePath);
-        // create readme if not exists
-        if (!readme.exists()) {
-            FileUtil.copyFile(ResourceUtil.getResourceObj(CommonStaticRepo.readmeResourcePath), readme);
-        }
-
-        // read from configs
-        try {
-            return new ObjectMapper(CommonStaticRepo.ymlFactory).readValue(configFile, EasyLoginConfig.class);
-        } catch (FileNotFoundException e) {
-            // create config file
-            writeToConfigFile(getDefaultConfig());
-            return getDefaultConfig();
-        } catch (DatabindException e) {
-            log.atError().log("read config file error.Please fix the config file or just regenerate it {}", e);
-            return getDefaultConfig();
-        } catch (IOException e) {
-            log.atError().log("internal error occurred {}", e);
-            return getDefaultConfig();
-        }
+    init {
+        val builder = ForgeConfigSpec.Builder()
+        builder.comment("EasyLogin Config").push("server")
+        this.dataBaseType = builder.comment("DataBase Type").defineEnum("databaseType", DataBaseType.SQLITE)
+        this.pathToDatabase = builder.comment("Path to Database").define("pathToDatabase", "easylogin/playerAccounts.db")
+        this.enableKickOther = builder.comment("Enable kick other player when login").define("enableKickOther", false)
+        this.loginTimeoutTick = builder.comment("Login timeout tick").define("loginTimeoutTick", 120L)
+        builder.pop()
+        config = builder.build()
     }
-
-    private static void writeToConfigFile(EasyLoginConfig easyLoginConfig) {
-        File configFile = FileUtil.file(CommonStaticRepo.GAME_DIR, CommonStaticRepo.configPath);
-        try {
-            configFile.createNewFile();
-            new ObjectMapper(CommonStaticRepo.ymlFactory).writeValue(configFile, easyLoginConfig);
-        } catch (IOException e) {
-            log.atError().log("write config file error {}", e);
-        }
-    }
-
-    public static EasyLoginConfig getDefaultConfig() {
-        return new EasyLoginConfig(
-                DataBaseType.SQLITE,
-                CommonStaticRepo.defaultSqlitePath,
-                false,
-                new MailAccountEntry(),
-                60 * 20L
-        );
-    }
-
 }

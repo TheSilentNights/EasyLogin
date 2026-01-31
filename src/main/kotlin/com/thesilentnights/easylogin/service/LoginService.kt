@@ -16,6 +16,7 @@ import net.minecraftforge.common.MinecraftForge
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import thedarkcolour.kotlinforforge.forge.MOD_BUS
+import java.util.*
 
 object LoginService {
     val log: Logger = LogManager.getLogger(LoginService.javaClass)
@@ -126,7 +127,7 @@ object LoginService {
     }
 
     @JvmStatic
-    fun isLoggedIn(key: java.util.UUID?): Boolean {
+    fun isLoggedIn(key: UUID): Boolean {
         return PlayerCache.hasAccount(key)
     }
 

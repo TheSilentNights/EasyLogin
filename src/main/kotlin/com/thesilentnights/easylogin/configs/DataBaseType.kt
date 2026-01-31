@@ -1,6 +1,7 @@
-package com.thesilentnights.easylogin.configs;
+package com.thesilentnights.easylogin.configs
 
-public enum DataBaseType {
+enum class DataBaseType {
     SQLITE,
-    MYSQL
+    MYSQL,
+    POSTGRESQL,
 }
