@@ -17,7 +17,7 @@ object PlayerSessionCache {
     ).build()
 
     fun scheduleDrop(account: PlayerAccount) {
-        PlayerSessionCache.log.info(account.toString())
+        log.info(account.toString())
         sessions.put(account.uuid.toString(), PlayerSession(account))
     }
 

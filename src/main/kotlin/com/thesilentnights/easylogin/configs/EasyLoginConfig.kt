@@ -18,7 +18,7 @@ object EasyLoginConfig {
         this.dataBaseType = builder.comment("DataBase Type").defineEnum("databaseType", DataBaseType.SQLITE)
         this.pathToDatabase = builder.comment("Path to Database").define("pathToDatabase", "/easylogin/playerAccounts.db")
         this.enableKickOther = builder.comment("Enable kick other player when login").define("enableKickOther", false)
-        this.loginTimeoutTick = builder.comment("Login timeout tick").define("loginTimeoutTick", 120L)
+        this.loginTimeoutTick = builder.comment("Login timeout tick").define("loginTimeoutTick", 120*20L)
         builder.pop()
         config = builder.build()
     }

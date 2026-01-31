@@ -46,12 +46,12 @@ class Listener {
 
             if (AccountService.hasAccount(serverPlayer.getUUID())) {
                 TaskService.addTask(
-                    TaskService.generateTaskIdentifier(serverPlayer.getUUID(), TaskService.TaskType.MESSAGE),
+                    TaskService.generateTaskIdentifier(serverPlayer.getUUID(), TaskService.Suffix.MESSAGE.name),
                     Message(serverPlayer, TextComponent("please login your account by /login"), 80, true)
                 )
             } else {
                 TaskService.addTask(
-                    TaskService.generateTaskIdentifier(serverPlayer.getUUID(), TaskService.TaskType.MESSAGE),
+                    TaskService.generateTaskIdentifier(serverPlayer.getUUID(), TaskService.Suffix.MESSAGE.name),
                     Message(
                         serverPlayer,
                         TextComponent("please register your account by /register"),
@@ -61,8 +61,9 @@ class Listener {
                 )
             }
 
+            //prepare for kicking out
             TaskService.addTask(
-                TaskService.generateTaskIdentifier(serverPlayer.getUUID(), TaskService.TaskType.KICK_PLAYER),
+                TaskService.generateTaskIdentifier(serverPlayer.getUUID(), TaskService.Suffix.TIMEOUT.name),
                 KickPlayer(serverPlayer, EasyLoginConfig.loginTimeoutTick.get())
             )
         }
@@ -86,7 +87,7 @@ class Listener {
         }
     }
 
-    private fun onServerTick(tickEvent: ServerTickEvent?) {
+    private fun onServerTick(tickEvent: ServerTickEvent) {
         TaskService.tick()
     }
 }

@@ -1,20 +1,21 @@
 package com.thesilentnights.easylogin.service
 
 import com.thesilentnights.easylogin.service.task.Task
+import java.util.*
 
 object TaskService {
-    private val taskMap: MutableMap<kotlin.String, Task> = HashMap<kotlin.String, Task>()
+    private val taskMap: MutableMap<String, Task> = HashMap()
 
-    fun addTask(identifier: kotlin.String, task: Task) {
+    fun addTask(identifier: String, task: Task) {
         taskMap[identifier] = task
     }
 
-    fun getTask(identifier: kotlin.String): Task? {
-        return taskMap.get(identifier)
+    fun getTask(identifier: String): Task? {
+        return taskMap[identifier]
     }
 
-    fun generateTaskIdentifier(uuid: java.util.UUID, taskType: TaskService.TaskType): kotlin.String {
-        return uuid.toString() + "_" + taskType
+    fun generateTaskIdentifier(uuid: UUID, name: String): String {
+        return uuid.toString() + "_" + name
     }
 
     fun tick() {
@@ -24,19 +25,19 @@ object TaskService {
         taskMap.values.forEach({ task -> task.tick() })
     }
 
-    fun cancelTask(identifier: kotlin.String?) {
+    fun cancelTask(identifier: String) {
         taskMap.remove(identifier)
     }
 
-    fun cancelPlayer(uuid: java.util.UUID) {
-        TaskService.taskMap.entries.removeIf { entry: kotlin.collections.MutableMap.MutableEntry<kotlin.String, Task> ->
-            entry.key.startsWith(
-                uuid.toString()
-            )
+    fun cancelPlayer(uuid: UUID) {
+
+        taskMap.entries.removeIf { entry: MutableMap.MutableEntry<String, Task> ->
+            entry.key.startsWith(uuid.toString())
         }
+
     }
 
-    enum class TaskType {
-        KICK_PLAYER, MESSAGE
+    enum class Suffix {
+        MESSAGE, TIMEOUT
     }
 }

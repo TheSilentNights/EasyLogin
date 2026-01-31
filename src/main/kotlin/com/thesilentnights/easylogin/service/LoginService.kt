@@ -15,7 +15,7 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraftforge.common.MinecraftForge
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import thedarkcolour.kotlinforforge.forge.MOD_BUS
+import thedarkcolour.kotlinforforge.forge.FORGE_BUS
 import java.util.*
 
 object LoginService {
@@ -37,7 +37,7 @@ object LoginService {
         }
 
         val password: String = StringArgumentType.getString(context, "password")
-        val account: java.util.Optional<PlayerAccount> = AccountService.getAccount(serverPlayer.getUUID())
+        val account: Optional<PlayerAccount> = AccountService.getAccount(serverPlayer.getUUID())
 
         if (account.isPresent) {
             if (account.get().password == password) {
@@ -47,7 +47,7 @@ object LoginService {
                         context.getSource().playerOrException.displayName.string
                     ), false
                 )
-                MOD_BUS.post(EasyLoginEvents.PlayerLoginEvent(serverPlayer, account.get()))
+                FORGE_BUS.post(EasyLoginEvents.PlayerLoginEvent(serverPlayer, account.get()))
                 return true
             }
         } else {
@@ -92,7 +92,7 @@ object LoginService {
             )
         )
 
-        val auth: java.util.Optional<PlayerAccount> = AccountService.getAccount(serverPlayer.getUUID())
+        val auth: Optional<PlayerAccount> = AccountService.getAccount(serverPlayer.getUUID())
         if (auth.isEmpty) {
             log.atError().log("sql error found in registering player")
             return false
@@ -101,7 +101,7 @@ object LoginService {
                 TranslatableComponent("commands.login.success").withStyle(ChatFormatting.GREEN)
                     .withStyle(ChatFormatting.BOLD), false
             )
-
+            FORGE_BUS.post(EasyLoginEvents.PlayerLoginEvent(serverPlayer,auth.get()))
             return true
         }
     }
