@@ -16,7 +16,7 @@ object EasyLoginConfig {
         val builder = ForgeConfigSpec.Builder()
         builder.comment("EasyLogin Config").push("server")
         this.dataBaseType = builder.comment("DataBase Type").defineEnum("databaseType", DataBaseType.SQLITE)
-        this.pathToDatabase = builder.comment("Path to Database").define("pathToDatabase", "easylogin/playerAccounts.db")
+        this.pathToDatabase = builder.comment("Path to Database").define("pathToDatabase", "/easylogin/playerAccounts.db")
         this.enableKickOther = builder.comment("Enable kick other player when login").define("enableKickOther", false)
         this.loginTimeoutTick = builder.comment("Login timeout tick").define("loginTimeoutTick", 120L)
         builder.pop()
