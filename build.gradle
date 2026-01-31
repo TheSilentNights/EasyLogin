@@ -1,47 +1,35 @@
 buildscript {
     repositories {
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
+        maven { url = 'https://maven.minecraftforge.net' }
+        mavenCentral()
     }
     dependencies {
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0"
     }
 }
+apply plugin: 'net.minecraftforge.gradle'
+// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+apply plugin: 'maven-publish'
+apply plugin: 'kotlin'
 
-plugins {
-    id 'idea'
-    id("java")
-    id("org.jetbrains.kotlin.jvm") version("1.8.0")
-    id("net.minecraftforge.gradle") version("[6.0.24,6.2)")
-    id 'org.parchmentmc.librarian.forgegradle' version '[1.0,2.0)'
-}
-apply plugin: 'org.spongepowered.mixin'
+var modId = 'easylogin'
+version = '1.0'
+group = "com.thesilentnights.${modId}" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'EasyLogin-'+version
 
-group = mod_group_id
-version = mod_version
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 
-base {
-    archivesName = mod_id
-}
-
-java {
-    toolchain.languageVersion = JavaLanguageVersion.of(17)
-}
-
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: mapping_channel, version: mapping_version
+    mappings channel: 'official', version: '1.17.1'
 
 
-    // This property enables access transformers for use in development.
-    // They will be applied to the Minecraft artifact.
-    // The access transformer file can be anywhere in the project.
-    // However, it must be at "META-INF/accesstransformer.cfg" in the final mod jar to be loaded by Forge.
-    // This default location is a best practice to automatically put the file in the right place in the final jar.
-    // See https://docs.minecraftforge.net/en/latest/advanced/accesstransformers/ for more information.
-//     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
 
 
     runs {
-
         client {
             workingDirectory project.file('run')
 
@@ -52,20 +40,19 @@ minecraft {
             // "REGISTRYDUMP": For getting the contents of all registries.
             property 'forge.logging.markers', 'REGISTRIES'
 
-
             // Recommended logging level for the console
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
+
             mods {
-                "${mod_id}" {
+                examplemod {
                     source sourceSets.main
                 }
             }
         }
 
         server {
-            args '--nogui'
             workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
@@ -75,21 +62,20 @@ minecraft {
             // "REGISTRYDUMP": For getting the contents of all registries.
             property 'forge.logging.markers', 'REGISTRIES'
 
-
             // Recommended logging level for the console
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
+
             mods {
-                "${mod_id}" {
+                examplemod {
                     source sourceSets.main
                 }
             }
         }
 
         data {
-            // example of overriding the workingDirectory set in configureEach above
-            workingDirectory project.file('run-data')
+            workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
@@ -98,27 +84,25 @@ minecraft {
             // "REGISTRYDUMP": For getting the contents of all registries.
             property 'forge.logging.markers', 'REGISTRIES'
 
-
             // Recommended logging level for the console
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
+            mods {
+                examplemod {
+                    source sourceSets.main
+                }
+            }
         }
     }
 }
 
-mixin {
-    add sourceSets.main, "${mod_id}.refmap.json"
-
-    config "${mod_id}.mixins.json"
-}
-
 // Include resources generated by data generators.
 sourceSets.main.resources { srcDir 'src/generated/resources' }
-
 
 repositories {
     maven {
@@ -128,61 +112,55 @@ repositories {
 }
 
 dependencies {
-    implementation("com.zaxxer:HikariCP:${hikaricp_version}")
-    implementation("org.xerial:sqlite-jdbc:${sqlite_version}")
-    implementation("cn.hutool:hutool-all:${hutool_version}")
-    implementation("com.sun.mail:javax.mail:1.6.2")
-    implementation("com.github.ben-manes.caffeine:caffeine:${caffine_version}")
+    // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
+    // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
+    // The userdev artifact is a special name and will get all sorts of transformations applied to it.
+    minecraft 'net.minecraftforge:forge:1.17.1-37.1.1'
+
+    minecraftLibrary("com.zaxxer:HikariCP:${hikaricp_version}")
+    minecraftLibrary("org.xerial:sqlite-jdbc:${sqlite_version}")
+    minecraftLibrary("cn.hutool:hutool-all:${hutool_version}")
+    minecraftLibrary("com.sun.mail:javax.mail:1.6.2")
+    minecraftLibrary("com.github.ben-manes.caffeine:caffeine:${caffine_version}")
     implementation("thedarkcolour:kotlinforforge:${kts_forge}")
 
-
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-
-
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-
-}
-
-
-tasks.named('processResources', ProcessResources).configure {
-    var replaceProperties = [minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
-                             forge_version       : forge_version, forge_version_range: forge_version_range,
-                             loader_version_range: loader_version_range,
-                             mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
-                             mod_authors         : mod_authors, mod_description: mod_description,]
-
-    inputs.properties replaceProperties
-
-    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
-        expand replaceProperties + [project: project]
-    }
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
 jar {
     manifest {
-        attributes(["Specification-Title"     : mod_id,
-                    "Specification-Vendor"    : mod_authors,
-                    "Specification-Version"   : "1", // We are version 1 of ourselves
-                    "Implementation-Title"    : project.name,
-                    "Implementation-Version"  : project.jar.archiveVersion,
-                    "Implementation-Vendor"   : mod_authors,
-                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")])
+        attributes([
+                "Specification-Title"     : "examplemod",
+                "Specification-Vendor"    : "examplemodsareus",
+                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : project.jar.archiveVersion,
+                "Implementation-Vendor"   : "examplemodsareus",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+        ])
     }
-    from configurations.runtimeClasspath.get().collect {
-        it.isDirectory() ? it : zipTree(it)
+    from{
+        configurations.runtimeClasspath.forEach {
+            into 'META-INF/libraries'
+        }
     }
-
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-    // This is the preferred method to reobfuscate your jar file
 }
 
+// Example configuration to allow publishing using the maven-publish plugin
+// This is the preferred method to reobfuscate your jar file
 jar.finalizedBy('reobfJar')
+// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
+// publish.dependsOn('reobfJar')
 
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file://${project.projectDir}/mcmodsrepo"
+        }
+    }
 }
-
-
