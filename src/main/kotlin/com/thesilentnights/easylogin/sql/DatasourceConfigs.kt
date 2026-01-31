@@ -5,26 +5,23 @@ import cn.hutool.core.io.resource.ResourceUtil
 import com.thesilentnights.easylogin.repo.CommonStaticRepo
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import net.minecraftforge.fml.loading.FMLPaths
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.io.File
 import java.nio.file.StandardCopyOption
-import kotlin.io.path.absolute
-import kotlin.io.path.pathString
 
 object DatasourceConfigs {
     private val log: Logger = LogManager.getLogger(DatasourceConfigs.javaClass)
 
-    fun generateSqliteDataSource(fileToDataBase: java.io.File): HikariDataSource {
+    fun generateSqliteDataSource(fileToDataBase: File): HikariDataSource {
         log.info(fileToDataBase.toString())
         if (!fileToDataBase.exists()) {
             log.info(
                 "copying file {} to {}",
                 ResourceUtil.getResource("playerAccounts.db"),
-                fileToDataBase.getAbsolutePath()
+                fileToDataBase.absolutePath
             )
-            cn.hutool.core.io.FileUtil.copyFile(
+            FileUtil.copyFile(
                 ResourceUtil.getResourceObj("playerAccounts.db"),
                 fileToDataBase,
                 StandardCopyOption.REPLACE_EXISTING
@@ -39,7 +36,8 @@ object DatasourceConfigs {
 
     private fun getSqliteConfig(fileToDataBase: File): HikariConfig {
         val config = HikariConfig()
-        config.jdbcUrl = "JDBC:sqlite:" + FileUtil.file(FMLPaths.GAMEDIR.relative().absolute().pathString,fileToDataBase.toString()).toString()
+        config.driverClassName = "org.sqlite.JDBC"
+        config.jdbcUrl = "JDBC:sqlite:" + fileToDataBase.absolutePath.toString()
         config.isAutoCommit = false
         config.maximumPoolSize = 10
         config.minimumIdle = 2
