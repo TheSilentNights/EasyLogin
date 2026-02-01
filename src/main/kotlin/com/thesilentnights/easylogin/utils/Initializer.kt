@@ -3,6 +3,7 @@ package com.thesilentnights.easylogin.utils
 import cn.hutool.core.io.FileUtil
 import com.thesilentnights.easylogin.configs.DataBaseType
 import com.thesilentnights.easylogin.configs.EasyLoginConfig
+import com.thesilentnights.easylogin.events.listener.ActionListener
 import com.thesilentnights.easylogin.events.listener.Listener
 import com.thesilentnights.easylogin.service.AccountService
 import com.thesilentnights.easylogin.sql.DataSource
@@ -26,7 +27,7 @@ object Initializer {
         //init service
         AccountService.init(dataSource)
 
-        Listener()
+
     }
 
 

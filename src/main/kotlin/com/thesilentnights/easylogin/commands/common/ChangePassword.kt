@@ -13,12 +13,12 @@ class ChangePassword : CommonCommands {
             .then(
                 Commands.argument(
                     "newPassword",
-                    StringArgumentType.greedyString()
+                    StringArgumentType.string()
                 )
                     .then(
                         Commands.argument(
                             "newPasswordConfirm",
-                            StringArgumentType.greedyString()
+                            StringArgumentType.string()
                         )
                             .executes { context: CommandContext<CommandSourceStack> ->
                                 if (ChangePasswordService.changePassword(

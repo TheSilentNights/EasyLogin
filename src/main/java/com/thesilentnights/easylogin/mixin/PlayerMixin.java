@@ -22,12 +22,9 @@ public abstract class PlayerMixin extends LivingEntity {
     protected PlayerMixin(EntityType<? extends LivingEntity> entityType, Level level) {
         super(entityType, level);
     }
-    @Unique
-    private static final Logger easyLogin$log = LogManager.getLogger(PlayerMixin.class);
 
     @Inject(method = "tick", at = @At("HEAD"))
     public void tick(CallbackInfo ci) {
-        easyLogin$log.info("tick");
         if ((Object) this instanceof ServerPlayer serverPlayer) {
             if (ActionCheckService.shouldCancelEvent(serverPlayer)) {
                 BlockPos blockPos = BlockPosRepo.getBlockPos(this.stringUUID, this.blockPosition());

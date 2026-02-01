@@ -1,5 +1,7 @@
 package com.thesilentnights.easylogin
 
+import com.thesilentnights.easylogin.events.listener.ActionListener
+import com.thesilentnights.easylogin.events.listener.Listener
 import com.thesilentnights.easylogin.registrys.CommandRegistrar
 import com.thesilentnights.easylogin.utils.Initializer
 import net.minecraftforge.fml.common.Mod
@@ -13,6 +15,9 @@ object EasyLogin {
     init{
         Initializer.init()
         FORGE_BUS.addListener(CommandRegistrar::onRegister)
+
+        Listener()
+        ActionListener()
     }
 
 }

@@ -79,21 +79,21 @@ class DataSource(dataSourceSupplier: Supplier<HikariDataSource>) {
 
     fun updateAccount(account: PlayerAccount): Boolean {
         try {
-            val connection: Connection = getConnection()
-            val stmt =
-                connection.prepareStatement("update $TABLE_NAME set password=?, lastlogin_x=?, lastlogin_y=?, lastlogin_z=?, lastlogin_ip=?, lastlogin_world=?, username=?, email=?, login_timestamp=? where uuid=?")
-            stmt.setString(1, account.password)
-            stmt.setDouble(2, account.lastlogin_x)
-            stmt.setDouble(3, account.lastlogin_y)
-            stmt.setDouble(4, account.lastlogin_z)
-            stmt.setString(5, account.lastlogin_ip)
-            stmt.setString(6, account.lastlogin_world)
-            stmt.setString(7, account.username)
-            stmt.setString(8, account.email)
-            stmt.setLong(9, account.login_timstamp)
-            val updated: Int = stmt.executeUpdate()
-            connection.commit()
-            return updated > 0
+            getConnection().use { connection ->
+                val stmt = connection.prepareStatement("update $TABLE_NAME set password=?, lastlogin_x=?, lastlogin_y=?, lastlogin_z=?, lastlogin_ip=?, lastlogin_world=?, username=?, email=?, login_timestamp=? where uuid=?")
+                stmt.setString(1, account.password)
+                stmt.setDouble(2, account.lastlogin_x)
+                stmt.setDouble(3, account.lastlogin_y)
+                stmt.setDouble(4, account.lastlogin_z)
+                stmt.setString(5, account.lastlogin_ip)
+                stmt.setString(6, account.lastlogin_world)
+                stmt.setString(7, account.username)
+                stmt.setString(8, account.email)
+                stmt.setLong(9, account.login_timstamp)
+                val updated: Int = stmt.executeUpdate()
+                connection.commit()
+                return updated > 0
+            }
         } catch (e: SQLException) {
             log.error("sqlerror in updateAccount", e)
             return false
@@ -102,22 +102,23 @@ class DataSource(dataSourceSupplier: Supplier<HikariDataSource>) {
 
     fun insertAccount(account: PlayerAccount): Boolean {
         try {
-            val connection: Connection = getConnection()
-            val stmt =
-                connection.prepareStatement("INSERT INTO $TABLE_NAME (uuid, password, lastlogin_x, lastlogin_y, lastlogin_z, lastlogin_ip, lastlogin_world, username, email, login_timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);")
-            stmt.setString(1, account.uuid.toString())
-            stmt.setString(2, account.password)
-            stmt.setDouble(3, account.lastlogin_x)
-            stmt.setDouble(4, account.lastlogin_y)
-            stmt.setDouble(5, account.lastlogin_z)
-            stmt.setString(6, account.lastlogin_ip)
-            stmt.setString(7, account.lastlogin_world)
-            stmt.setString(8, account.username)
-            stmt.setString(9, account.email)
-            stmt.setLong(10, account.login_timstamp)
-            val updated: Int = stmt.executeUpdate()
-            connection.commit()
-            return updated > 0;
+            getConnection().use { connection ->
+                val stmt = connection.prepareStatement("INSERT INTO $TABLE_NAME (uuid, password, lastlogin_x, lastlogin_y, lastlogin_z, lastlogin_ip, lastlogin_world, username, email, login_timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);")
+                stmt.setString(1, account.uuid.toString())
+                stmt.setString(2, account.password)
+                stmt.setDouble(3, account.lastlogin_x)
+                stmt.setDouble(4, account.lastlogin_y)
+                stmt.setDouble(5, account.lastlogin_z)
+                stmt.setString(6, account.lastlogin_ip)
+                stmt.setString(7, account.lastlogin_world)
+                stmt.setString(8, account.username)
+                stmt.setString(9, account.email)
+                stmt.setLong(10, account.login_timstamp)
+                val updated: Int = stmt.executeUpdate()
+                connection.commit()
+                return updated > 0;
+            }
+
         } catch (e: SQLException) {
             log.error("sqlerror in updateAccount", e)
             return false

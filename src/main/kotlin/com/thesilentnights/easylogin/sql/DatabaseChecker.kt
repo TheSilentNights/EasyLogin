@@ -40,7 +40,7 @@ class DatabaseChecker(private val provider: DataSource) {
     private fun createTable(connection: Connection) {
         var createTableSQL: String? = null
         try {
-            createTableSQL = Files.readString(Path.of(ResourceUtil.getResource("sql.table_create.sql").getPath()))
+            createTableSQL = Files.readString(Path.of(ResourceUtil.getResource("sql.table_create.sql").path))
         } catch (e: IOException) {
             log.error("error creating table", e)
             return
