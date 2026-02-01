@@ -12,7 +12,7 @@ class EmailTest : AdminCommands {
                 .then(
                     net.minecraft.commands.Commands.literal("test")
                         .then(
-                            net.minecraft.commands.Commands.argument<kotlin.String?>(
+                            net.minecraft.commands.Commands.argument<String?>(
                                 "targetEmail",
                                 StringArgumentType.greedyString()
                             )

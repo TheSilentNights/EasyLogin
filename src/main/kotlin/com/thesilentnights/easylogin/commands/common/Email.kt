@@ -3,6 +3,7 @@ package com.thesilentnights.easylogin.commands.common
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
+import com.thesilentnights.easylogin.service.EmailService
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 
@@ -16,9 +17,13 @@ class Email : CommonCommands {
                             "email",
                             StringArgumentType.greedyString()
                         )
-                            .executes { commandContext: CommandContext<CommandSourceStack?>? ->
+                            .executes { commandContext: CommandContext<CommandSourceStack> ->
                                 //TODO email
-                                1
+                                if (EmailService.bindEmail(commandContext)) {
+                                    1
+                                } else {
+                                    0
+                                }
                             }
                     )
             )

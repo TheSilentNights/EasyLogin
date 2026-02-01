@@ -4,10 +4,11 @@ import com.thesilentnights.easylogin.service.TaskService
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 
-class Message(var serverPlayer: ServerPlayer,
-              var message: Component,
-              var delay: Long,
-              var isLoop: Boolean
+class Message(
+    var serverPlayer: ServerPlayer,
+    var message: Component,
+    var delay: Long,
+    var isLoop: Boolean
 ) :
     Task {
     var tickCount: Long = 0

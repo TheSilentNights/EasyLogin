@@ -1,5 +1,4 @@
 package com.thesilentnights.easylogin.pojo
 
 
-data class PlayerSession(val account: PlayerAccount) {
-}
+data class PlayerSession(val account: PlayerAccount)

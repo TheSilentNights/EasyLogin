@@ -12,12 +12,14 @@ import thedarkcolour.kotlinforforge.forge.FORGE_BUS
 @Mod(value = "easylogin")
 object EasyLogin {
     val log: Logger = LogManager.getLogger(EasyLogin::class.java)
-    init{
+
+    init {
         Initializer.init()
         FORGE_BUS.addListener(CommandRegistrar::onRegister)
 
         Listener()
         ActionListener()
+
     }
 
 }

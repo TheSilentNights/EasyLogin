@@ -1,0 +1,11 @@
+{
+  "title": "easyLogin",
+  "commands.login.success": "成功登陆 %s! ",
+  "commands.login.failure": "密码错误 %s",
+  "commands.email.bind.failure": "无法绑定到当前账号",
+  "commands.email.bind.success": "验证码已经发送到你的邮箱",
+  "commands.password.recover.success": "你现在可以用临时密码登录 %s",
+  "commands.password.change.failure.unlogged": "请先登录!",
+  "commands.password.confirm.failure": "两次输入密码不一致",
+  "account.already_loggedin": "你已经登录了 %s"
+}

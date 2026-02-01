@@ -59,7 +59,7 @@ class DatabaseChecker(private val provider: DataSource) {
         @Throws(SQLException::class)
         private fun checkColumns(connection: Connection) {
             connection.createStatement().use { statement ->
-                val metaData = connection.getMetaData()
+                val metaData = connection.metaData
                 if (isColumnMissing(
                         metaData,
                         SqlColumnDefinition.LASTLOGIN_IP.toString().lowercase(Locale.getDefault())

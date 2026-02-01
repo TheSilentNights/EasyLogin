@@ -30,7 +30,7 @@ object DatasourceConfigs {
         return HikariDataSource(getSqliteConfig(fileToDataBase))
     }
 
-    fun generateMySqlDataSource(url: kotlin.String?): HikariDataSource {
+    fun generateMySqlDataSource(url: String?): HikariDataSource {
         return HikariDataSource(getMysqlConfig(url))
     }
 
@@ -45,7 +45,7 @@ object DatasourceConfigs {
         return config
     }
 
-    private fun getMysqlConfig(url: kotlin.String?): HikariConfig {
+    private fun getMysqlConfig(url: String?): HikariConfig {
         val config: HikariConfig = HikariConfig()
         config.jdbcUrl = "JDBC:mysql://" + url + CommonStaticRepo.TABLE_NAME
         config.maximumPoolSize = 10

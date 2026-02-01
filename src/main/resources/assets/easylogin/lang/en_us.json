@@ -1,0 +1,12 @@
+{
+  "title": "easyLogin",
+  "commands.login.success": "Successfully logged in %1$s! ",
+  "commands.login.failure": "password error or you logged in a wrong account %1$s",
+  "commands.email.bind.failure": "failed to bind email to current account",
+  "commands.email.bind.success": "confirm code has been sent to your account",
+  "commands.password.change.success": "successfully changed",
+  "commands.password.recover.success": "you can now login through temp password %s",
+  "commands.password.change.failure.unlogged": "please login in first!",
+  "commands.password.confirm.failure": "the confirm password aren't consistent with previous one",
+  "account.already_loggedin": "you have already logged in as %s"
+}

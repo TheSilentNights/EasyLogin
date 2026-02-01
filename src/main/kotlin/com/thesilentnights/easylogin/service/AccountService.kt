@@ -36,7 +36,7 @@ object AccountService {
     fun updateAccount(account: PlayerAccount) {
         if (hasAccount(account.uuid)) {
             provider!!.updateAccount(account)
-        }else{
+        } else {
             provider!!.insertAccount(account)
         }
     }

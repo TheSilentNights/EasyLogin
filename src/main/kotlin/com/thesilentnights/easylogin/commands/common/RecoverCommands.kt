@@ -1,6 +1,5 @@
 package com.thesilentnights.easylogin.commands.common
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
@@ -14,16 +13,16 @@ class RecoverCommands : CommonCommands {
             .then(
                 Commands.literal("send")
                     .then(
-                        Commands.argument<String?>(
+                        Commands.argument(
                             "emailConfirm",
                             StringArgumentType.greedyString()
                         )
-                            .executes(Command { context: CommandContext<CommandSourceStack> ->
+                            .executes { context: CommandContext<CommandSourceStack> ->
                                 if (PasswordRecoveryService.recoveryPassword(
                                         context
                                     )
                                 ) 1 else 0
-                            })
+                            }
                     )
             )
             .then(

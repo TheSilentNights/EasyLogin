@@ -101,7 +101,7 @@ object LoginService {
                 TranslatableComponent("commands.login.success").withStyle(ChatFormatting.GREEN)
                     .withStyle(ChatFormatting.BOLD), false
             )
-            FORGE_BUS.post(EasyLoginEvents.PlayerLoginEvent(serverPlayer,auth.get()))
+            FORGE_BUS.post(EasyLoginEvents.PlayerLoginEvent(serverPlayer, auth.get()))
             return true
         }
     }
@@ -111,8 +111,8 @@ object LoginService {
      * @param serverPlayer targetPlayer
      */
     fun logoutPlayer(serverPlayer: ServerPlayer) {
-        val account: java.util.Optional<PlayerAccount> = PlayerCache.getAccount(serverPlayer.getUUID())
-        if (account.isPresent()) {
+        val account: Optional<PlayerAccount> = PlayerCache.getAccount(serverPlayer.getUUID())
+        if (account.isPresent) {
             val playerAccount: PlayerAccount = account.get()
             playerAccount.lastlogin_ip = serverPlayer.ipAddress
             playerAccount.lastlogin_world = serverPlayer.getLevel().dimension().location().getNamespace()
