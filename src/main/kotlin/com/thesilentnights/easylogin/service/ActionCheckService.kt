@@ -6,7 +6,8 @@ import net.minecraft.world.entity.LivingEntity
 import java.util.*
 
 object ActionCheckService {
-    fun shouldCancelEvent(entity: LivingEntity?): Boolean {
+    @JvmStatic
+    fun shouldCancelEvent(entity: LivingEntity): Boolean {
         if (entity is ServerPlayer) {
             return !isLoggedIn(entity.getUUID())
         }

@@ -1,6 +1,7 @@
 package com.thesilentnights.easylogin.service
 
 import com.thesilentnights.easylogin.pojo.PlayerAccount
+import com.thesilentnights.easylogin.pojo.SqlColumnDefinition
 import com.thesilentnights.easylogin.sql.DataSource
 import java.util.*
 
@@ -26,6 +27,10 @@ object AccountService {
 
     fun getAccount(username: String?): Optional<PlayerAccount> {
         return provider!!.getAuthByName(username)
+    }
+
+    fun updateSingleColumn(key: SqlColumnDefinition, value: String, uuid: UUID): Boolean {
+        return provider!!.updateColumn(key, value, uuid)
     }
 
     fun updateAccount(account: PlayerAccount) {
