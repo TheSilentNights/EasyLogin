@@ -31,9 +31,9 @@ class TeleportToOfflinePlayer : AdminCommands {
                                 if (account.isPresent) {
                                     val playerAccount: PlayerAccount = account.get()
                                     serverPlayer.teleportTo(
-                                        playerAccount.lastlogin_x!!,
-                                        playerAccount.lastlogin_y!!,
-                                        playerAccount.lastlogin_z!!
+                                        playerAccount.lastlogin_x,
+                                        playerAccount.lastlogin_y,
+                                        playerAccount.lastlogin_z
                                     )
                                     return@executes 1
                                 } else {

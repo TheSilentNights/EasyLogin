@@ -24,11 +24,15 @@ object ChangePasswordService {
         val newPasswordConfirm = StringArgumentType.getString(context, "newPasswordConfirm")
 
         if (newPassword == newPasswordConfirm) {
-            AccountService.updateSingleColumn(SqlColumnDefinition.PASSWORD, newPassword, context.getSource()!!.playerOrException.getUUID())
-            context.source.sendSuccess(TranslatableComponent("commands.password.change.success").apply{
+            AccountService.updateSingleColumn(
+                SqlColumnDefinition.PASSWORD,
+                newPassword,
+                context.getSource()!!.playerOrException.getUUID()
+            )
+            context.source.sendSuccess(TranslatableComponent("commands.password.change.success").apply {
                 withStyle(ChatFormatting.BOLD)
                 withStyle(ChatFormatting.GREEN)
-            },true)
+            }, true)
             return true
         } else {
             context.getSource()!!.sendFailure(

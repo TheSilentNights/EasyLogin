@@ -1,5 +1,6 @@
 package com.thesilentnights.easylogin.configs
 
+import com.thesilentnights.easylogin.utils.LogUtil
 import net.minecraftforge.common.ForgeConfigSpec
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -24,6 +25,8 @@ object EasyLoginConfig {
 
 
     init {
+        LogUtil.info(EasyLoginConfig::class, "Loading EasyLogin Config")
+
         val builder = ForgeConfigSpec.Builder()
         builder.comment("EasyLogin Config").push("server")
         this.dataBaseType = builder.comment("DataBase Type").defineEnum("databaseType", DataBaseType.SQLITE)
@@ -38,9 +41,9 @@ object EasyLoginConfig {
         builder.comment("for email function").push("emailAccount")
         //mailAccountEntry
         username = builder.comment("").define("username", "")
-        password =builder.comment("").define("password", "")
-        host =builder.comment("").define("host", "")
-        port =builder.comment("").define("port", 0)
+        password = builder.comment("").define("password", "")
+        host = builder.comment("").define("host", "")
+        port = builder.comment("").define("port", 0)
         from = builder.comment("").define("from", "")
         enableSSL = builder.comment("").define("enableSSL", false)
         starttlsEnable = builder.comment("").define("starttlsEnable", false)
@@ -49,6 +52,6 @@ object EasyLoginConfig {
 
         builder.pop()
         config = builder.build()
-        config.save()
+
     }
 }

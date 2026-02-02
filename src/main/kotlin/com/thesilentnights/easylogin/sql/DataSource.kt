@@ -3,9 +3,8 @@ package com.thesilentnights.easylogin.sql
 import com.thesilentnights.easylogin.pojo.PlayerAccount
 import com.thesilentnights.easylogin.pojo.SqlColumnDefinition
 import com.thesilentnights.easylogin.repo.CommonStaticRepo.TABLE_NAME
+import com.thesilentnights.easylogin.utils.LogUtil
 import com.zaxxer.hikari.HikariDataSource
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 import java.sql.Connection
 import java.sql.SQLException
 import java.util.*
@@ -14,7 +13,6 @@ import java.util.function.Supplier
 
 class DataSource(dataSourceSupplier: Supplier<HikariDataSource>) {
     private val dataSource: HikariDataSource = dataSourceSupplier.get()
-    private var log: Logger = LogManager.getLogger(this::class.java)
 
     fun getAuthByName(name: String?): Optional<PlayerAccount> {
         try {
@@ -94,7 +92,7 @@ class DataSource(dataSourceSupplier: Supplier<HikariDataSource>) {
                 return updated > 0
             }
         } catch (e: SQLException) {
-            log.error("sqlerror in updateAccount", e)
+            LogUtil.error(DataSource::class,"sqlerror in updateAccount", e)
             return false
         }
     }
@@ -120,7 +118,7 @@ class DataSource(dataSourceSupplier: Supplier<HikariDataSource>) {
             }
 
         } catch (e: SQLException) {
-            log.error("sqlerror in updateAccount", e)
+            LogUtil.error(this::class,"sqlerror in updateAccount", e)
             return false
         }
     }
