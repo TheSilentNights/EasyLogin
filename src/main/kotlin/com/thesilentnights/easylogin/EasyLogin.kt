@@ -4,7 +4,7 @@ import com.thesilentnights.easylogin.configs.EasyLoginConfig
 import com.thesilentnights.easylogin.events.listener.ActionListener
 import com.thesilentnights.easylogin.events.listener.Listener
 import com.thesilentnights.easylogin.registrys.CommandRegistrar
-import com.thesilentnights.easylogin.utils.Initializer
+import com.thesilentnights.easylogin.utils.init
 import net.minecraftforge.fml.ModLoadingContext
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.config.ModConfig
@@ -15,7 +15,7 @@ import thedarkcolour.kotlinforforge.forge.FORGE_BUS
 object EasyLogin {
 
     init {
-        Initializer.init()
+        init()
         FORGE_BUS.addListener(CommandRegistrar::onRegister)
 
         Listener()

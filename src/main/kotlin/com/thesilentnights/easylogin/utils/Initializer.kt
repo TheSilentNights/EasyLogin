@@ -9,7 +9,6 @@ import com.thesilentnights.easylogin.sql.DatabaseChecker
 import com.thesilentnights.easylogin.sql.DatasourceConfigs
 import com.zaxxer.hikari.HikariDataSource
 
-object Initializer {
     fun init() {
         val dataSource = DataSource({
             val config = when (EasyLoginConfig.dataBaseType.get()) {
@@ -36,4 +35,3 @@ object Initializer {
     }
 
 
-}
