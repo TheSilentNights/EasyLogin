@@ -14,10 +14,10 @@ import net.minecraftforge.common.MinecraftForge
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
-object PasswordRecoveryService: KoinComponent {
+class PasswordRecoveryService(val loginService: LoginService): KoinComponent {
     var code: MutableMap<java.util.UUID?, String?> =
         HashMap()
-    val AccountService: AccountService = get()
+    val accountService: AccountService = get()
 
     /***
      * recover the password
@@ -30,12 +30,12 @@ object PasswordRecoveryService: KoinComponent {
         val emailConfirm: String = StringArgumentType.getString(context, "emailConfirm")
         val sender: ServerPlayer = context.getSource().playerOrException
         //not logged in
-        if (!LoginService.isLoggedIn(context.getSource().playerOrException.getUUID())) {
+        if (!loginService.isLoggedIn(context.getSource().playerOrException.getUUID())) {
             context.getSource().sendFailure(TranslatableComponent("you cannot use this feature while unlogged"))
             return false
         }
 
-        val account: java.util.Optional<PlayerAccount> = AccountService.getAccount(sender.getUUID())
+        val account: java.util.Optional<PlayerAccount> = accountService.getAccount(sender.getUUID())
         if (account.isPresent && emailConfirm == account.get().email) {
             val randomCode: String? = RandomGenerator(20).generate()
             if (EmailService.sendEmail(sender.getUUID(), emailConfirm, randomCode)) {
@@ -64,10 +64,10 @@ object PasswordRecoveryService: KoinComponent {
     fun confirmRecover(context: CommandContext<CommandSourceStack>): Boolean {
         val confirmCode: String = StringArgumentType.getString(context, "confirmCode")
         val uuid: java.util.UUID = context.source.playerOrException.getUUID()
-        val account: java.util.Optional<PlayerAccount> = AccountService.getAccount(uuid)
+        val account: java.util.Optional<PlayerAccount> = accountService.getAccount(uuid)
 
         //not logged in
-        if (!LoginService.isLoggedIn(context.getSource().playerOrException.getUUID())) {
+        if (!loginService.isLoggedIn(context.getSource().playerOrException.getUUID())) {
             context.getSource().sendFailure(TranslatableComponent("you cannot use this feature while unlogged"))
             return false
         }

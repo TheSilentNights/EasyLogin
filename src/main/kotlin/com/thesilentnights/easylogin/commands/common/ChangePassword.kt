@@ -7,7 +7,7 @@ import com.thesilentnights.easylogin.service.ChangePasswordService
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 
-class ChangePassword : CommonCommands {
+class ChangePassword(val changePasswordService: ChangePasswordService) : CommonCommands {
     override val command: LiteralArgumentBuilder<CommandSourceStack>
         get() = Commands.literal("changepassword")
             .then(
@@ -21,7 +21,7 @@ class ChangePassword : CommonCommands {
                             StringArgumentType.string()
                         )
                             .executes { context: CommandContext<CommandSourceStack> ->
-                                if (ChangePasswordService.changePassword(
+                                if (changePasswordService.changePassword(
                                         context
                                     )
                                 ) 1 else 0

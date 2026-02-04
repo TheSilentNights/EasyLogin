@@ -9,23 +9,22 @@ import net.minecraftforge.fml.ModLoadingContext
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.config.ModConfig
 import net.minecraftforge.fml.loading.FMLLoader
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import org.koin.core.context.GlobalContext
 
 @Mod(value = "easylogin")
-class EasyLogin: KoinComponent{
+class EasyLogin {
 
     constructor() {
         initialize()
 
-        MinecraftForge.EVENT_BUS.register(get<CommandRegistrar>()::onRegister)
+        MinecraftForge.EVENT_BUS.register(GlobalContext.get().get<CommandRegistrar>())
 
 
         ActionListener()
 
-        if (!FMLLoader.isProduction()){
+        if (!FMLLoader.isProduction()) {
             ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EasyLoginConfig.config)
-        }else{
+        } else {
             ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, EasyLoginConfig.config)
         }
     }

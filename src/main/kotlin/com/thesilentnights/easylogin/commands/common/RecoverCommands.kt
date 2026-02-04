@@ -7,7 +7,7 @@ import com.thesilentnights.easylogin.service.PasswordRecoveryService
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 
-class RecoverCommands : CommonCommands {
+class RecoverCommands(val passwordRecoveryService: PasswordRecoveryService) : CommonCommands {
     override val command: LiteralArgumentBuilder<CommandSourceStack>
         get() = Commands.literal("recover")
             .then(
@@ -18,7 +18,7 @@ class RecoverCommands : CommonCommands {
                             StringArgumentType.greedyString()
                         )
                             .executes { context: CommandContext<CommandSourceStack> ->
-                                if (PasswordRecoveryService.recoveryPassword(
+                                if (passwordRecoveryService.recoveryPassword(
                                         context
                                     )
                                 ) 1 else 0
@@ -33,7 +33,7 @@ class RecoverCommands : CommonCommands {
                             StringArgumentType.greedyString()
                         )
                             .executes { context: CommandContext<CommandSourceStack> ->
-                                if (PasswordRecoveryService.confirmRecover(
+                                if (passwordRecoveryService.confirmRecover(
                                         context
                                     )
                                 ) 1 else 0

@@ -13,7 +13,6 @@ class ActionListener {
         MinecraftForge.EVENT_BUS.addListener(::onPlayerInteract)
         MinecraftForge.EVENT_BUS.addListener(::onPlayerAttack)
         MinecraftForge.EVENT_BUS.addListener(::onPlayerDrop)
-
     }
 
     fun onPlayerInteract(event: PlayerInteractEvent) {

@@ -4,18 +4,17 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.thesilentnights.easylogin.pojo.SqlColumnDefinition
-import com.thesilentnights.easylogin.service.LoginService.isLoggedIn
 import net.minecraft.ChatFormatting
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.network.chat.TranslatableComponent
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
-object ChangePasswordService: KoinComponent {
-    val AccountService: AccountService = get()
+class ChangePasswordService(val loginService: LoginService): KoinComponent {
+    val accountService: AccountService = get()
     @Throws(CommandSyntaxException::class)
     fun changePassword(context: CommandContext<CommandSourceStack>): Boolean {
-        if (!isLoggedIn(context.getSource().playerOrException.getUUID())) {
+        if (!loginService.isLoggedIn(context.getSource().playerOrException.getUUID())) {
             context.getSource()!!.sendFailure(
                 TranslatableComponent("commands.password.change.failure.unlogged").withStyle(ChatFormatting.BOLD)
                     .withStyle(ChatFormatting.RED)
@@ -27,7 +26,7 @@ object ChangePasswordService: KoinComponent {
         val newPasswordConfirm = StringArgumentType.getString(context, "newPasswordConfirm")
 
         if (newPassword == newPasswordConfirm) {
-            AccountService.updateSingleColumn(
+            accountService.updateSingleColumn(
                 SqlColumnDefinition.PASSWORD,
                 newPassword,
                 context.getSource()!!.playerOrException.getUUID()

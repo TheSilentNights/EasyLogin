@@ -15,12 +15,18 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.TickEvent.ServerTickEvent
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent
+import net.minecraftforge.eventbus.api.SubscribeEvent
 import org.koin.core.component.KoinComponent
 
 
-class Listener(val accountService: AccountService,val loginService: LoginService): KoinComponent {
+class Listener: KoinComponent {
+    val accountService: AccountService;
+    val loginService: LoginService;
 
-    init {
+    constructor(accountService: AccountService, loginService: LoginService)  {
+        this.accountService = accountService
+        this.loginService = loginService
+
         with(MinecraftForge.EVENT_BUS){
             addListener(this@Listener::onPlayerJoin)
             addListener(this@Listener::onPlayerQuit)
@@ -30,7 +36,8 @@ class Listener(val accountService: AccountService,val loginService: LoginService
         }
     }
 
-    private fun onPlayerJoin(event: PlayerLoggedInEvent) {
+    @SubscribeEvent
+     fun onPlayerJoin(event: PlayerLoggedInEvent) {
         if (event.player is ServerPlayer) {
             val serverPlayer = event.player as ServerPlayer
             //if can reload from cache
@@ -73,16 +80,19 @@ class Listener(val accountService: AccountService,val loginService: LoginService
     }
 
 
-    private fun onEasyPlayerLogin(event: EasyLoginEvents.PlayerLoginEvent) {
+    @SubscribeEvent
+     fun onEasyPlayerLogin(event: EasyLoginEvents.PlayerLoginEvent) {
         PlayerCache.addAccount(event.account)
         TaskService.cancelPlayer(event.serverPlayer.uuid)
     }
 
-    private fun onEasyPlayerLogout(event: EasyLoginEvents.PlayerLogoutEvent) {
+    @SubscribeEvent
+     fun onEasyPlayerLogout(event: EasyLoginEvents.PlayerLogoutEvent) {
         PlayerCache.dropAccount(event.serverPlayer.uuid, true)
     }
 
-    private fun onPlayerQuit(event: PlayerLoggedOutEvent) {
+    @SubscribeEvent
+     fun onPlayerQuit(event: PlayerLoggedOutEvent) {
         if (event.player is ServerPlayer) {
             val serverPlayer = event.player as ServerPlayer
             loginService.logoutPlayer(serverPlayer)
@@ -90,7 +100,8 @@ class Listener(val accountService: AccountService,val loginService: LoginService
         }
     }
 
-    private fun onServerTick(tickEvent: ServerTickEvent) {
+    @SubscribeEvent
+     fun onServerTick(tickEvent: ServerTickEvent) {
         TaskService.tick()
     }
 }
