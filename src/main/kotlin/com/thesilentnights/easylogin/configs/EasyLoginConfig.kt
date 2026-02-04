@@ -1,6 +1,6 @@
 package com.thesilentnights.easylogin.configs
 
-import com.thesilentnights.easylogin.utils.LogUtil
+import com.thesilentnights.easylogin.utils.logInfo
 import net.minecraftforge.common.ForgeConfigSpec
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -25,7 +25,7 @@ object EasyLoginConfig {
 
 
     init {
-        LogUtil.info(EasyLoginConfig::class, "Loading EasyLogin Config")
+        logInfo(EasyLoginConfig::class, "Loading EasyLogin Config")
 
         val builder = ForgeConfigSpec.Builder()
         builder.comment("EasyLogin Config").push("server")
