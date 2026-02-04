@@ -2,23 +2,17 @@ package com.thesilentnights.easylogin
 
 import com.thesilentnights.easylogin.configs.EasyLoginConfig
 import com.thesilentnights.easylogin.events.listener.ActionListener
-import com.thesilentnights.easylogin.registrys.CommandRegistrar
 import com.thesilentnights.easylogin.utils.initialize
-import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.ModLoadingContext
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.config.ModConfig
 import net.minecraftforge.fml.loading.FMLLoader
-import org.koin.core.context.GlobalContext
 
 @Mod(value = "easylogin")
 class EasyLogin {
 
     constructor() {
         initialize()
-
-        MinecraftForge.EVENT_BUS.register(GlobalContext.get().get<CommandRegistrar>())
-
 
         ActionListener()
 

@@ -4,10 +4,9 @@ import com.mojang.brigadier.CommandDispatcher
 import com.thesilentnights.easylogin.commands.admin.*
 import com.thesilentnights.easylogin.commands.common.*
 import net.minecraft.commands.CommandSourceStack
-import org.koin.core.component.KoinComponent
 import org.koin.core.context.GlobalContext
 
-class EasyLoginCommands: KoinComponent {
+object EasyLoginCommands {
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         val koin = GlobalContext.get()
         //common

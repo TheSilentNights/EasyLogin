@@ -1,7 +1,6 @@
 package com.thesilentnights.easylogin.utils
 
 import cn.hutool.core.io.FileUtil
-import com.thesilentnights.easylogin.commands.EasyLoginCommands
 import com.thesilentnights.easylogin.commands.admin.ByPass
 import com.thesilentnights.easylogin.commands.admin.EmailTest
 import com.thesilentnights.easylogin.commands.admin.PlayerInfoCommands
@@ -10,7 +9,6 @@ import com.thesilentnights.easylogin.commands.common.*
 import com.thesilentnights.easylogin.configs.DataBaseType
 import com.thesilentnights.easylogin.configs.EasyLoginConfig
 import com.thesilentnights.easylogin.events.listener.Listener
-import com.thesilentnights.easylogin.registrys.CommandRegistrar
 import com.thesilentnights.easylogin.service.AccountService
 import com.thesilentnights.easylogin.service.ChangePasswordService
 import com.thesilentnights.easylogin.service.LoginService
@@ -67,10 +65,8 @@ fun initialize() {
                 single { EmailTest() }
                 single { PlayerInfoCommands() }
                 single { TeleportToOfflinePlayer() }
-                single { EasyLoginCommands() }
 
                 //registrar
-                single { CommandRegistrar(get()) }
                 single { Listener(get<AccountService>(), get<LoginService>()) }
             })
     }

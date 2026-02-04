@@ -4,12 +4,14 @@ import com.thesilentnights.easylogin.commands.EasyLoginCommands
 import com.thesilentnights.easylogin.utils.logInfo
 import net.minecraftforge.event.RegisterCommandsEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
+import net.minecraftforge.fml.common.Mod
 
-
-class CommandRegistrar(private val easyLoginCommands: EasyLoginCommands) {
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
+object CommandRegistrar {
     @SubscribeEvent
+    @JvmStatic
     fun onRegister(event: RegisterCommandsEvent) {
         logInfo(CommandRegistrar::class, "Registering commands...")
-        easyLoginCommands.register(event.dispatcher)
+        EasyLoginCommands.register(event.dispatcher)
     }
 }
