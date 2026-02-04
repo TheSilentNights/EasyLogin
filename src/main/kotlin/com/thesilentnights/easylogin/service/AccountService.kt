@@ -6,38 +6,34 @@ import com.thesilentnights.easylogin.sql.DataSource
 import java.util.*
 
 
-object AccountService {
-    private var provider: DataSource? = null
+class AccountService(private val dataSource: DataSource) {
 
-    fun init(databaseProvider: DataSource) {
-        provider = databaseProvider
-    }
 
     fun hasAccount(uuid: UUID): Boolean {
-        return provider!!.getAuthByUUID(uuid).isPresent
+        return dataSource.getAuthByUUID(uuid).isPresent
     }
 
     fun hasAccount(username: String?): Boolean {
-        return provider!!.getAuthByName(username).isPresent
+        return dataSource.getAuthByName(username).isPresent
     }
 
     fun getAccount(uuid: UUID): Optional<PlayerAccount> {
-        return provider!!.getAuthByUUID(uuid)
+        return dataSource.getAuthByUUID(uuid)
     }
 
     fun getAccount(username: String?): Optional<PlayerAccount> {
-        return provider!!.getAuthByName(username)
+        return dataSource.getAuthByName(username)
     }
 
     fun updateSingleColumn(key: SqlColumnDefinition, value: String, uuid: UUID): Boolean {
-        return provider!!.updateColumn(key, value, uuid)
+        return dataSource.updateColumn(key, value, uuid)
     }
 
     fun updateAccount(account: PlayerAccount) {
         if (hasAccount(account.uuid)) {
-            provider!!.updateAccount(account)
+            dataSource.updateAccount(account)
         } else {
-            provider!!.insertAccount(account)
+            dataSource.insertAccount(account)
         }
     }
 }

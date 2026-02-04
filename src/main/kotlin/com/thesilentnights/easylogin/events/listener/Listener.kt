@@ -15,9 +15,11 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.TickEvent.ServerTickEvent
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent
+import org.koin.core.component.KoinComponent
 
 
-class Listener {
+class Listener(val accountService: AccountService,val loginService: LoginService): KoinComponent {
+
     init {
         with(MinecraftForge.EVENT_BUS){
             addListener(this@Listener::onPlayerJoin)
@@ -32,7 +34,7 @@ class Listener {
         if (event.player is ServerPlayer) {
             val serverPlayer = event.player as ServerPlayer
             //if can reload from cache
-            if (LoginService.reLogFromCache(serverPlayer)) {
+            if (loginService.reLogFromCache(serverPlayer)) {
                 serverPlayer.sendMessage(TextComponent("already logged in!"), serverPlayer.getUUID())
 
                 MinecraftForge.EVENT_BUS.post(
@@ -45,7 +47,7 @@ class Listener {
                 return
             }
 
-            if (AccountService.hasAccount(serverPlayer.getUUID())) {
+            if (accountService.hasAccount(serverPlayer.getUUID())) {
                 TaskService.addTask(
                     TaskService.generateTaskIdentifier(serverPlayer.getUUID(), TaskService.Suffix.MESSAGE.name),
                     Message(serverPlayer, TextComponent("please login your account by /login"), 80, true)
@@ -83,7 +85,7 @@ class Listener {
     private fun onPlayerQuit(event: PlayerLoggedOutEvent) {
         if (event.player is ServerPlayer) {
             val serverPlayer = event.player as ServerPlayer
-            LoginService.logoutPlayer(serverPlayer)
+            loginService.logoutPlayer(serverPlayer)
             TaskService.cancelPlayer(serverPlayer.getUUID())
         }
     }

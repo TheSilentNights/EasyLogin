@@ -2,11 +2,11 @@ package com.thesilentnights.easylogin.registrys
 
 import com.thesilentnights.easylogin.commands.EasyLoginCommands
 import net.minecraftforge.event.RegisterCommandsEvent
+import org.koin.core.component.KoinComponent
 
 
-object CommandRegistrar {
-
+class CommandRegistrar(val easyLoginCommands: EasyLoginCommands): KoinComponent {
     fun onRegister(event: RegisterCommandsEvent) {
-        EasyLoginCommands.register(event.dispatcher)
+        easyLoginCommands.register(event.dispatcher)
     }
 }

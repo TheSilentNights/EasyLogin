@@ -9,9 +9,11 @@ import net.minecraft.ChatFormatting
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.server.level.ServerPlayer
+import org.koin.core.component.inject
 import java.util.*
 
 class TeleportToOfflinePlayer : AdminCommands {
+    val AccountService: AccountService by inject()
     override fun getCommand(mainNode: LiteralArgumentBuilder<CommandSourceStack>): LiteralArgumentBuilder<CommandSourceStack> {
         return mainNode
             .then(

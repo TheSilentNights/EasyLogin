@@ -11,10 +11,13 @@ import net.minecraft.commands.CommandSourceStack
 import net.minecraft.network.chat.TranslatableComponent
 import net.minecraft.server.level.ServerPlayer
 import net.minecraftforge.common.MinecraftForge
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 
-object PasswordRecoveryService {
+object PasswordRecoveryService: KoinComponent {
     var code: MutableMap<java.util.UUID?, String?> =
         HashMap()
+    val AccountService: AccountService = get()
 
     /***
      * recover the password

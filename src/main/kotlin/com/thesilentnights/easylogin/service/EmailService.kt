@@ -13,11 +13,15 @@ import net.minecraft.commands.CommandSourceStack
 import net.minecraft.network.chat.TranslatableComponent
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import java.util.*
 
-object EmailService {
+object EmailService: KoinComponent {
     var account: MailAccount? = null
     val log: Logger = LogManager.getLogger(EmailService::class)
+    val accountService: AccountService = get()
+    val loginService: LoginService = get()
 
     init {
         if (EasyLoginConfig.enableEmailFunction.get()) {
@@ -75,20 +79,20 @@ object EmailService {
                 .sendFailure(net.minecraft.network.chat.TextComponent("the email feature is not enabled"))
         }
         val email: String? = StringArgumentType.getString(context, "email")
-        if (!LoginService.isLoggedIn(context.getSource().playerOrException.getUUID())) {
+        if (!loginService.isLoggedIn(context.getSource().playerOrException.getUUID())) {
             context.getSource().sendFailure(TranslatableComponent("you cannot execute it when you are not logged in"))
             return false
         }
         //check the consistence
         if (isValidEmail(email)) {
             val account1: Optional<PlayerAccount> =
-                AccountService.getAccount(context.getSource().playerOrException.getUUID())
+                accountService.getAccount(context.getSource().playerOrException.getUUID())
 
             if (account1.isPresent) {
                 val playerAccount: PlayerAccount = account1.get()
                 playerAccount.email = (email)
                 log.info(playerAccount.toString())
-                AccountService.updateAccount(playerAccount)
+                accountService.updateAccount(playerAccount)
                 context.getSource().sendSuccess(
                     TranslatableComponent("bind success").withStyle(ChatFormatting.GREEN)
                         .withStyle(ChatFormatting.BOLD), false

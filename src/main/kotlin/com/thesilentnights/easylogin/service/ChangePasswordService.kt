@@ -8,8 +8,11 @@ import com.thesilentnights.easylogin.service.LoginService.isLoggedIn
 import net.minecraft.ChatFormatting
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.network.chat.TranslatableComponent
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 
-object ChangePasswordService {
+object ChangePasswordService: KoinComponent {
+    val AccountService: AccountService = get()
     @Throws(CommandSyntaxException::class)
     fun changePassword(context: CommandContext<CommandSourceStack>): Boolean {
         if (!isLoggedIn(context.getSource().playerOrException.getUUID())) {

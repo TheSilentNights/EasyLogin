@@ -15,14 +15,17 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraftforge.common.MinecraftForge
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import java.util.*
 
-object LoginService {
-    val log: Logger = LogManager.getLogger(LoginService.javaClass)
+class LoginService: KoinComponent {
+    val log: Logger = LogManager.getLogger(LoginService::class)
+    val accountService: AccountService = get()
 
     @Throws(CommandSyntaxException::class)
     fun login(context: CommandContext<CommandSourceStack>): Boolean {
-        if (!AccountService.hasAccount(context.getSource().playerOrException.getUUID())) {
+        if (!accountService.hasAccount(context.getSource().playerOrException.getUUID())) {
             context.getSource().sendFailure(TextUtil.createText(ChatFormatting.RED, "you haven't registered"))
             return true
         }
@@ -36,7 +39,7 @@ object LoginService {
         }
 
         val password: String = StringArgumentType.getString(context, "password")
-        val account: Optional<PlayerAccount> = AccountService.getAccount(serverPlayer.getUUID())
+        val account: Optional<PlayerAccount> = accountService.getAccount(serverPlayer.getUUID())
 
         if (account.isPresent) {
             if (account.get().password == password) {
@@ -76,7 +79,7 @@ object LoginService {
             return false
         }
 
-        AccountService.updateAccount(
+        accountService.updateAccount(
             PlayerAccount(
                 uuid = serverPlayer.uuid,
                 username = serverPlayer.gameProfile.name,
@@ -91,7 +94,7 @@ object LoginService {
             )
         )
 
-        val auth: Optional<PlayerAccount> = AccountService.getAccount(serverPlayer.getUUID())
+        val auth: Optional<PlayerAccount> = accountService.getAccount(serverPlayer.getUUID())
         if (auth.isEmpty) {
             log.atError().log("sql error found in registering player")
             return false
@@ -119,13 +122,13 @@ object LoginService {
             playerAccount.lastlogin_y = serverPlayer.y
             playerAccount.lastlogin_z = serverPlayer.z
             playerAccount.login_timstamp = System.currentTimeMillis()
-            AccountService.updateAccount(playerAccount)
+            accountService.updateAccount(playerAccount)
             // push events
             MinecraftForge.EVENT_BUS.post(EasyLoginEvents.PlayerLogoutEvent(serverPlayer, playerAccount))
         }
     }
 
-    @JvmStatic
+
     fun isLoggedIn(key: UUID): Boolean {
         return PlayerCache.hasAccount(key)
     }
