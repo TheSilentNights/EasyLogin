@@ -3,16 +3,16 @@ package com.thesilentnights.easylogin.events.listener
 import com.thesilentnights.easylogin.service.ActionCheckService
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.LivingEntity
+import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.entity.living.LivingAttackEvent
 import net.minecraftforge.event.entity.living.LivingDropsEvent
 import net.minecraftforge.event.entity.player.PlayerInteractEvent
-import thedarkcolour.kotlinforforge.forge.FORGE_BUS
 
 class ActionListener {
     init {
-        FORGE_BUS.addListener(::onPlayerInteract)
-        FORGE_BUS.addListener(::onPlayerAttack)
-        FORGE_BUS.addListener(::onPlayerDrop)
+        MinecraftForge.EVENT_BUS.addListener(::onPlayerInteract)
+        MinecraftForge.EVENT_BUS.addListener(::onPlayerAttack)
+        MinecraftForge.EVENT_BUS.addListener(::onPlayerDrop)
 
     }
 

@@ -15,7 +15,6 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraftforge.common.MinecraftForge
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import thedarkcolour.kotlinforforge.forge.FORGE_BUS
 import java.util.*
 
 object LoginService {
@@ -47,7 +46,7 @@ object LoginService {
                         context.getSource().playerOrException.displayName.string
                     ), false
                 )
-                FORGE_BUS.post(EasyLoginEvents.PlayerLoginEvent(serverPlayer, account.get()))
+                MinecraftForge.EVENT_BUS.post(EasyLoginEvents.PlayerLoginEvent(serverPlayer, account.get()))
                 return true
             }
         } else {
@@ -101,7 +100,7 @@ object LoginService {
                 TranslatableComponent("commands.login.success").withStyle(ChatFormatting.GREEN)
                     .withStyle(ChatFormatting.BOLD), false
             )
-            FORGE_BUS.post(EasyLoginEvents.PlayerLoginEvent(serverPlayer, auth.get()))
+            MinecraftForge.EVENT_BUS.post(EasyLoginEvents.PlayerLoginEvent(serverPlayer, auth.get()))
             return true
         }
     }

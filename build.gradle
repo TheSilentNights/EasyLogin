@@ -15,7 +15,7 @@ plugins{
     id("idea")
     id("net.minecraftforge.gradle") version('[6.0,6.2)')
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
-    id("org.jetbrains.kotlin.jvm") version('1.8.0')
+    id("org.jetbrains.kotlin.jvm") version('1.8.21')
 }
 
 apply plugin: 'org.spongepowered.mixin'
@@ -120,6 +120,8 @@ repositories {
         name = 'kotlinforforge'
         url = 'https://thedarkcolour.github.io/KotlinForForge/'
     }
+    mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
@@ -133,11 +135,16 @@ dependencies {
     minecraftLibrary("cn.hutool:hutool-all:${hutool_version}")
     minecraftLibrary("com.sun.mail:javax.mail:1.6.2")
     minecraftLibrary("com.github.ben-manes.caffeine:caffeine:${caffine_version}")
-    implementation("thedarkcolour:kotlinforforge:${kts_forge}")
+
+
+
+    minecraftLibrary("io.insert-koin:koin-core-jvm:3.4.3")
+//    implementation("thedarkcolour:kotlinforforge:${kts_forge}"){
+//        exclude(group:"org.jetbrains.kotlin",module:"kotlin-stdlib-jdk8")
+//        exclude(group:"org.jetbrains.kotlinx",module:"kotlinx-coroutines-core-jvm")
+//    }
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-
-
 }
 
 

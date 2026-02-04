@@ -15,16 +15,17 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.TickEvent.ServerTickEvent
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent
-import thedarkcolour.kotlinforforge.forge.FORGE_BUS
 
 
 class Listener {
     init {
-        FORGE_BUS.addListener(this::onEasyPlayerLogin)
-        FORGE_BUS.addListener(this::onEasyPlayerLogout)
-        FORGE_BUS.addListener(this::onPlayerQuit)
-        FORGE_BUS.addListener(this::onPlayerJoin)
-        FORGE_BUS.addListener(this::onServerTick)
+        with(MinecraftForge.EVENT_BUS){
+            addListener(this@Listener::onPlayerJoin)
+            addListener(this@Listener::onPlayerQuit)
+            addListener(this@Listener::onEasyPlayerLogin)
+            addListener(this@Listener::onEasyPlayerLogout)
+            addListener(this@Listener::onServerTick)
+        }
     }
 
     private fun onPlayerJoin(event: PlayerLoggedInEvent) {

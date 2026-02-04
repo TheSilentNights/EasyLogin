@@ -9,7 +9,7 @@ import com.thesilentnights.easylogin.sql.DatabaseChecker
 import com.thesilentnights.easylogin.sql.DatasourceConfigs
 import com.zaxxer.hikari.HikariDataSource
 
-    fun init() {
+    fun initialize() {
         val dataSource = DataSource({
             val config = when (EasyLoginConfig.dataBaseType.get()) {
                 DataBaseType.SQLITE -> DatasourceConfigs.generateSqliteDataSource(
