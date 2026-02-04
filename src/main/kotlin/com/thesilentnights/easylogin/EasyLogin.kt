@@ -1,7 +1,6 @@
 package com.thesilentnights.easylogin
 
 import com.thesilentnights.easylogin.configs.EasyLoginConfig
-import com.thesilentnights.easylogin.events.listener.ActionListener
 import com.thesilentnights.easylogin.utils.initialize
 import net.minecraftforge.fml.ModLoadingContext
 import net.minecraftforge.fml.common.Mod
@@ -13,8 +12,6 @@ class EasyLogin {
 
     constructor() {
         initialize()
-
-        ActionListener()
 
         if (!FMLLoader.isProduction()) {
             ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EasyLoginConfig.config)
