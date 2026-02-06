@@ -15,9 +15,11 @@ class ChangePasswordService(val loginService: LoginService): KoinComponent {
     @Throws(CommandSyntaxException::class)
     fun changePassword(context: CommandContext<CommandSourceStack>): Boolean {
         if (!loginService.isLoggedIn(context.getSource().playerOrException.getUUID())) {
-            context.getSource()!!.sendFailure(
-                TranslatableComponent("commands.password.change.failure.unlogged").withStyle(ChatFormatting.BOLD)
-                    .withStyle(ChatFormatting.RED)
+            context.source.sendFailure(
+                TranslatableComponent("commands.password.change.failure.unlogged").apply {
+                    withStyle(ChatFormatting.BOLD)
+                    withStyle(ChatFormatting.RED)
+                }
             )
             return false
         }
@@ -25,11 +27,12 @@ class ChangePasswordService(val loginService: LoginService): KoinComponent {
         val newPassword = StringArgumentType.getString(context, "newPassword")
         val newPasswordConfirm = StringArgumentType.getString(context, "newPasswordConfirm")
 
+        //match
         if (newPassword == newPasswordConfirm) {
             accountService.updateSingleColumn(
                 SqlColumnDefinition.PASSWORD,
                 newPassword,
-                context.getSource()!!.playerOrException.getUUID()
+                context.source.playerOrException.getUUID()
             )
             context.source.sendSuccess(TranslatableComponent("commands.password.change.success").apply {
                 withStyle(ChatFormatting.BOLD)
@@ -37,9 +40,11 @@ class ChangePasswordService(val loginService: LoginService): KoinComponent {
             }, true)
             return true
         } else {
-            context.getSource()!!.sendFailure(
-                TranslatableComponent("commands.password.confirm.failure").withStyle(ChatFormatting.RED)
-                    .withStyle(ChatFormatting.BOLD)
+            context.source.sendFailure(
+                TranslatableComponent("commands.password.confirm.failure").apply {
+                    withStyle(ChatFormatting.BOLD)
+                    withStyle(ChatFormatting.RED)
+                }
             )
         }
         return false
