@@ -34,8 +34,10 @@ class LoginService : KoinComponent {
         val serverPlayer: ServerPlayer = context.getSource().playerOrException
         if (PlayerCache.hasAccount(serverPlayer.getUUID())) {
             context.getSource().sendFailure(
-                TranslatableComponent("account.already_loggedin", serverPlayer.gameProfile.name)
-                    .withStyle(ChatFormatting.RED).withStyle(ChatFormatting.BOLD)
+                TranslatableComponent("account.already_loggedin", serverPlayer.gameProfile.name).apply {
+                    withStyle(ChatFormatting.GREEN)
+                    withStyle(ChatFormatting.BOLD)
+                }
             )
         }
 
@@ -45,20 +47,20 @@ class LoginService : KoinComponent {
         if (account.isPresent) {
             if (account.get().password == password) {
                 context.getSource().sendSuccess(
-                    TextUtil.createText(
-                        ChatFormatting.GREEN, "commands.login.success",
-                        context.getSource().playerOrException.displayName.string
-                    ), false
+                    TranslatableComponent("commands.login.success", serverPlayer.displayName.string).apply {
+                        withStyle(ChatFormatting.GREEN)
+                        withStyle(ChatFormatting.BOLD)
+                    }, false
                 )
                 removeLimit(account.get(), serverPlayer)
                 return true
             }
         } else {
             context.getSource().sendFailure(
-                TextUtil.createText(
-                    ChatFormatting.RED, "commands.login.failure",
-                    context.getSource().playerOrException.displayName.string
-                )
+                TranslatableComponent("commands.login.failure").apply {
+                    withStyle(ChatFormatting.RED)
+                    withStyle(ChatFormatting.BOLD)
+                }
             )
             return false
         }
@@ -80,8 +82,10 @@ class LoginService : KoinComponent {
 
         if (password != repeat) {
             context.getSource().sendFailure(
-                TranslatableComponent("commands.password.confirm.failure")
-                    .withStyle(ChatFormatting.RED).withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.RED)
+                TranslatableComponent("commands.password.confirm.failure").apply {
+                    withStyle(ChatFormatting.RED)
+                    withStyle(ChatFormatting.BOLD)
+                }
             )
             return false
         }
@@ -107,8 +111,10 @@ class LoginService : KoinComponent {
             return false
         } else {
             context.getSource().sendSuccess(
-                TranslatableComponent("commands.login.success").withStyle(ChatFormatting.GREEN)
-                    .withStyle(ChatFormatting.BOLD), false
+                TranslatableComponent("commands.login.success").apply {
+                    withStyle(ChatFormatting.GREEN)
+                    withStyle(ChatFormatting.BOLD)
+                }, false
             )
             MinecraftForge.EVENT_BUS.post(EasyLoginEvents.PlayerLoginEvent(serverPlayer, auth.get()))
             return true
@@ -118,7 +124,10 @@ class LoginService : KoinComponent {
     /**
      * 
      * @param serverPlayer targetPlayer
+     *
+     * if the player is bypassed by the bypass service, the logout process will be skipped through account.isPresent
      */
+
     fun logoutPlayer(serverPlayer: ServerPlayer) {
         val account: Optional<PlayerAccount> = PlayerCache.getAccount(serverPlayer.getUUID())
         if (account.isPresent) {
@@ -141,7 +150,12 @@ class LoginService : KoinComponent {
     }
 
     fun reLogFromCache(serverPlayer: ServerPlayer): Boolean {
-        return PlayerSessionCache.hasSession(serverPlayer.getUUID()) && PlayerSessionCache.getSession(serverPlayer.getUUID())!!
-            .account.lastLoginIp == serverPlayer.ipAddress
+        if (!PlayerSessionCache.hasSession(serverPlayer.uuid)) {
+            return false
+        }
+
+        val account: PlayerAccount = PlayerSessionCache.getSession(serverPlayer.uuid)!!.account
+        removeLimit(account, serverPlayer)
+        return true
     }
 }

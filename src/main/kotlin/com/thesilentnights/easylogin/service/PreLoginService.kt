@@ -1,15 +1,12 @@
 package com.thesilentnights.easylogin.service
 
 import com.thesilentnights.easylogin.configs.EasyLoginConfig
-import com.thesilentnights.easylogin.events.EasyLoginEvents
-import com.thesilentnights.easylogin.repo.PlayerSessionCache
 import com.thesilentnights.easylogin.service.task.KickPlayer
 import com.thesilentnights.easylogin.service.task.Message
 import net.minecraft.network.chat.TextComponent
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.effect.MobEffectInstance
 import net.minecraft.world.effect.MobEffects
-import net.minecraftforge.common.MinecraftForge
 
 class PreLoginService(val accountService: AccountService, val loginService: LoginService) {
     fun preLogin(serverPlayer: ServerPlayer) {
@@ -19,15 +16,7 @@ class PreLoginService(val accountService: AccountService, val loginService: Logi
 
         //if can reload from cache
         if (loginService.reLogFromCache(serverPlayer)) {
-            serverPlayer.sendMessage(TextComponent("already logged in!"), serverPlayer.getUUID())
-
-            MinecraftForge.EVENT_BUS.post(
-                EasyLoginEvents.PlayerLoginEvent(
-                    serverPlayer,
-                    PlayerSessionCache.getSession(serverPlayer.getUUID())!!.account
-                )
-            )
-
+            serverPlayer.sendMessage(TextComponent("relogged from cache"), serverPlayer.getUUID())
             return
         }
 

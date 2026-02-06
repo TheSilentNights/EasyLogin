@@ -1,6 +1,5 @@
 package com.thesilentnights.easylogin.events.listener
 
-import com.thesilentnights.easylogin.events.EasyLoginEvents
 import com.thesilentnights.easylogin.service.AccountService
 import com.thesilentnights.easylogin.service.LoginService
 import com.thesilentnights.easylogin.service.PreLoginService
@@ -26,8 +25,6 @@ class Listener {
         with(MinecraftForge.EVENT_BUS) {
             addListener(this@Listener::onPlayerJoin)
             addListener(this@Listener::onPlayerQuit)
-            addListener(this@Listener::onEasyPlayerLogin)
-            addListener(this@Listener::onEasyPlayerLogout)
             addListener(this@Listener::onServerTick)
         }
     }
@@ -38,12 +35,6 @@ class Listener {
             val serverPlayer = event.player as ServerPlayer
             preLoginService.preLogin(serverPlayer)
         }
-    }
-
-
-    @SubscribeEvent
-    fun onEasyPlayerLogin(event: EasyLoginEvents.PlayerLoginEvent) {
-
     }
 
 

@@ -21,7 +21,7 @@ object PlayerCache {
 
     fun dropAccount(uuid: UUID, tempDrop: Boolean) {
         if (tempDrop) {
-            val uuid1: PlayerAccount = cacheMap.get(uuid)!!
+            val uuid1: PlayerAccount = cacheMap[uuid]!!
             PlayerSessionCache.scheduleDrop(uuid1)
         }
         cacheMap.remove(uuid)

@@ -9,7 +9,7 @@ object ActionCheckService {
     @JvmStatic
     fun shouldCancelEvent(entity: LivingEntity): Boolean {
         if (entity is ServerPlayer) {
-            return !isLoggedIn(entity.getUUID()) && ByPassService.isBypassed(entity.uuid)
+            return !isLoggedIn(entity.getUUID()) && !ByPassService.isBypassed(entity.uuid)
         }
         return false
     }
