@@ -45,9 +45,10 @@ fun initialize() {
                 //service
                 single { AccountService(get()) }
                 single { ChangePasswordService(get()) }
+                single { PreLoginService() }
                 single { LoginService() }
-                single { EmailService(get(),get()) }
-                single { PasswordRecoveryService(get(),get())}
+                single { EmailService(get(), get()) }
+                single { PasswordRecoveryService(get(), get()) }
 
 
                 //common commands
@@ -65,8 +66,8 @@ fun initialize() {
                 single { PlayerInfoCommands() }
                 single { TeleportToOfflinePlayer() }
 
-                //registrar
-                single { Listener(get(), get()) }
+                //listener
+                single { Listener(get(), get(), get()) }
             })
     }
 }
