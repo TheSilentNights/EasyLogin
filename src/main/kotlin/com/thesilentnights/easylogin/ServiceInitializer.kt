@@ -45,7 +45,7 @@ fun initialize() {
                 //service
                 single { AccountService(get()) }
                 single { ChangePasswordService(get()) }
-                single { PreLoginService() }
+                single { PreLoginService(get(), get()) }
                 single { LoginService() }
                 single { EmailService(get(), get()) }
                 single { PasswordRecoveryService(get(), get()) }

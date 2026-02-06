@@ -1,13 +1,11 @@
 package com.thesilentnights.easylogin.events.listener
 
 import com.thesilentnights.easylogin.events.EasyLoginEvents
-import com.thesilentnights.easylogin.repo.PlayerCache
 import com.thesilentnights.easylogin.service.AccountService
 import com.thesilentnights.easylogin.service.LoginService
 import com.thesilentnights.easylogin.service.PreLoginService
 import com.thesilentnights.easylogin.service.TaskService
 import net.minecraft.server.level.ServerPlayer
-import net.minecraft.world.effect.MobEffects
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.TickEvent.ServerTickEvent
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent
@@ -43,22 +41,11 @@ class Listener {
     }
 
 
-    private fun removeBlindEffectFromPlayer(serverPlayer: ServerPlayer) {
-        serverPlayer.removeEffect(MobEffects.BLINDNESS)
-    }
-
-
     @SubscribeEvent
     fun onEasyPlayerLogin(event: EasyLoginEvents.PlayerLoginEvent) {
-        PlayerCache.addAccount(event.account)
-        TaskService.cancelPlayer(event.serverPlayer.uuid)
-        removeBlindEffectFromPlayer(event.serverPlayer)
+
     }
 
-    @SubscribeEvent
-    fun onEasyPlayerLogout(event: EasyLoginEvents.PlayerLogoutEvent) {
-        PlayerCache.dropAccount(event.serverPlayer.uuid, true)
-    }
 
     @SubscribeEvent
     fun onPlayerQuit(event: PlayerLoggedOutEvent) {

@@ -12,6 +12,7 @@ import net.minecraft.ChatFormatting
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.network.chat.TranslatableComponent
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.effect.MobEffects
 import net.minecraftforge.common.MinecraftForge
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -63,6 +64,12 @@ class LoginService : KoinComponent {
         }
 
         return false
+    }
+
+    private fun removeLimit(account: PlayerAccount, serverPlayer: ServerPlayer) {
+        PlayerCache.addAccount(account)
+        TaskService.cancelPlayer(serverPlayer.uuid)
+        serverPlayer.removeEffect(MobEffects.BLINDNESS)
     }
 
     @Throws(CommandSyntaxException::class)
@@ -124,7 +131,7 @@ class LoginService : KoinComponent {
             playerAccount.loginTimestamp = System.currentTimeMillis()
             accountService.updateAccount(playerAccount)
             // push events
-            MinecraftForge.EVENT_BUS.post(EasyLoginEvents.PlayerLogoutEvent(serverPlayer, playerAccount))
+            PlayerCache.dropAccount(serverPlayer.uuid, true)
         }
     }
 
