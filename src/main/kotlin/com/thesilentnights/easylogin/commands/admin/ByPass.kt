@@ -6,7 +6,7 @@ import com.mojang.brigadier.context.CommandContext
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 
-class ByPass: AdminCommands {
+class ByPass : AdminCommands {
     override fun getCommand(mainNode: LiteralArgumentBuilder<CommandSourceStack>): LiteralArgumentBuilder<CommandSourceStack> {
         return mainNode.then(
             Commands.literal("bypass").then(

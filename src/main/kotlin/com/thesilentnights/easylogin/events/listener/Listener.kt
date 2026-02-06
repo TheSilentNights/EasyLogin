@@ -4,9 +4,7 @@ import com.thesilentnights.easylogin.configs.EasyLoginConfig
 import com.thesilentnights.easylogin.events.EasyLoginEvents
 import com.thesilentnights.easylogin.repo.PlayerCache
 import com.thesilentnights.easylogin.repo.PlayerSessionCache
-import com.thesilentnights.easylogin.service.AccountService
-import com.thesilentnights.easylogin.service.LoginService
-import com.thesilentnights.easylogin.service.TaskService
+import com.thesilentnights.easylogin.service.*
 import com.thesilentnights.easylogin.service.task.KickPlayer
 import com.thesilentnights.easylogin.service.task.Message
 import net.minecraft.network.chat.TextComponent
@@ -18,18 +16,17 @@ import net.minecraftforge.event.TickEvent.ServerTickEvent
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
-import org.koin.core.component.KoinComponent
 
 
-class Listener: KoinComponent {
+class Listener {
     val accountService: AccountService;
     val loginService: LoginService;
 
-    constructor(accountService: AccountService, loginService: LoginService)  {
+    constructor(accountService: AccountService, loginService: LoginService) {
         this.accountService = accountService
         this.loginService = loginService
 
-        with(MinecraftForge.EVENT_BUS){
+        with(MinecraftForge.EVENT_BUS) {
             addListener(this@Listener::onPlayerJoin)
             addListener(this@Listener::onPlayerQuit)
             addListener(this@Listener::onEasyPlayerLogin)
@@ -39,9 +36,14 @@ class Listener: KoinComponent {
     }
 
     @SubscribeEvent
-     fun onPlayerJoin(event: PlayerLoggedInEvent) {
+    fun onPlayerJoin(event: PlayerLoggedInEvent) {
         if (event.player is ServerPlayer) {
             val serverPlayer = event.player as ServerPlayer
+
+            if (NPCService.isNPC(serverPlayer)) {
+                ByPassService.addBypass(serverPlayer.uuid)
+            }
+
             //if can reload from cache
             if (loginService.reLogFromCache(serverPlayer)) {
                 serverPlayer.sendMessage(TextComponent("already logged in!"), serverPlayer.getUUID())
@@ -102,19 +104,19 @@ class Listener: KoinComponent {
 
 
     @SubscribeEvent
-     fun onEasyPlayerLogin(event: EasyLoginEvents.PlayerLoginEvent) {
+    fun onEasyPlayerLogin(event: EasyLoginEvents.PlayerLoginEvent) {
         PlayerCache.addAccount(event.account)
         TaskService.cancelPlayer(event.serverPlayer.uuid)
         removeBlindEffectFromPlayer(event.serverPlayer)
     }
 
     @SubscribeEvent
-     fun onEasyPlayerLogout(event: EasyLoginEvents.PlayerLogoutEvent) {
+    fun onEasyPlayerLogout(event: EasyLoginEvents.PlayerLogoutEvent) {
         PlayerCache.dropAccount(event.serverPlayer.uuid, true)
     }
 
     @SubscribeEvent
-     fun onPlayerQuit(event: PlayerLoggedOutEvent) {
+    fun onPlayerQuit(event: PlayerLoggedOutEvent) {
         if (event.player is ServerPlayer) {
             val serverPlayer = event.player as ServerPlayer
             loginService.logoutPlayer(serverPlayer)
@@ -123,7 +125,7 @@ class Listener: KoinComponent {
     }
 
     @SubscribeEvent
-     fun onServerTick(tickEvent: ServerTickEvent) {
+    fun onServerTick(tickEvent: ServerTickEvent) {
         TaskService.tick()
     }
 }

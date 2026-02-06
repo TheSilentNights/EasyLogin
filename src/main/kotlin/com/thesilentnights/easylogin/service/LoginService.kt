@@ -19,7 +19,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import java.util.*
 
-class LoginService: KoinComponent {
+class LoginService : KoinComponent {
     val log: Logger = LogManager.getLogger(LoginService::class)
     val accountService: AccountService = get()
 
@@ -84,13 +84,13 @@ class LoginService: KoinComponent {
                 uuid = serverPlayer.uuid,
                 username = serverPlayer.gameProfile.name,
                 password = password,
-                lastlogin_ip = serverPlayer.ipAddress,
+                lastLoginIp = serverPlayer.ipAddress,
                 serverPlayer.x,
                 serverPlayer.y,
                 serverPlayer.z,
-                lastlogin_world = serverPlayer.getLevel().dimension().location().getNamespace(),
+                lastLoginWorld = serverPlayer.getLevel().dimension().location().getNamespace(),
                 email = null,
-                login_timstamp = System.currentTimeMillis(),
+                loginTimestamp = System.currentTimeMillis(),
             )
         )
 
@@ -116,12 +116,12 @@ class LoginService: KoinComponent {
         val account: Optional<PlayerAccount> = PlayerCache.getAccount(serverPlayer.getUUID())
         if (account.isPresent) {
             val playerAccount: PlayerAccount = account.get()
-            playerAccount.lastlogin_ip = serverPlayer.ipAddress
-            playerAccount.lastlogin_world = serverPlayer.getLevel().dimension().location().getNamespace()
-            playerAccount.lastlogin_x = serverPlayer.x
-            playerAccount.lastlogin_y = serverPlayer.y
-            playerAccount.lastlogin_z = serverPlayer.z
-            playerAccount.login_timstamp = System.currentTimeMillis()
+            playerAccount.lastLoginIp = serverPlayer.ipAddress
+            playerAccount.lastLoginWorld = serverPlayer.getLevel().dimension().location().getNamespace()
+            playerAccount.lastLoginX = serverPlayer.x
+            playerAccount.lastLoginY = serverPlayer.y
+            playerAccount.lastLoginZ = serverPlayer.z
+            playerAccount.loginTimestamp = System.currentTimeMillis()
             accountService.updateAccount(playerAccount)
             // push events
             MinecraftForge.EVENT_BUS.post(EasyLoginEvents.PlayerLogoutEvent(serverPlayer, playerAccount))
@@ -135,6 +135,6 @@ class LoginService: KoinComponent {
 
     fun reLogFromCache(serverPlayer: ServerPlayer): Boolean {
         return PlayerSessionCache.hasSession(serverPlayer.getUUID()) && PlayerSessionCache.getSession(serverPlayer.getUUID())!!
-            .account.lastlogin_ip == serverPlayer.ipAddress
+            .account.lastLoginIp == serverPlayer.ipAddress
     }
 }

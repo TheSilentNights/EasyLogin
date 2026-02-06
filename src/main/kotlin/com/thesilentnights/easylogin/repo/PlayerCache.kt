@@ -26,4 +26,5 @@ object PlayerCache {
         }
         cacheMap.remove(uuid)
     }
+
 }

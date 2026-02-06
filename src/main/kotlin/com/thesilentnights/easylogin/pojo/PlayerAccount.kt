@@ -9,13 +9,13 @@ data class PlayerAccount(
     val uuid: UUID,
     var username: String,
     var password: String,
-    var lastlogin_ip: String,
-    var lastlogin_x: Double,
-    var lastlogin_y: Double,
-    var lastlogin_z: Double,
-    var lastlogin_world: String?,
+    var lastLoginIp: String,
+    var lastLoginX: Double,
+    var lastLoginY: Double,
+    var lastLoginZ: Double,
+    var lastLoginWorld: String?,
     var email: String?,
-    var login_timstamp: Long,
+    var loginTimestamp: Long,
 ) {
 
 
