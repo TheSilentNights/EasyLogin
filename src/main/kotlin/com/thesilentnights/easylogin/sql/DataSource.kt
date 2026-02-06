@@ -17,7 +17,7 @@ class DataSource(dataSourceSupplier: Supplier<HikariDataSource>) {
     fun getAuthByName(name: String?): Optional<PlayerAccount> {
         try {
             dataSource.connection.use { connection ->
-                val sql = "select * from " + TABLE_NAME + " where name=?"
+                val sql = "select * from $TABLE_NAME where username=?"
                 connection.prepareStatement(sql).use { statement ->
                     statement.setString(1, name)
                     return Optional.ofNullable(PlayerAccount.fromResultSet(statement.executeQuery()))

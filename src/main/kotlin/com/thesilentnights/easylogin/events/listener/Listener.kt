@@ -11,6 +11,8 @@ import com.thesilentnights.easylogin.service.task.KickPlayer
 import com.thesilentnights.easylogin.service.task.Message
 import net.minecraft.network.chat.TextComponent
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.effect.MobEffectInstance
+import net.minecraft.world.effect.MobEffects
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.TickEvent.ServerTickEvent
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent
@@ -54,6 +56,9 @@ class Listener: KoinComponent {
                 return
             }
 
+            //put effects on player
+            addBlindEffectToPlayer(serverPlayer)
+
             if (accountService.hasAccount(serverPlayer.getUUID())) {
                 TaskService.addTask(
                     TaskService.generateTaskIdentifier(serverPlayer.getUUID(), TaskService.Suffix.MESSAGE.name),
@@ -79,11 +84,28 @@ class Listener: KoinComponent {
         }
     }
 
+    private fun addBlindEffectToPlayer(serverPlayer: ServerPlayer) {
+        serverPlayer.addEffect(
+            MobEffectInstance(
+                MobEffects.BLINDNESS,
+                25565,
+                10,
+                false,
+                false
+            )
+        )
+    }
+
+    private fun removeBlindEffectFromPlayer(serverPlayer: ServerPlayer) {
+        serverPlayer.removeEffect(MobEffects.BLINDNESS)
+    }
+
 
     @SubscribeEvent
      fun onEasyPlayerLogin(event: EasyLoginEvents.PlayerLoginEvent) {
         PlayerCache.addAccount(event.account)
         TaskService.cancelPlayer(event.serverPlayer.uuid)
+        removeBlindEffectFromPlayer(event.serverPlayer)
     }
 
     @SubscribeEvent
