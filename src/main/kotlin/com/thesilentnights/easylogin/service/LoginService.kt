@@ -50,7 +50,7 @@ class LoginService : KoinComponent {
                         context.getSource().playerOrException.displayName.string
                     ), false
                 )
-                MinecraftForge.EVENT_BUS.post(EasyLoginEvents.PlayerLoginEvent(serverPlayer, account.get()))
+                removeLimit(account.get(), serverPlayer)
                 return true
             }
         } else {
