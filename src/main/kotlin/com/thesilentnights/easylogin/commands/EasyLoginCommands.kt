@@ -11,12 +11,12 @@ object EasyLoginCommands {
         val koin = GlobalContext.get()
         //common
         with(dispatcher){
-            register(koin.get<LoginCommands>().command)
-            register(koin.get<RegistrarCommands>().command)
-            register(koin.get<LogoutCommand>().command)
+            register(koin.get<Login>().command)
+            register(koin.get<Registrar>().command)
+            register(koin.get<Logout>().command)
             register(koin.get<ChangePassword>().command)
             register(koin.get<Email>().command)
-            register(koin.get<RecoverCommands>().command)
+            register(koin.get<Recover>().command)
         }
 
         //admin

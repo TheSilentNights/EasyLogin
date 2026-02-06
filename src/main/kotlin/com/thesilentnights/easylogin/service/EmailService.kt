@@ -13,17 +13,20 @@ import net.minecraft.commands.CommandSourceStack
 import net.minecraft.network.chat.TranslatableComponent
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import java.util.*
 
-object EmailService: KoinComponent {
+class EmailService {
     var account: MailAccount? = null
     val log: Logger = LogManager.getLogger(EmailService::class)
-    val accountService: AccountService = get()
-    val loginService: LoginService = get()
+    val accountService: AccountService
+    val loginService: LoginService
 
-    init {
+    constructor(accountService: AccountService,loginService: LoginService) {
+        this.accountService = accountService
+        this.loginService = loginService
+    }
+
+    init{
         if (EasyLoginConfig.enableEmailFunction.get()) {
             account = MailAccount()
             with(account!!) {
@@ -45,12 +48,12 @@ object EmailService: KoinComponent {
     }
 
     fun sendEmail(sender: UUID, emailAddress: String, data: String?): Boolean {
-        if (TimerService.contains(TimerService.generateIdentifier(sender, EmailService::class.java))) {
+        if (TimerService.contains(TimerService.generateIdentifier(sender, EmailService::class))) {
             return false
         } else {
             MailUtil.send(account, emailAddress, "EasyLogin", data, false)
             TimerService.add(
-                TimerService.generateIdentifier(sender, EmailService::class.java),
+                TimerService.generateIdentifier(sender, EmailService::class),
                 (1000 * 60 * 5).toLong()
             )
             return true

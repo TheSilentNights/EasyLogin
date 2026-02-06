@@ -9,7 +9,7 @@ import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.server.level.ServerPlayer
 
-class LogoutCommand : CommonCommands {
+class Logout : CommonCommands {
     override val command: LiteralArgumentBuilder<CommandSourceStack>
         get() = Commands.literal("logout")
             .executes { commandContext: CommandContext<CommandSourceStack> ->

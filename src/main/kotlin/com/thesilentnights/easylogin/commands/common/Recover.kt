@@ -7,7 +7,7 @@ import com.thesilentnights.easylogin.service.PasswordRecoveryService
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 
-class RecoverCommands(val passwordRecoveryService: PasswordRecoveryService) : CommonCommands {
+class Recover(val passwordRecoveryService: PasswordRecoveryService) : CommonCommands {
     override val command: LiteralArgumentBuilder<CommandSourceStack>
         get() = Commands.literal("recover")
             .then(

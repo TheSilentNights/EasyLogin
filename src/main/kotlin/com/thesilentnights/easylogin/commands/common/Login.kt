@@ -7,7 +7,7 @@ import com.thesilentnights.easylogin.service.LoginService
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 
-class LoginCommands(val loginService: LoginService) : CommonCommands {
+class Login(val loginService: LoginService) : CommonCommands {
     override val command: LiteralArgumentBuilder<CommandSourceStack>
         get() = Commands.literal("login")
             .then(

@@ -7,7 +7,7 @@ import com.thesilentnights.easylogin.service.EmailService
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 
-class Email : CommonCommands {
+class Email(val emailService: EmailService) : CommonCommands {
     override val command: LiteralArgumentBuilder<CommandSourceStack>
         get() = Commands.literal("email")
             .then(
@@ -19,7 +19,7 @@ class Email : CommonCommands {
                         )
                             .executes { commandContext: CommandContext<CommandSourceStack> ->
                                 //TODO email
-                                if (EmailService.bindEmail(commandContext)) {
+                                if (emailService.bindEmail(commandContext)) {
                                     1
                                 } else {
                                     0

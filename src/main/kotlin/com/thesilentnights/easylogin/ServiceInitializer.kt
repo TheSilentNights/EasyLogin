@@ -1,4 +1,4 @@
-package com.thesilentnights.easylogin.utils
+package com.thesilentnights.easylogin
 
 import cn.hutool.core.io.FileUtil
 import com.thesilentnights.easylogin.commands.admin.ByPass
@@ -9,13 +9,11 @@ import com.thesilentnights.easylogin.commands.common.*
 import com.thesilentnights.easylogin.configs.DataBaseType
 import com.thesilentnights.easylogin.configs.EasyLoginConfig
 import com.thesilentnights.easylogin.events.listener.Listener
-import com.thesilentnights.easylogin.service.AccountService
-import com.thesilentnights.easylogin.service.ChangePasswordService
-import com.thesilentnights.easylogin.service.LoginService
-import com.thesilentnights.easylogin.service.PasswordRecoveryService
+import com.thesilentnights.easylogin.service.*
 import com.thesilentnights.easylogin.sql.DataSource
 import com.thesilentnights.easylogin.sql.DatabaseChecker
 import com.thesilentnights.easylogin.sql.DatasourceConfigs
+import com.thesilentnights.easylogin.utils.PathAppender
 import com.zaxxer.hikari.HikariDataSource
 import org.koin.core.context.GlobalContext
 import org.koin.dsl.module
@@ -47,17 +45,18 @@ fun initialize() {
                 //service
                 single { AccountService(get()) }
                 single { ChangePasswordService(get()) }
-                single { PasswordRecoveryService(get())}
                 single { LoginService() }
+                single { EmailService(get(),get()) }
+                single { PasswordRecoveryService(get(),get())}
 
 
                 //common commands
-                single { LoginCommands(get()) }
-                single { RegistrarCommands(get()) }
-                single { LogoutCommand() }
-                single { RecoverCommands(get()) }
+                single { Login(get()) }
+                single { Registrar(get()) }
+                single { Logout() }
+                single { Recover(get()) }
                 single { ChangePassword(get()) }
-                single { Email() }
+                single { Email(get()) }
 
 
                 //admin commands
@@ -67,7 +66,7 @@ fun initialize() {
                 single { TeleportToOfflinePlayer() }
 
                 //registrar
-                single { Listener(get<AccountService>(), get<LoginService>()) }
+                single { Listener(get(), get()) }
             })
     }
 }

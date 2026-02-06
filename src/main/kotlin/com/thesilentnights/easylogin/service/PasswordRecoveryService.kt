@@ -14,7 +14,7 @@ import net.minecraftforge.common.MinecraftForge
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
-class PasswordRecoveryService(val loginService: LoginService): KoinComponent {
+class PasswordRecoveryService(val loginService: LoginService,val emailService: EmailService): KoinComponent {
     var code: MutableMap<java.util.UUID?, String?> =
         HashMap()
     val accountService: AccountService = get()
@@ -38,7 +38,7 @@ class PasswordRecoveryService(val loginService: LoginService): KoinComponent {
         val account: java.util.Optional<PlayerAccount> = accountService.getAccount(sender.getUUID())
         if (account.isPresent && emailConfirm == account.get().email) {
             val randomCode: String? = RandomGenerator(20).generate()
-            if (EmailService.sendEmail(sender.getUUID(), emailConfirm, randomCode)) {
+            if (emailService.sendEmail(sender.getUUID(), emailConfirm, randomCode)) {
                 code[sender.getUUID()] = randomCode
                 context.getSource().sendSuccess(
                     TranslatableComponent("commands.email.bind.success").withStyle(ChatFormatting.BOLD)
