@@ -6,9 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.thesilentnights.easylogin.service.LoginService;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import org.springframework.stereotype.Component;
 
-@Component
 public class EmailTest extends AdminCommands {
 
     public EmailTest(LoginService loginService) {
