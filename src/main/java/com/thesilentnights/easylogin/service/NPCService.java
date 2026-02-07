@@ -1,21 +1,27 @@
-package com.thesilentnights.easylogin.service
+package com.thesilentnights.easylogin.service;
 
-import com.thesilentnights.easylogin.compact.CurtainCompact
-import com.thesilentnights.easylogin.compact.NpcCompactor
-import net.minecraft.world.entity.LivingEntity
-import net.minecraftforge.fml.ModList
+import com.thesilentnights.easylogin.compact.CurtainCompact;
+import com.thesilentnights.easylogin.compact.NpcCompactor;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraftforge.fml.ModList;
 
-object NPCService {
-    val checkList: MutableList<NpcCompactor> = ArrayList();
+import java.util.ArrayList;
+import java.util.List;
 
-    init{
-        if (ModList.get().isLoaded("curtain")){
-            checkList.add(CurtainCompact)
+public class NPCService {
+
+    private static final List<NpcCompactor> checkList = new ArrayList<>();
+
+    static {
+        if (ModList.get().isLoaded("curtain")) {
+            checkList.add(new CurtainCompact());
         }
     }
-    fun isNPC(entity: LivingEntity): Boolean {
-        checkList.ifEmpty { return false }
 
-        return checkList.any { compactor -> compactor.isNpc(entity) }
+    public static boolean isNPC(LivingEntity entity) {
+        if (checkList.isEmpty()) {
+            return false;
+        }
+        return checkList.stream().anyMatch(compactor -> compactor.isNpc(entity));
     }
 }

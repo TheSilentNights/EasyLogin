@@ -1,31 +1,33 @@
-package com.thesilentnights.easylogin.repo
+package com.thesilentnights.easylogin.repo;
 
-import com.github.benmanes.caffeine.cache.Cache
-import com.github.benmanes.caffeine.cache.Caffeine
-import com.thesilentnights.easylogin.pojo.PlayerAccount
-import com.thesilentnights.easylogin.pojo.PlayerSession
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.thesilentnights.easylogin.pojo.PlayerAccount;
+import com.thesilentnights.easylogin.pojo.PlayerSession;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.time.Duration
-import java.util.*
+import java.time.Duration;
+import java.util.UUID;
 
-object PlayerSessionCache {
-    private val log: Logger = LogManager.getLogger(PlayerSessionCache::class.java)
-    private val sessions: Cache<String, PlayerSession> = Caffeine.newBuilder().maximumSize(60).expireAfterAccess(
-        Duration.ofSeconds((5 * 60).toLong())
-    ).build()
+public class PlayerSessionCache {
 
-    fun scheduleDrop(account: PlayerAccount) {
-        log.info(account.toString())
-        sessions.put(account.uuid.toString(), PlayerSession(account))
+    private static final Logger log = LogManager.getLogger(PlayerSessionCache.class);
+    private static final Cache<String, PlayerSession> sessions = Caffeine.newBuilder()
+            .maximumSize(60)
+            .expireAfterAccess(Duration.ofSeconds(5 * 60L))
+            .build();
+
+    public static void scheduleDrop(PlayerAccount account) {
+        log.info(account.toString());
+        sessions.put(account.getUuid().toString(), new PlayerSession(account));
     }
 
-    fun hasSession(uuid: UUID): Boolean {
-        return sessions.getIfPresent(uuid.toString()) != null
+    public static boolean hasSession(UUID uuid) {
+        return sessions.getIfPresent(uuid.toString()) != null;
     }
 
-    fun getSession(key: UUID): PlayerSession? {
-        return sessions.getIfPresent(key.toString())
+    public static PlayerSession getSession(UUID key) {
+        return sessions.getIfPresent(key.toString());
     }
 }

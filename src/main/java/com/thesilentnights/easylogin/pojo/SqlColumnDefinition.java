@@ -1,4 +1,4 @@
-package com.thesilentnights.easylogin.pojo
+package com.thesilentnights.easylogin.pojo;
 
 public enum SqlColumnDefinition {
     USERNAME,

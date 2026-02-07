@@ -1,24 +1,33 @@
-package com.thesilentnights.easylogin.service.task
+package com.thesilentnights.easylogin.service.task;
 
-import java.util.*
-import java.util.function.Consumer
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Consumer;
 
+public class CleanUp implements Task {
 
-class CleanUp(var delay: Long) : Task {
-    var tickCount: Long = 0
-    var cleanUpMethods: LinkedList<Consumer<Void?>?> = LinkedList<Consumer<Void?>?>()
+    private final long delay;
+    private final List<Consumer<Void>> cleanUpMethods = new LinkedList<>();
+    private long tickCount = 0;
 
-    fun addCleanUpMethods(method: Consumer<Void?>?) {
-        cleanUpMethods.add(method)
+    public CleanUp(long delay) {
+        this.delay = delay;
     }
 
-    override fun tick() {
-        this.tickCount++
-        if (this.tickCount >= this.delay) {
-            this.tickCount = 0
-            cleanUpMethods.forEach(Consumer { method: Consumer<Void?>? ->
-                method!!.accept(null)
-            })
+    public void addCleanUpMethod(Consumer<Void> method) {
+        if (method != null) {
+            cleanUpMethods.add(method);
+        }
+    }
+
+    @Override
+    public void tick() {
+        tickCount++;
+        if (tickCount >= delay) {
+            tickCount = 0;
+            for (Consumer<Void> method : cleanUpMethods) {
+                method.accept(null);
+            }
         }
     }
 }
