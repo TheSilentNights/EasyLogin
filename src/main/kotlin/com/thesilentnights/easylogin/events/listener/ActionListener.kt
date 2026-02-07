@@ -1,18 +1,24 @@
 package com.thesilentnights.easylogin.events.listener
 
 import com.thesilentnights.easylogin.service.ActionCheckService
+import com.thesilentnights.easylogin.service.CommandRejectionService
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.LivingEntity
+import net.minecraftforge.event.CommandEvent
 import net.minecraftforge.event.entity.living.LivingAttackEvent
 import net.minecraftforge.event.entity.living.LivingDropsEvent
 import net.minecraftforge.event.entity.player.PlayerInteractEvent
+import net.minecraftforge.eventbus.api.IEventBus
 import net.minecraftforge.eventbus.api.SubscribeEvent
-import net.minecraftforge.fml.common.Mod
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
-object ActionListener {
+class ActionListener {
+    private val commandRejectionService: CommandRejectionService
 
-    @JvmStatic
+    constructor(eventBus: IEventBus, commandRejectionService: CommandRejectionService) {
+        eventBus.register(this)
+        this.commandRejectionService = commandRejectionService
+    }
+
     @SubscribeEvent
     fun onPlayerInteract(event: PlayerInteractEvent) {
         if (ActionCheckService.shouldCancelEvent(event.player)) {
@@ -20,7 +26,6 @@ object ActionListener {
         }
     }
 
-    @JvmStatic
     @SubscribeEvent
     fun onPlayerAttack(event: LivingAttackEvent) {
         if (event.entityLiving is ServerPlayer && ActionCheckService.shouldCancelEvent(event.entityLiving)) {
@@ -29,7 +34,6 @@ object ActionListener {
     }
 
 
-    @JvmStatic
     @SubscribeEvent
     fun onPlayerDrop(event: LivingDropsEvent) {
         if (event.entity is LivingEntity && ActionCheckService.shouldCancelEvent(event.entity as LivingEntity)) {
@@ -37,6 +41,10 @@ object ActionListener {
         }
     }
 
+    @SubscribeEvent
+    fun onPlayerDrop(event: CommandEvent) {
+        commandRejectionService.handleRejection(event)
+    }
 
 
 }

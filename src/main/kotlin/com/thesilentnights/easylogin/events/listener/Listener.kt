@@ -42,9 +42,13 @@ class Listener {
     fun onPlayerQuit(event: PlayerLoggedOutEvent) {
         if (event.player is ServerPlayer) {
             val serverPlayer = event.player as ServerPlayer
-            loginService.logoutPlayer(serverPlayer)
-            TaskService.cancelPlayer(serverPlayer.getUUID())
+            logoutPlayer(serverPlayer)
         }
+    }
+
+    private fun logoutPlayer(serverPlayer: ServerPlayer) {
+        loginService.logoutPlayer(serverPlayer)
+        TaskService.cancelPlayer(serverPlayer.getUUID())
     }
 
     @SubscribeEvent
