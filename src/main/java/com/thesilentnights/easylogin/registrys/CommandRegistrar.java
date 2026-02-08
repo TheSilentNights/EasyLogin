@@ -2,16 +2,18 @@ package com.thesilentnights.easylogin.registrys;
 
 import com.thesilentnights.easylogin.commands.EasyLoginCommands;
 import com.thesilentnights.easylogin.utils.LogUtil;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CommandRegistrar {
-    private final EasyLoginCommands commands;
+    private EasyLoginCommands commands;
 
-    public CommandRegistrar(EasyLoginCommands commands, IEventBus eventBus) {
+    public CommandRegistrar(EasyLoginCommands commands) {
         this.commands = commands;
-        eventBus.register(this);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent
