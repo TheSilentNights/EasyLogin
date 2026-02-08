@@ -9,10 +9,12 @@ import com.thesilentnights.easylogin.service.LoginService;
 import com.thesilentnights.easylogin.utils.TextUtil;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Component
 public class PlayerInfoCommands extends AdminCommands {
     private final AccountService accountService;
 

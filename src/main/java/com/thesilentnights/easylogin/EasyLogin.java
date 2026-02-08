@@ -9,8 +9,6 @@ import com.thesilentnights.easylogin.commands.admin.TeleportToOfflinePlayer;
 import com.thesilentnights.easylogin.commands.common.*;
 import com.thesilentnights.easylogin.configs.EasyLoginConfig;
 import com.thesilentnights.easylogin.dsl.Dependencies;
-import com.thesilentnights.easylogin.events.listener.ActionListener;
-import com.thesilentnights.easylogin.events.listener.Listener;
 import com.thesilentnights.easylogin.registrys.CommandRegistrar;
 import com.thesilentnights.easylogin.repo.CommonStaticRepo;
 import com.thesilentnights.easylogin.service.*;
@@ -91,10 +89,6 @@ public class EasyLogin {
                         Dependencies.getBean(AccountService.class)
                 )
         );
-
-        //init listener
-        new ActionListener(Dependencies.getBean(IEventBus.class), Dependencies.getBean(CommandRejectionService.class));
-        new Listener(Dependencies.getBean(AccountService.class), Dependencies.getBean(LoginService.class), Dependencies.getBean(PreLoginService.class));
 
         //init  commands
         new CommandRegistrar(

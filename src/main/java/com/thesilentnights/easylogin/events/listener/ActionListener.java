@@ -11,7 +11,9 @@ import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ActionListener {
 
     private final CommandRejectionService commandRejectionService;

@@ -7,7 +7,9 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import org.springframework.stereotype.Service;
 
+@Service
 public class PreLoginService {
 
     private final AccountService accountService;
