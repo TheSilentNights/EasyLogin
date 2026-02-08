@@ -1,24 +1,17 @@
-package com.thesilentnights.easylogin.registrys;
+package com.thesilentnights.easylogin.registrys
 
-import com.thesilentnights.easylogin.commands.EasyLoginCommands;
-import com.thesilentnights.easylogin.utils.LogUtil;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.springframework.stereotype.Component;
+import com.thesilentnights.easylogin.commands.EasyLoginCommands
+import com.thesilentnights.easylogin.utils.logInfo
+import net.minecraftforge.event.RegisterCommandsEvent
+import net.minecraftforge.eventbus.api.SubscribeEvent
+import net.minecraftforge.fml.common.Mod
 
-@Component
-public class CommandRegistrar {
-    private EasyLoginCommands commands;
-
-    public CommandRegistrar(EasyLoginCommands commands) {
-        this.commands = commands;
-        MinecraftForge.EVENT_BUS.register(this);
-    }
-
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
+object CommandRegistrar {
     @SubscribeEvent
-    public void onRegister(RegisterCommandsEvent event) {
-        LogUtil.logInfo(CommandRegistrar.class, "Registering commands...");
-        commands.register(event.getDispatcher());
+    @JvmStatic
+    fun onRegister(event: RegisterCommandsEvent) {
+        logInfo(CommandRegistrar::class, "Registering commands...")
+        EasyLoginCommands.register(event.dispatcher)
     }
 }

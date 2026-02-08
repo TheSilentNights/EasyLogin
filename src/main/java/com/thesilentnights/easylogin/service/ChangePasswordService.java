@@ -8,15 +8,17 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import org.koin.core.component.KoinComponent;
+import org.koin.java.KoinJavaComponent;
 
-public class ChangePasswordService {
+public class ChangePasswordService implements KoinComponent {
 
     private final LoginService loginService;
     private final AccountService accountService;
 
-    public ChangePasswordService(LoginService loginService, AccountService accountService) {
+    public ChangePasswordService(LoginService loginService) {
         this.loginService = loginService;
-        this.accountService = accountService;
+        this.accountService = KoinJavaComponent.get(AccountService.class);
     }
 
     public boolean changePassword(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {

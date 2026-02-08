@@ -1,130 +1,150 @@
-package com.thesilentnights.easylogin.sql;
+package com.thesilentnights.easylogin.sql
 
-import cn.hutool.core.io.resource.ResourceUtil;
-import com.thesilentnights.easylogin.pojo.SqlColumnDefinition;
-import com.thesilentnights.easylogin.repo.CommonStaticRepo;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import cn.hutool.core.io.resource.ResourceUtil
+import com.thesilentnights.easylogin.pojo.SqlColumnDefinition
+import com.thesilentnights.easylogin.repo.CommonStaticRepo.TABLE_NAME
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
+import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.Path
+import java.sql.Connection
+import java.sql.DatabaseMetaData
+import java.sql.SQLException
+import java.util.*
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Locale;
+class DatabaseChecker(private val provider: DataSource) {
+    private val log: Logger = LogManager.getLogger(DatabaseChecker::class.java)
 
-public class DatabaseChecker {
+    fun checkDatabase() {
 
-    private final DataSource provider;
-    private final Logger log = LogManager.getLogger(DatabaseChecker.class);
-
-    public DatabaseChecker(DataSource provider) {
-        this.provider = provider;
-    }
-
-    // Companion object methods as static
-    private static void checkColumns(Connection connection) {
-        try (var statement = connection.createStatement()) {
-            DatabaseMetaData metaData = connection.getMetaData();
-
-            if (isColumnMissing(metaData, SqlColumnDefinition.LASTLOGIN_IP.toString().toLowerCase(Locale.getDefault()))) {
-                statement.executeUpdate(
-                        "alter table " + CommonStaticRepo.TABLE_NAME + " add column " +
-                                SqlColumnDefinition.LASTLOGIN_IP.toString().toLowerCase(Locale.getDefault()) + " varchar(255);"
-                );
+        try {
+            provider.getConnection().use { connection ->
+                //check table
+                val metaData = connection.metaData
+                if (!metaData.getTables(null, null, TABLE_NAME, arrayOf<String>("TABLE")).next()) {
+                    createTable(connection)
+                }
+                checkColumns(connection)
+                connection.commit()
             }
-
-            if (isColumnMissing(metaData, SqlColumnDefinition.LASTLOGIN_X.toString().toLowerCase(Locale.getDefault()))) {
-                statement.executeUpdate(
-                        "alter table " + CommonStaticRepo.TABLE_NAME + " add column " +
-                                SqlColumnDefinition.LASTLOGIN_X.toString().toLowerCase(Locale.getDefault()) + " varchar(255);"
-                );
-            }
-
-            if (isColumnMissing(metaData, SqlColumnDefinition.LASTLOGIN_Y.toString().toLowerCase(Locale.getDefault()))) {
-                statement.executeUpdate(
-                        "alter table " + CommonStaticRepo.TABLE_NAME + " add column " +
-                                SqlColumnDefinition.LASTLOGIN_Y.toString().toLowerCase(Locale.getDefault()) + " varchar(255);"
-                );
-            }
-
-            if (isColumnMissing(metaData, SqlColumnDefinition.LASTLOGIN_Z.toString().toLowerCase(Locale.getDefault()))) {
-                statement.executeUpdate(
-                        "alter table " + CommonStaticRepo.TABLE_NAME + " add column " +
-                                SqlColumnDefinition.LASTLOGIN_Z.toString().toLowerCase(Locale.getDefault()) + " varchar(255);"
-                );
-            }
-
-            if (isColumnMissing(metaData, SqlColumnDefinition.LASTLOGIN_WORLD.toString().toLowerCase(Locale.getDefault()))) {
-                statement.executeUpdate(
-                        "alter table " + CommonStaticRepo.TABLE_NAME + " add column " +
-                                SqlColumnDefinition.LASTLOGIN_WORLD.toString().toLowerCase(Locale.getDefault()) + " varchar(255);"
-                );
-            }
-
-            if (isColumnMissing(metaData, SqlColumnDefinition.LOGIN_TIMESTAMP.toString().toLowerCase(Locale.getDefault()))) {
-                statement.executeUpdate(
-                        "alter table " + CommonStaticRepo.TABLE_NAME + " add column " +
-                                SqlColumnDefinition.LOGIN_TIMESTAMP.toString().toLowerCase(Locale.getDefault()) + " varchar(255);"
-                );
-            }
-
-            if (isColumnMissing(metaData, SqlColumnDefinition.EMAIL.toString().toLowerCase(Locale.getDefault()))) {
-                statement.executeUpdate(
-                        "alter table " + CommonStaticRepo.TABLE_NAME + " add column " +
-                                SqlColumnDefinition.EMAIL.toString().toLowerCase(Locale.getDefault()) + " varchar(255);"
-                );
-            }
-
-            if (isColumnMissing(metaData, SqlColumnDefinition.USERNAME.toString().toLowerCase(Locale.getDefault()))) {
-                statement.executeUpdate(
-                        "alter table " + CommonStaticRepo.TABLE_NAME + " add column " +
-                                SqlColumnDefinition.USERNAME.toString().toLowerCase(Locale.getDefault()) + " varchar(255);"
-                );
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } catch (e: SQLException) {
+            log.error("error checking data base", e)
         }
     }
 
-    private static boolean isColumnMissing(DatabaseMetaData metaData, String columnName) throws SQLException {
-        try (ResultSet columns = metaData.getColumns(null, null, CommonStaticRepo.TABLE_NAME, columnName)) {
-            return !columns.next();
+    /**
+     * 创建accounts表
+     */
+    @Throws(SQLException::class)
+    private fun createTable(connection: Connection) {
+        var createTableSQL: String? = null
+        try {
+            createTableSQL = Files.readString(Path.of(ResourceUtil.getResource("sql.table_create.sql").path))
+        } catch (e: IOException) {
+            log.error("error creating table", e)
+            return
         }
+
+        connection.createStatement().use { stmt ->
+            stmt.execute(createTableSQL)
+        }
+        connection.commit()
+        log.info("accounts created")
     }
 
-    public void checkDatabase() {
-        try (Connection connection = provider.getConnection()) {
-            DatabaseMetaData metaData = connection.getMetaData();
-            try (ResultSet tables = metaData.getTables(null, null, CommonStaticRepo.TABLE_NAME, new String[]{"TABLE"})) {
-                if (!tables.next()) {
-                    createTable(connection);
+
+    companion object {
+        //only check the columns without checking the primary key
+        @Throws(SQLException::class)
+        private fun checkColumns(connection: Connection) {
+            connection.createStatement().use { statement ->
+                val metaData = connection.metaData
+                if (isColumnMissing(
+                        metaData,
+                        SqlColumnDefinition.LASTLOGIN_IP.toString().lowercase(Locale.getDefault())
+                    )
+                ) {
+                    statement.executeUpdate(
+                        "alter table $TABLE_NAME add column " + SqlColumnDefinition.LASTLOGIN_IP.toString()
+                            .lowercase(Locale.getDefault()) + " varchar(255);"
+                    )
+                }
+
+                if (isColumnMissing(
+                        metaData,
+                        SqlColumnDefinition.LASTLOGIN_X.toString().lowercase(Locale.getDefault())
+                    )
+                ) {
+                    statement.executeUpdate(
+                        "alter table $TABLE_NAME add column " + SqlColumnDefinition.LASTLOGIN_X.toString()
+                            .lowercase(Locale.getDefault()) + " varchar(255);"
+                    )
+                }
+
+                if (isColumnMissing(
+                        metaData,
+                        SqlColumnDefinition.LASTLOGIN_Y.toString().lowercase(Locale.getDefault())
+                    )
+                ) {
+                    statement.executeUpdate(
+                        "alter table $TABLE_NAME add column " + SqlColumnDefinition.LASTLOGIN_Y.toString()
+                            .lowercase(Locale.getDefault()) + " varchar(255);"
+                    )
+                }
+
+                if (isColumnMissing(
+                        metaData,
+                        SqlColumnDefinition.LASTLOGIN_Z.toString().lowercase(Locale.getDefault())
+                    )
+                ) {
+                    statement.executeUpdate(
+                        "alter table $TABLE_NAME add column " + SqlColumnDefinition.LASTLOGIN_Z.toString()
+                            .lowercase(Locale.getDefault()) + " varchar(255);"
+                    )
+                }
+
+                if (isColumnMissing(
+                        metaData,
+                        SqlColumnDefinition.LASTLOGIN_WORLD.toString().lowercase(Locale.getDefault())
+                    )
+                ) {
+                    statement.executeUpdate(
+                        "alter table $TABLE_NAME add column " + SqlColumnDefinition.LASTLOGIN_WORLD.toString()
+                            .lowercase(Locale.getDefault()) + " varchar(255);"
+                    )
+                }
+
+                if (isColumnMissing(
+                        metaData,
+                        SqlColumnDefinition.LOGIN_TIMESTAMP.toString().lowercase(Locale.getDefault())
+                    )
+                ) {
+                    statement.executeUpdate(
+                        "alter table $TABLE_NAME add column " + SqlColumnDefinition.LOGIN_TIMESTAMP.toString()
+                            .lowercase(Locale.getDefault()) + " varchar(255);"
+                    )
+                }
+
+                if (isColumnMissing(metaData, SqlColumnDefinition.EMAIL.toString().lowercase(Locale.getDefault()))) {
+                    statement.executeUpdate(
+                        "alter table $TABLE_NAME add column " + SqlColumnDefinition.EMAIL.toString()
+                            .lowercase(Locale.getDefault()) + " varchar(255);"
+                    )
+                }
+                if (isColumnMissing(metaData, SqlColumnDefinition.USERNAME.toString().lowercase(Locale.getDefault()))) {
+                    statement.executeUpdate(
+                        "alter table $TABLE_NAME add column " + SqlColumnDefinition.USERNAME.toString()
+                            .lowercase(Locale.getDefault()) + " varchar(255);"
+                    )
                 }
             }
-            checkColumns(connection);
-            connection.commit();
-        } catch (SQLException e) {
-            log.error("error checking data base", e);
-        }
-    }
-
-    private void createTable(Connection connection) {
-        String createTableSQL = null;
-        try {
-            createTableSQL = Files.readString(Path.of(ResourceUtil.getResource("sql.table_create.sql").getPath()));
-        } catch (IOException e) {
-            log.error("error creating table", e);
-            return;
         }
 
-        try (var stmt = connection.createStatement()) {
-            stmt.execute(createTableSQL);
-            connection.commit();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        @Throws(SQLException::class)
+        private fun isColumnMissing(metaData: DatabaseMetaData, columnName: String?): Boolean {
+            val columns = metaData.getColumns(null, null, TABLE_NAME, columnName)
+            return !columns.next()
         }
-        log.info("accounts created");
     }
 }

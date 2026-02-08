@@ -3,10 +3,10 @@ package com.thesilentnights.easylogin.service;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.thesilentnights.easylogin.events.EasyLoginEvents;
 import com.thesilentnights.easylogin.pojo.PlayerAccount;
 import com.thesilentnights.easylogin.repo.PlayerCache;
 import com.thesilentnights.easylogin.repo.PlayerSessionCache;
-import com.thesilentnights.easylogin.utils.LogUtil;
 import com.thesilentnights.easylogin.utils.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -14,17 +14,13 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraftforge.common.MinecraftForge;
 
-import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
 
 public class LoginService {
-    private final AccountService accountService;
 
-    public LoginService(AccountService accountService) {
-        this.accountService = accountService;
-    }
 
     public boolean login(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
@@ -66,7 +62,7 @@ public class LoginService {
 
     private void removeLimit(PlayerAccount account, ServerPlayer serverPlayer) {
         PlayerCache.addAccount(account);
-        TaskService.cancelPlayer(serverPlayer.getUUID());
+        taskService.cancelPlayer(serverPlayer.getUUID());
         serverPlayer.removeEffect(MobEffects.BLINDNESS);
     }
 
@@ -100,14 +96,14 @@ public class LoginService {
 
         Optional<PlayerAccount> auth = accountService.getAccount(serverPlayer.getUUID());
         if (auth.isEmpty()) {
-            LogUtil.logError(LoginService.class, "sql error found in registering player", new SQLException());
+            log.atError().log("sql error found in registering player");
             return false;
         } else {
             MutableComponent successMessage = new TranslatableComponent("commands.login.success")
                     .withStyle(ChatFormatting.GREEN)
                     .withStyle(ChatFormatting.BOLD);
             context.getSource().sendSuccess(successMessage, false);
-            removeLimit(auth.get(), serverPlayer);
+            MinecraftForge.EVENT_BUS.post(new EasyLoginEvents.PlayerLoginEvent(serverPlayer, auth.get()));
             return true;
         }
     }

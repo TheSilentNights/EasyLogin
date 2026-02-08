@@ -1,52 +1,50 @@
-package com.thesilentnights.easylogin.events.listener;
+package com.thesilentnights.easylogin.events.listener
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.thesilentnights.easylogin.service.ActionCheckService;
-import com.thesilentnights.easylogin.service.CommandRejectionService;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingDropsEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.springframework.stereotype.Component;
+import com.thesilentnights.easylogin.service.ActionCheckService
+import com.thesilentnights.easylogin.service.CommandRejectionService
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.entity.LivingEntity
+import net.minecraftforge.event.CommandEvent
+import net.minecraftforge.event.entity.living.LivingAttackEvent
+import net.minecraftforge.event.entity.living.LivingDropsEvent
+import net.minecraftforge.event.entity.player.PlayerInteractEvent
+import net.minecraftforge.eventbus.api.IEventBus
+import net.minecraftforge.eventbus.api.SubscribeEvent
 
-@Component
-public class ActionListener {
+class ActionListener {
+    private val commandRejectionService: CommandRejectionService
 
-    private final CommandRejectionService commandRejectionService;
-
-
-    public ActionListener(IEventBus eventBus, CommandRejectionService commandRejectionService) {
-        eventBus.register(this);
-        this.commandRejectionService = commandRejectionService;
+    constructor(eventBus: IEventBus, commandRejectionService: CommandRejectionService) {
+        eventBus.register(this)
+        this.commandRejectionService = commandRejectionService
     }
 
     @SubscribeEvent
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        if (ActionCheckService.shouldCancelEvent(event.getPlayer())) {
-            event.setCanceled(true);
+    fun onPlayerInteract(event: PlayerInteractEvent) {
+        if (ActionCheckService.shouldCancelEvent(event.player)) {
+            event.isCanceled = true
         }
     }
 
     @SubscribeEvent
-    public void onPlayerAttack(LivingAttackEvent event) {
-        if (event.getEntityLiving() instanceof ServerPlayer && ActionCheckService.shouldCancelEvent(event.getEntityLiving())) {
-            event.setCanceled(true);
+    fun onPlayerAttack(event: LivingAttackEvent) {
+        if (event.entityLiving is ServerPlayer && ActionCheckService.shouldCancelEvent(event.entityLiving)) {
+            event.isCanceled = true
+        }
+    }
+
+
+    @SubscribeEvent
+    fun onPlayerDrop(event: LivingDropsEvent) {
+        if (event.entity is LivingEntity && ActionCheckService.shouldCancelEvent(event.entity as LivingEntity)) {
+            event.isCanceled = true
         }
     }
 
     @SubscribeEvent
-    public void onPlayerDrop(LivingDropsEvent event) {
-        if (event.getEntity() instanceof LivingEntity && ActionCheckService.shouldCancelEvent((LivingEntity) event.getEntity())) {
-            event.setCanceled(true);
-        }
+    fun onPlayerDrop(event: CommandEvent) {
+        commandRejectionService.handleRejection(event)
     }
 
-    @SubscribeEvent
-    public void onPlayerDrop(CommandEvent event) throws CommandSyntaxException {
-        commandRejectionService.handleRejection(event);
-    }
+
 }
