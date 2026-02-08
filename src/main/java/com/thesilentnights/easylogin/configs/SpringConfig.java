@@ -6,11 +6,9 @@ import com.thesilentnights.easylogin.sql.DatasourceConfigs;
 import com.thesilentnights.easylogin.utils.PathAppender;
 import com.zaxxer.hikari.HikariConfig;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan("com.thesilentnights.easylogin")
 public class SpringConfig {
     @Bean
     public DataSource dataSource() {
