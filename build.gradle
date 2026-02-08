@@ -12,9 +12,11 @@ buildscript {
 
 plugins {
     id("java")
+    id("idea")
     id("net.minecraftforge.gradle") version('[6.0,6.2)')
     id("com.gradleup.shadow") version("8.3.0")
     id 'org.parchmentmc.librarian.forgegradle' version '[1.0,2.0)'
+    id("org.jetbrains.kotlin.jvm") version('1.8.21')
 }
 
 apply plugin: 'org.spongepowered.mixin'
@@ -27,7 +29,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: 'official', version: '1.17.1'
+    mappings channel: 'parchment', version: '2021.12.12-1.17.1'
 
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
     runs {
@@ -133,9 +135,9 @@ dependencies {
     shadowDeps minecraftLibrary("cn.hutool:hutool-all:${hutool_version}")
     shadowDeps minecraftLibrary("com.sun.mail:javax.mail:[1.6.2]")
     shadowDeps minecraftLibrary("com.github.ben-manes.caffeine:caffeine:${caffine_version}")
+    shadowDeps minecraftLibrary("io.insert-koin:koin-core-jvm:${koin_version}")
 
-    // Source: https://mvnrepository.com/artifact/org.springframework/spring-context
-    shadowDeps implementation("org.springframework:spring-context:6.2.15")
+    compileOnly 'org.jetbrains.kotlin:kotlin-stdlib'
 
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
@@ -164,10 +166,8 @@ def refmap = fileTree(project.buildDir).files.find { file ->
 shadowJar {
     dependsOn(build)
     configurations = [project.configurations.shadowDeps]
-    if (refmap != null) {
-        from(refmap.parentFile) {
-            include refmapName
-        }
+    from(refmap.parentFile) {
+        include refmapName
     }
     exclude("org/slf4j/**")
 }
