@@ -10,25 +10,9 @@ buildscript {
     }
 }
 
-buildscript {
-    repositories {
-        // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-        maven { url = 'https://maven.parchmentmc.org' } // Add this line
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-    }
-}
-
 plugins {
     id("java")
     id("net.minecraftforge.gradle") version('[6.0,6.2)')
-<<<<<<< HEAD
-=======
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
->>>>>>> parent of 2b3d94a (remove deps)
     id("com.gradleup.shadow") version("8.3.0")
     id 'org.parchmentmc.librarian.forgegradle' version '[1.0,2.0)'
 }
@@ -119,14 +103,8 @@ minecraft {
 }
 
 mixin {
-<<<<<<< HEAD
     add sourceSets.main, "mixins.${modId}.refmap.json"
     config("${modId}.mixins.json")
-=======
-    add sourceSets.main, "${modId}.refmap.json"
-
-    config "${modId}.mixins.json"
->>>>>>> parent of 2b3d94a (remove deps)
 }
 
 
@@ -143,10 +121,7 @@ repositories {
     gradlePluginPortal()
 }
 
-<<<<<<< HEAD
 
-=======
->>>>>>> parent of 2b3d94a (remove deps)
 dependencies {
     // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
@@ -156,34 +131,14 @@ dependencies {
     shadowDeps minecraftLibrary("com.zaxxer:HikariCP:${hikaricp_version}")
     shadowDeps minecraftLibrary("org.xerial:sqlite-jdbc:${sqlite_version}")
     shadowDeps minecraftLibrary("cn.hutool:hutool-all:${hutool_version}")
-<<<<<<< HEAD
     shadowDeps minecraftLibrary("com.sun.mail:javax.mail:[1.6.2]")
     shadowDeps minecraftLibrary("com.github.ben-manes.caffeine:caffeine:${caffine_version}")
 
-=======
-    shadowDeps minecraftLibrary("com.sun.mail:javax.mail:1.6.2")
-    shadowDeps minecraftLibrary("com.github.ben-manes.caffeine:caffeine:${caffine_version}")
->>>>>>> parent of 2b3d94a (remove deps)
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 
-<<<<<<< HEAD
-=======
-def shadowForForge = tasks.register("shadowForForge", ShadowJar) {
-    dependsOn(build)
-    archiveClassifier = 'forge'
-    configurations = [project.configurations.shadowDeps]
-
-    from(fileTree(jar.archiveFile))
-
-    exclude("org/slf4j/**")
-}
-
-
-// Example for how to get properties into the manifest for reading at runtime.
->>>>>>> parent of 2b3d94a (remove deps)
 jar {
     manifest {
         attributes(["Specification-Title"     : "easylogin",
