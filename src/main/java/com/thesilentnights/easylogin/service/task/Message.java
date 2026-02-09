@@ -1,31 +1,37 @@
-package com.thesilentnights.easylogin.service.task
+package com.thesilentnights.easylogin.service.task;
 
-import com.thesilentnights.easylogin.service.TaskService
-import net.minecraft.network.chat.Component
-import net.minecraft.server.level.ServerPlayer
+import com.thesilentnights.easylogin.service.TaskService;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 
-class Message(
-    var serverPlayer: ServerPlayer,
-    var message: Component,
-    var delay: Long,
-    var isLoop: Boolean
-) :
-    Task {
-    var tickCount: Long = 0
+public class Message implements Task {
 
-    override fun tick() {
-        this.tickCount++
-        if (this.tickCount >= this.delay) {
-            this.serverPlayer.sendMessage(this.message, this.serverPlayer.getUUID())
+    private final ServerPlayer serverPlayer;
+    private final Component message;
+    private final long delay;
+    private final boolean isLoop;
+    private long tickCount = 0;
+
+    public Message(ServerPlayer serverPlayer, Component message, long delay, boolean isLoop) {
+        this.serverPlayer = serverPlayer;
+        this.message = message;
+        this.delay = delay;
+        this.isLoop = isLoop;
+    }
+
+    @Override
+    public void tick() {
+        tickCount++;
+        if (tickCount >= delay) {
+            serverPlayer.sendMessage(message, serverPlayer.getUUID());
             if (isLoop) {
-                this.tickCount = 0
+                tickCount = 0;
             } else {
-                TaskService.cancelTask(
-                    TaskService.generateTaskIdentifier(
+                String taskId = TaskService.generateTaskIdentifier(
                         serverPlayer.getUUID(),
-                        TaskService.Suffix.MESSAGE.name
-                    )
-                )
+                        TaskService.Suffix.MESSAGE.name()
+                );
+                TaskService.cancelTask(taskId);
             }
         }
     }

@@ -1,125 +1,119 @@
-package com.thesilentnights.easylogin.service
+package com.thesilentnights.easylogin.service;
 
-import cn.hutool.extra.mail.MailAccount
-import cn.hutool.extra.mail.MailUtil
-import com.mojang.brigadier.arguments.StringArgumentType
-import com.mojang.brigadier.context.CommandContext
-import com.mojang.brigadier.exceptions.CommandSyntaxException
-import com.thesilentnights.easylogin.configs.EasyLoginConfig
-import com.thesilentnights.easylogin.configs.EasyLoginConfig.username
-import com.thesilentnights.easylogin.pojo.PlayerAccount
-import net.minecraft.ChatFormatting
-import net.minecraft.commands.CommandSourceStack
-import net.minecraft.network.chat.TranslatableComponent
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
-import java.util.*
+import cn.hutool.extra.mail.MailAccount;
+import cn.hutool.extra.mail.MailUtil;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.thesilentnights.easylogin.configs.EasyLoginConfig;
+import com.thesilentnights.easylogin.pojo.PlayerAccount;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-class EmailService {
-    var account: MailAccount? = null
-    val log: Logger = LogManager.getLogger(EmailService::class)
-    val accountService: AccountService
-    val loginService: LoginService
+import java.util.Optional;
+import java.util.UUID;
+import java.util.regex.Pattern;
 
-    constructor(accountService: AccountService, loginService: LoginService) {
-        this.accountService = accountService
-        this.loginService = loginService
-    }
+public class EmailService {
 
-    init {
+    private static final Logger log = LogManager.getLogger(EmailService.class);
+    private final AccountService accountService;
+    private final LoginService loginService;
+    private MailAccount account;
+
+    public EmailService(AccountService accountService, LoginService loginService) {
+        this.accountService = accountService;
+        this.loginService = loginService;
+
         if (EasyLoginConfig.enableEmailFunction.get()) {
-            account = MailAccount()
-            with(account!!) {
-                from = EasyLoginConfig.from.get()
-                user = username.get()
-                pass = EasyLoginConfig.password.get()
-                host = EasyLoginConfig.host.get()
-                port = EasyLoginConfig.port.get()
-                isAuth = EasyLoginConfig.enableSSL.get()
-                isStarttlsEnable = EasyLoginConfig.starttlsEnable.get()
-                isSslEnable = EasyLoginConfig.enableSSL.get()
-                setTimeout(EasyLoginConfig.timeout.get())
-            }
+            this.account = new MailAccount();
+            this.account.setFrom(EasyLoginConfig.from.get());
+            this.account.setUser(EasyLoginConfig.username.get());
+            this.account.setPass(EasyLoginConfig.password.get());
+            this.account.setHost(EasyLoginConfig.host.get());
+            this.account.setPort(EasyLoginConfig.port.get());
+            this.account.setAuth(EasyLoginConfig.enableSSL.get());
+            this.account.setStarttlsEnable(EasyLoginConfig.starttlsEnable.get());
+            this.account.setSslEnable(EasyLoginConfig.enableSSL.get());
+            this.account.setTimeout(EasyLoginConfig.timeout.get());
         }
     }
 
-    fun checkIfInitiated(): Boolean {
-        return account != null
+    public boolean checkIfInitiated() {
+        return account != null;
     }
 
-    fun sendEmail(sender: UUID, emailAddress: String, data: String?): Boolean {
-        if (TimerService.contains(TimerService.generateIdentifier(sender, EmailService::class))) {
-            return false
+    public boolean sendEmail(UUID sender, String emailAddress, String data) {
+        String identifier = TimerService.generateIdentifier(sender, EmailService.class);
+        if (TimerService.contains(identifier)) {
+            return false;
         } else {
-            MailUtil.send(account, emailAddress, "com.thesilentnights.easylogin.EasyLogin", data, false)
-            TimerService.add(
-                TimerService.generateIdentifier(sender, EmailService::class),
-                (1000 * 60 * 5).toLong()
-            )
-            return true
+            MailUtil.send(account, emailAddress, "com.thesilentnights.easylogin.EasyLogin", data, false);
+            TimerService.add(identifier, 1000L * 60 * 5);
+            return true;
         }
     }
 
-    fun sendDebug(context: CommandContext<CommandSourceStack>): Boolean {
+    public boolean sendDebug(CommandContext<CommandSourceStack> context) {
         if (!checkIfInitiated()) {
-            context.source
-                .sendFailure(net.minecraft.network.chat.TextComponent("the email feature is not enabled. you can modify it in config.yml"))
+            context.getSource().sendFailure(new TextComponent("the email feature is not enabled. you can modify it in config.yml"));
         }
-        MailUtil.send(
-            account,
-            StringArgumentType.getString(context, "targetEmail"),
-            "com.thesilentnights.easylogin.EasyLogin",
-            "testEmail",
-            false
-        )
-        return true
+        String targetEmail = StringArgumentType.getString(context, "targetEmail");
+        MailUtil.send(account, targetEmail, "com.thesilentnights.easylogin.EasyLogin", "testEmail", false);
+        return true;
     }
 
-    @Throws(CommandSyntaxException::class)
-    fun bindEmail(context: CommandContext<CommandSourceStack>): Boolean {
+    public boolean bindEmail(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         if (!checkIfInitiated()) {
-            context.getSource()
-                .sendFailure(net.minecraft.network.chat.TextComponent("the email feature is not enabled"))
+            context.getSource().sendFailure(new TextComponent("the email feature is not enabled"));
+            return false;
         }
-        val email: String? = StringArgumentType.getString(context, "email")
-        if (!loginService.isLoggedIn(context.getSource().playerOrException.getUUID())) {
-            context.getSource().sendFailure(TranslatableComponent("you cannot execute it when you are not logged in"))
-            return false
+
+        String email = StringArgumentType.getString(context, "email");
+        ServerPlayer player = context.getSource().getPlayerOrException();
+        UUID uuid = player.getUUID();
+
+        if (!loginService.isLoggedIn(uuid)) {
+            context.getSource().sendFailure(new TranslatableComponent("you cannot execute it when you are not logged in"));
+            return false;
         }
-        //check the consistence
+
         if (isValidEmail(email)) {
-            val account1: Optional<PlayerAccount> =
-                accountService.getAccount(context.getSource().playerOrException.getUUID())
-
-            if (account1.isPresent) {
-                val playerAccount: PlayerAccount = account1.get()
-                playerAccount.email = (email)
-                log.info(playerAccount.toString())
-                accountService.updateAccount(playerAccount)
+            Optional<PlayerAccount> accountOpt = accountService.getAccount(uuid);
+            if (accountOpt.isPresent()) {
+                PlayerAccount playerAccount = accountOpt.get();
+                playerAccount.setEmail(email);
+                log.info(playerAccount.toString());
+                accountService.updateAccount(playerAccount);
                 context.getSource().sendSuccess(
-                    TranslatableComponent("bind success").withStyle(ChatFormatting.GREEN)
-                        .withStyle(ChatFormatting.BOLD), false
-                )
-                return true
+                        new TranslatableComponent("bind success")
+                                .withStyle(ChatFormatting.GREEN)
+                                .withStyle(ChatFormatting.BOLD),
+                        false
+                );
+                return true;
             } else {
                 context.getSource().sendFailure(
-                    TranslatableComponent("commands.email.bind.failure").withStyle(ChatFormatting.RED)
-                        .withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.RED)
-                )
+                        new TranslatableComponent("commands.email.bind.failure")
+                                .withStyle(ChatFormatting.RED)
+                                .withStyle(ChatFormatting.BOLD)
+                );
             }
         } else {
-            log.info("error")
+            log.info("error");
         }
-        return false
+        return false;
     }
 
-    fun isValidEmail(email: String?): Boolean {
-        if (!email.isNullOrEmpty()) {
-            return java.util.regex.Pattern.matches(
-                "^(\\w+([-.][A-Za-z0-9]+)*){3,18}@\\w+([-.][A-Za-z0-9]+)*\\.\\w+([-.][A-Za-z0-9]+)*$",
-                email
-            )
+    public boolean isValidEmail(String email) {
+        if (email == null || email.isEmpty()) {
+            return false;
         }
-        return false
+        return Pattern.matches("^(\\w+([-.][A-Za-z0-9]+)*){3,18}@\\w+([-.][A-Za-z0-9]+)*\\.\\w+([-.][A-Za-z0-9]+)*$", email);
     }
 }
