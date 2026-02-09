@@ -4,8 +4,10 @@
   "package": "com.thesilentnights.easylogin.mixin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "easylogin.refmap.json",
-  "mixins": [
+  "server": [
     "PlayerMixin"
+  ],
+  "mixins": [
   ],
   "client": [
   ],

@@ -8,14 +8,14 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.effect.MobEffectInstance
 import net.minecraft.world.effect.MobEffects
 
-class PreLoginService(val accountService: AccountService, val loginService: LoginService) {
+object PreLoginService {
     fun preLogin(serverPlayer: ServerPlayer) {
         if (NPCService.isNPC(serverPlayer)) {
             ByPassService.addBypass(serverPlayer.uuid)
         }
 
         //if can reload from cache
-        if (loginService.reLogFromCache(serverPlayer)) {
+        if (LoginService.reLogFromCache(serverPlayer)) {
             serverPlayer.sendMessage(TextComponent("relogged from cache"), serverPlayer.getUUID())
             return
         }
@@ -23,7 +23,7 @@ class PreLoginService(val accountService: AccountService, val loginService: Logi
         //put effects on player
         addBlindEffectToPlayer(serverPlayer)
 
-        if (accountService.hasAccount(serverPlayer.getUUID())) {
+        if (AccountService.hasAccount(serverPlayer.getUUID())) {
             TaskService.addTask(
                 TaskService.generateTaskIdentifier(serverPlayer.getUUID(), TaskService.Suffix.MESSAGE.name),
                 Message(serverPlayer, TextComponent("please login your account by /login"), 80, true)
@@ -47,6 +47,10 @@ class PreLoginService(val accountService: AccountService, val loginService: Logi
         )
     }
 
+    /**
+     * @param serverPlayer
+     * add blind effect to player
+     */
     private fun addBlindEffectToPlayer(serverPlayer: ServerPlayer) {
         serverPlayer.addEffect(
             MobEffectInstance(

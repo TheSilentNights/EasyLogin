@@ -12,11 +12,9 @@ import net.minecraftforge.eventbus.api.IEventBus
 import net.minecraftforge.eventbus.api.SubscribeEvent
 
 class ActionListener {
-    private val commandRejectionService: CommandRejectionService
 
-    constructor(eventBus: IEventBus, commandRejectionService: CommandRejectionService) {
+    constructor(eventBus: IEventBus) {
         eventBus.register(this)
-        this.commandRejectionService = commandRejectionService
     }
 
     @SubscribeEvent
@@ -43,7 +41,7 @@ class ActionListener {
 
     @SubscribeEvent
     fun onPlayerDrop(event: CommandEvent) {
-        commandRejectionService.handleRejection(event)
+        CommandRejectionService.handleRejection(event)
     }
 
 

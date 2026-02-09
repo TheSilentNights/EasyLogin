@@ -1,4 +1,4 @@
-package com.thesilentnights.easylogin.commands.admin
+package com.thesilentnights.easylogin.commands.server.admin
 
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
