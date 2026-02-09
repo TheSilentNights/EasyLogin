@@ -4,7 +4,7 @@ import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.TranslatableComponent
 import net.minecraftforge.event.CommandEvent
 
-object CommandRejectionService {
+class CommandRejectionService {
     val bypassList: List<String> = listOf(
         "login",
         "register"

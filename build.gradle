@@ -139,8 +139,11 @@ dependencies {
     shadowDeps minecraftLibrary("cn.hutool:hutool-all:${hutool_version}")
     shadowDeps minecraftLibrary("com.sun.mail:javax.mail:1.6.2")
     shadowDeps minecraftLibrary("com.github.ben-manes.caffeine:caffeine:${caffine_version}")
+    
+    shadowDeps minecraftLibrary("io.insert-koin:koin-core-jvm:3.4.3")
 
-    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 

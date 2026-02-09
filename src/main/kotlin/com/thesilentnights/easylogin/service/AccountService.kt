@@ -6,11 +6,8 @@ import com.thesilentnights.easylogin.sql.DataSource
 import java.util.*
 
 
-object AccountService {
-    private lateinit var dataSource: DataSource
-    fun init(dataSource: DataSource) {
-        this.dataSource = dataSource
-    }
+class AccountService(private val dataSource: DataSource) {
+
 
     fun hasAccount(uuid: UUID): Boolean {
         return dataSource.getAuthByUUID(uuid).isPresent
@@ -24,7 +21,7 @@ object AccountService {
         return dataSource.getAuthByUUID(uuid)
     }
 
-    fun getAccount(username: String): Optional<PlayerAccount> {
+    fun getAccount(username: String?): Optional<PlayerAccount> {
         return dataSource.getAuthByName(username)
     }
 

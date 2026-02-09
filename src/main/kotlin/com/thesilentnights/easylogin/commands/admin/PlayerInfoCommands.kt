@@ -1,4 +1,4 @@
-package com.thesilentnights.easylogin.commands.server.admin
+package com.thesilentnights.easylogin.commands.admin
 
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
@@ -7,21 +7,22 @@ import com.thesilentnights.easylogin.pojo.PlayerAccount
 import com.thesilentnights.easylogin.service.AccountService
 import com.thesilentnights.easylogin.utils.TextUtil
 import net.minecraft.commands.CommandSourceStack
-import net.minecraft.commands.Commands
+import org.koin.core.component.inject
 import java.util.*
 
 class PlayerInfoCommands : AdminCommands {
+    val accountService: AccountService by inject()
     override fun getCommand(mainNode: LiteralArgumentBuilder<CommandSourceStack>): LiteralArgumentBuilder<CommandSourceStack> {
         return mainNode
             .then(
-                Commands.literal("playerinfo")
+                net.minecraft.commands.Commands.literal("playerinfo")
                     .then(
-                        Commands.argument(
+                        net.minecraft.commands.Commands.argument(
                             "playerName",
                             StringArgumentType.string()
                         )
                             .executes { context: CommandContext<CommandSourceStack> ->
-                                val account: Optional<PlayerAccount> = AccountService.getAccount(
+                                val account: Optional<PlayerAccount> = accountService.getAccount(
                                     UUID.fromString(
                                         StringArgumentType.getString(
                                             context,

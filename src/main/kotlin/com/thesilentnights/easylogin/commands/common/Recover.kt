@@ -1,4 +1,4 @@
-package com.thesilentnights.easylogin.commands.server.common
+package com.thesilentnights.easylogin.commands.common
 
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
@@ -7,7 +7,7 @@ import com.thesilentnights.easylogin.service.PasswordRecoveryService
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 
-class Recover : CommonCommands {
+class Recover(val passwordRecoveryService: PasswordRecoveryService) : CommonCommands {
     override val command: LiteralArgumentBuilder<CommandSourceStack>
         get() = Commands.literal("recover")
             .then(
@@ -18,7 +18,7 @@ class Recover : CommonCommands {
                             StringArgumentType.greedyString()
                         )
                             .executes { context: CommandContext<CommandSourceStack> ->
-                                if (PasswordRecoveryService.recoveryPassword(
+                                if (passwordRecoveryService.recoveryPassword(
                                         context
                                     )
                                 ) 1 else 0
@@ -33,7 +33,7 @@ class Recover : CommonCommands {
                             StringArgumentType.greedyString()
                         )
                             .executes { context: CommandContext<CommandSourceStack> ->
-                                if (PasswordRecoveryService.confirmRecover(
+                                if (passwordRecoveryService.confirmRecover(
                                         context
                                     )
                                 ) 1 else 0
