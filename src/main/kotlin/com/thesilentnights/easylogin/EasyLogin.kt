@@ -8,9 +8,9 @@ import net.minecraftforge.fml.config.ModConfig
 import net.minecraftforge.fml.loading.FMLLoader
 
 @Mod(value = CommonStaticRepo.MOD_ID)
-public class EasyLogin {
+class EasyLogin {
 
-    public EasyLogin() {
+    constructor() {
         initialize()
 
         if (!FMLLoader.isProduction()) {
