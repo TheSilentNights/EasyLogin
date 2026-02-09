@@ -7,14 +7,11 @@ import com.thesilentnights.easylogin.pojo.SqlColumnDefinition
 import net.minecraft.ChatFormatting
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.network.chat.TranslatableComponent
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 
-class ChangePasswordService(val loginService: LoginService): KoinComponent {
-    val accountService: AccountService = get()
+object ChangePasswordService {
     @Throws(CommandSyntaxException::class)
     fun changePassword(context: CommandContext<CommandSourceStack>): Boolean {
-        if (!loginService.isLoggedIn(context.getSource().playerOrException.getUUID())) {
+        if (!LoginService.isLoggedIn(context.getSource().playerOrException.getUUID())) {
             context.source.sendFailure(
                 TranslatableComponent("commands.password.change.failure.unlogged").apply {
                     withStyle(ChatFormatting.BOLD)
@@ -29,7 +26,7 @@ class ChangePasswordService(val loginService: LoginService): KoinComponent {
 
         //match
         if (newPassword == newPasswordConfirm) {
-            accountService.updateSingleColumn(
+            AccountService.updateSingleColumn(
                 SqlColumnDefinition.PASSWORD,
                 newPassword,
                 context.source.playerOrException.getUUID()

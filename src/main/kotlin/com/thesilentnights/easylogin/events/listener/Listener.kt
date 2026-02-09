@@ -1,6 +1,5 @@
 package com.thesilentnights.easylogin.events.listener
 
-import com.thesilentnights.easylogin.service.AccountService
 import com.thesilentnights.easylogin.service.LoginService
 import com.thesilentnights.easylogin.service.PreLoginService
 import com.thesilentnights.easylogin.service.TaskService
@@ -13,15 +12,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent
 
 
 class Listener {
-    val accountService: AccountService;
-    val loginService: LoginService;
-    val preLoginService: PreLoginService;
 
-    constructor(accountService: AccountService, loginService: LoginService, preLoginService: PreLoginService) {
-        this.accountService = accountService
-        this.loginService = loginService
-        this.preLoginService = preLoginService
-
+    init {
         with(MinecraftForge.EVENT_BUS) {
             addListener(this@Listener::onPlayerJoin)
             addListener(this@Listener::onPlayerQuit)
@@ -33,7 +25,7 @@ class Listener {
     fun onPlayerJoin(event: PlayerLoggedInEvent) {
         if (event.player is ServerPlayer) {
             val serverPlayer = event.player as ServerPlayer
-            preLoginService.preLogin(serverPlayer)
+            PreLoginService.preLogin(serverPlayer)
         }
     }
 
@@ -47,7 +39,7 @@ class Listener {
     }
 
     private fun logoutPlayer(serverPlayer: ServerPlayer) {
-        loginService.logoutPlayer(serverPlayer)
+        LoginService.logoutPlayer(serverPlayer)
         TaskService.cancelPlayer(serverPlayer.getUUID())
     }
 

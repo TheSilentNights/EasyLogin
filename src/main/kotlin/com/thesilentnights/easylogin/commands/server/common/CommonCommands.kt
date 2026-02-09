@@ -1,9 +1,8 @@
-package com.thesilentnights.easylogin.commands.common
+package com.thesilentnights.easylogin.commands.server.common
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import net.minecraft.commands.CommandSourceStack
-import org.koin.core.component.KoinComponent
 
-interface CommonCommands: KoinComponent {
+interface CommonCommands {
     val command: LiteralArgumentBuilder<CommandSourceStack>
 }

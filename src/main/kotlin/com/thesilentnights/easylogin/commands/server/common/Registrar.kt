@@ -1,4 +1,4 @@
-package com.thesilentnights.easylogin.commands.common
+package com.thesilentnights.easylogin.commands.server.common
 
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
@@ -7,7 +7,7 @@ import com.thesilentnights.easylogin.service.LoginService
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 
-class Registrar(private val loginService: LoginService) : CommonCommands {
+class Registrar : CommonCommands {
     override val command: LiteralArgumentBuilder<CommandSourceStack>
         get() = Commands.literal("register")
             .then(
@@ -18,7 +18,7 @@ class Registrar(private val loginService: LoginService) : CommonCommands {
                             StringArgumentType.string()
                         )
                             .executes { context: CommandContext<CommandSourceStack> ->
-                                if (loginService.register(
+                                if (LoginService.register(
                                         context
                                     )
                                 ) 1 else 0
