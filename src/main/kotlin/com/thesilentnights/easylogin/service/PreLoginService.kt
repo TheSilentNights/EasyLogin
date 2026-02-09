@@ -3,7 +3,6 @@ package com.thesilentnights.easylogin.service
 import com.thesilentnights.easylogin.configs.EasyLoginConfig
 import com.thesilentnights.easylogin.service.task.KickPlayer
 import com.thesilentnights.easylogin.service.task.Message
-import com.thesilentnights.easylogin.utils.logInfo
 import net.minecraft.network.chat.TextComponent
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.effect.MobEffectInstance
@@ -11,7 +10,6 @@ import net.minecraft.world.effect.MobEffects
 
 object PreLoginService {
     fun preLogin(serverPlayer: ServerPlayer) {
-        logInfo(PreLoginService::class, "debug")
         if (NPCService.isNPC(serverPlayer)) {
             ByPassService.addBypass(serverPlayer.uuid)
         }
