@@ -1,29 +1,36 @@
-package com.thesilentnights.easylogin.service
+package com.thesilentnights.easylogin.service;
 
-import net.minecraft.ChatFormatting
-import net.minecraft.network.chat.TranslatableComponent
-import net.minecraftforge.event.CommandEvent
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraftforge.event.CommandEvent;
 
-class CommandRejectionService {
-    val bypassList: List<String> = listOf(
-        "login",
-        "register"
-    )
+import java.util.Arrays;
+import java.util.List;
 
-    fun handleRejection(event: CommandEvent) {
-        val context = event.parseResults.context
-        if (context.source.entity == null) {
-            return
+public class CommandRejectionService {
+
+    private final List<String> bypassList = Arrays.asList(
+            "login",
+            "register"
+    );
+
+    public void handleRejection(CommandEvent event) throws CommandSyntaxException {
+        var context = event.getParseResults().getContext();
+        if (context.getSource().getEntity() == null) {
+            return;
         }
 
-        val playerOrException = context.source.playerOrException
-        if (ActionCheckService.shouldCancelEvent(playerOrException) && !bypassList.contains(event.parseResults.context.nodes[0].node.name)) {
-            event.isCanceled = true
-            playerOrException.displayClientMessage(TranslatableComponent("command.rejected").apply {
-                withStyle(ChatFormatting.RED)
-                withStyle(ChatFormatting.BOLD)
-            }, false)
+        var playerOrException = context.getSource().getPlayerOrException();
+        if (ActionCheckService.shouldCancelEvent(playerOrException) &&
+                !bypassList.contains(event.getParseResults().getContext().getNodes().get(0).getNode().getName())) {
+            event.setCanceled(true);
+            playerOrException.displayClientMessage(
+                    new TranslatableComponent("command.rejected")
+                            .withStyle(ChatFormatting.RED)
+                            .withStyle(ChatFormatting.BOLD),
+                    false
+            );
         }
     }
-
 }

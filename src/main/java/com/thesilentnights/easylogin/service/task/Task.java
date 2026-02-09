@@ -1,5 +1,5 @@
-package com.thesilentnights.easylogin.service.task
+package com.thesilentnights.easylogin.service.task;
 
-interface Task {
-    fun tick()
+public interface Task {
+    void tick();
 }

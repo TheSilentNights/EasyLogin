@@ -1,28 +1,31 @@
-package com.thesilentnights.easylogin.service
+package com.thesilentnights.easylogin.service;
 
-import java.util.*
-import kotlin.reflect.KClass
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
-object TimerService {
-    private val entries: MutableMap<String, Long> = HashMap<String, Long>()
+public class TimerService {
 
-    fun contains(identifier: String?): Boolean {
-        return entries[identifier] != null && System.currentTimeMillis() < entries[identifier]!!
+    private static final Map<String, Long> entries = new HashMap<>();
+
+    public static boolean contains(String identifier) {
+        Long expireTime = entries.get(identifier);
+        return expireTime != null && System.currentTimeMillis() < expireTime;
     }
 
-    fun cleanExpired() {
-        entries.entries.removeIf { entry: MutableMap.MutableEntry<String, Long> -> System.currentTimeMillis() > entry.value }
+    public static String generateIdentifier(UUID uuid, Class<?> serviceClass) {
+        return uuid.toString() + "_" + serviceClass.getSimpleName();
     }
 
-    fun generateIdentifier(uuid: UUID, serviceClass: KClass<*>): String {
-        return uuid.toString() + "_" + serviceClass.simpleName
+    public static void add(String identifier, long duration) {
+        entries.put(identifier, System.currentTimeMillis() + duration);
     }
 
-    fun add(identifier: String, duration: Long) {
-        entries[identifier] = System.currentTimeMillis() + duration
+    public void cleanExpired() {
+        entries.entrySet().removeIf(entry -> System.currentTimeMillis() > entry.getValue());
     }
 
-    fun clear() {
-        entries.clear()
+    public void clear() {
+        entries.clear();
     }
 }

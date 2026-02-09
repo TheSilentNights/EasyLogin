@@ -1,19 +1,23 @@
-package com.thesilentnights.easylogin.service
+package com.thesilentnights.easylogin.service;
 
-import java.util.*
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
-object ByPassService {
-    val list: MutableList<UUID> = ArrayList()
+public class ByPassService {
 
-    fun addBypass(uuid: UUID) {
-        list.add(uuid)
+    private static final List<UUID> list = new ArrayList<>();
+
+
+    public static void addBypass(UUID uuid) {
+        list.add(uuid);
     }
 
-    fun isBypassed(uuid: UUID): Boolean {
-        return list.contains(uuid)
+    public static boolean isBypassed(UUID uuid) {
+        return list.contains(uuid);
     }
 
-    fun removeBypass(uuid: UUID) {
-        list.remove(uuid)
+    public void removeBypass(UUID uuid) {
+        list.remove(uuid);
     }
 }

@@ -1,93 +1,88 @@
-package com.thesilentnights.easylogin.service
+package com.thesilentnights.easylogin.service;
 
-import cn.hutool.captcha.generator.RandomGenerator
-import com.mojang.brigadier.arguments.StringArgumentType
-import com.mojang.brigadier.context.CommandContext
-import com.mojang.brigadier.exceptions.CommandSyntaxException
-import com.thesilentnights.easylogin.events.EasyLoginEvents
-import com.thesilentnights.easylogin.pojo.PlayerAccount
-import net.minecraft.ChatFormatting
-import net.minecraft.commands.CommandSourceStack
-import net.minecraft.network.chat.TranslatableComponent
-import net.minecraft.server.level.ServerPlayer
-import net.minecraftforge.common.MinecraftForge
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import cn.hutool.captcha.generator.RandomGenerator;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.thesilentnights.easylogin.pojo.PlayerAccount;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import org.springframework.stereotype.Service;
 
-class PasswordRecoveryService(val loginService: LoginService,val emailService: EmailService): KoinComponent {
-    var code: MutableMap<java.util.UUID?, String?> =
-        HashMap()
-    val accountService: AccountService = get()
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
-    /***
-     * recover the password
-     * @param context
-     * @return
-     * @throws CommandSyntaxException
-     */
-    @Throws(CommandSyntaxException::class)
-    fun recoveryPassword(context: CommandContext<CommandSourceStack>): Boolean {
-        val emailConfirm: String = StringArgumentType.getString(context, "emailConfirm")
-        val sender: ServerPlayer = context.getSource().playerOrException
-        //not logged in
-        if (!loginService.isLoggedIn(context.getSource().playerOrException.getUUID())) {
-            context.getSource().sendFailure(TranslatableComponent("you cannot use this feature while unlogged"))
-            return false
-        }
+@Service
+public class PasswordRecoveryService {
 
-        val account: java.util.Optional<PlayerAccount> = accountService.getAccount(sender.getUUID())
-        if (account.isPresent && emailConfirm == account.get().email) {
-            val randomCode: String? = RandomGenerator(20).generate()
-            if (emailService.sendEmail(sender.getUUID(), emailConfirm, randomCode)) {
-                code[sender.getUUID()] = randomCode
-                context.getSource().sendSuccess(
-                    TranslatableComponent("commands.email.bind.success").withStyle(ChatFormatting.BOLD)
-                        .withStyle(ChatFormatting.GOLD), true
-                )
-                return true
-            } else {
-                context.getSource().sendFailure(TranslatableComponent("email service error or it hasn't been enabled"))
-            }
-        } else {
-            context.getSource().sendFailure(TranslatableComponent("email is not truee"))
-        }
-        return false
+    private final LoginService loginService;
+    private final EmailService emailService;
+    private final AccountService accountService;
+    private final Map<UUID, String> code = new HashMap<>();
+
+    public PasswordRecoveryService(LoginService loginService, EmailService emailService, AccountService accountService) {
+        this.loginService = loginService;
+        this.emailService = emailService;
+        this.accountService = accountService;
     }
 
-    /***
-     * if the confirm code is consistent. force login current player
-     * @param context
-     * @return
-     * @throws CommandSyntaxException
-     */
-    @Throws(CommandSyntaxException::class)
-    fun confirmRecover(context: CommandContext<CommandSourceStack>): Boolean {
-        val confirmCode: String = StringArgumentType.getString(context, "confirmCode")
-        val uuid: java.util.UUID = context.source.playerOrException.getUUID()
-        val account: java.util.Optional<PlayerAccount> = accountService.getAccount(uuid)
+    public boolean recoveryPassword(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        String emailConfirm = StringArgumentType.getString(context, "emailConfirm");
+        ServerPlayer sender = context.getSource().getPlayerOrException();
 
-        //not logged in
-        if (!loginService.isLoggedIn(context.getSource().playerOrException.getUUID())) {
-            context.getSource().sendFailure(TranslatableComponent("you cannot use this feature while unlogged"))
-            return false
+        if (!loginService.isLoggedIn(sender.getUUID())) {
+            context.getSource().sendFailure(new TranslatableComponent("you cannot use this feature while unlogged"));
+            return false;
         }
 
-        if (code.containsKey(uuid) && account.isPresent) {
-            if (confirmCode == code.get(uuid)) {
-                code.remove(uuid)
-                //force login
+        Optional<PlayerAccount> account = accountService.getAccount(sender.getUUID());
+        if (account.isPresent() && emailConfirm.equals(account.get().getEmail())) {
+            String randomCode = new RandomGenerator(20).generate();
+            if (emailService.sendEmail(sender.getUUID(), emailConfirm, randomCode)) {
+                code.put(sender.getUUID(), randomCode);
                 context.getSource().sendSuccess(
-                    TranslatableComponent("commands.login.success").withStyle(ChatFormatting.GREEN)
-                        .withStyle(ChatFormatting.BOLD), true
-                )
-                MinecraftForge.EVENT_BUS.post(
-                    EasyLoginEvents.PlayerLoginEvent(
-                        context.getSource().playerOrException, account.get()
-                    )
-                )
-                return true
+                        new TranslatableComponent("commands.email.bind.success")
+                                .withStyle(ChatFormatting.BOLD)
+                                .withStyle(ChatFormatting.GOLD),
+                        true
+                );
+                return true;
+            } else {
+                context.getSource().sendFailure(new TranslatableComponent("email service error or it hasn't been enabled"));
+            }
+        } else {
+            context.getSource().sendFailure(new TranslatableComponent("email is not truee"));
+        }
+        return false;
+    }
+
+    public boolean confirmRecover(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        String confirmCode = StringArgumentType.getString(context, "confirmCode");
+        UUID uuid = context.getSource().getPlayerOrException().getUUID();
+        Optional<PlayerAccount> account = accountService.getAccount(uuid);
+
+        if (!loginService.isLoggedIn(uuid)) {
+            context.getSource().sendFailure(new TranslatableComponent("you cannot use this feature while unlogged"));
+            return false;
+        }
+
+        if (code.containsKey(uuid) && account.isPresent()) {
+            if (confirmCode.equals(code.get(uuid))) {
+                code.remove(uuid);
+                context.getSource().sendSuccess(
+                        new TranslatableComponent("commands.login.success")
+                                .withStyle(ChatFormatting.GREEN)
+                                .withStyle(ChatFormatting.BOLD),
+                        true
+                );
+                //TODO remove limit
+                return true;
             }
         }
-        return false
+        return false;
     }
 }
