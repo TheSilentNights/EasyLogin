@@ -10,12 +10,12 @@ import java.util.List;
 
 public class CommandRejectionService {
 
-    private final List<String> bypassList = Arrays.asList(
+    private static final List<String> bypassList = Arrays.asList(
             "login",
             "register"
     );
 
-    public void handleRejection(CommandEvent event) throws CommandSyntaxException {
+    public static void handleRejection(CommandEvent event) throws CommandSyntaxException {
         var context = event.getParseResults().getContext();
         if (context.getSource().getEntity() == null) {
             return;

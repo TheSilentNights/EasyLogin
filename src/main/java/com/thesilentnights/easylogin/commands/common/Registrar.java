@@ -9,12 +9,6 @@ import net.minecraft.commands.Commands;
 
 public class Registrar implements CommonCommands {
 
-    private final LoginService loginService;
-
-    public Registrar(LoginService loginService) {
-        this.loginService = loginService;
-    }
-
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
         return Commands.literal("register")
@@ -23,7 +17,7 @@ public class Registrar implements CommonCommands {
                                 .then(
                                         Commands.argument("repeat", StringArgumentType.string())
                                                 .executes((CommandContext<CommandSourceStack> context) ->
-                                                        loginService.register(context) ? 1 : 0
+                                                        LoginService.register(context) ? 1 : 0
                                                 )
                                 )
                 );

@@ -8,18 +8,13 @@ import net.minecraft.commands.Commands;
 
 public class Login implements CommonCommands {
 
-    private final LoginService loginService;
-
-    public Login(LoginService loginService) {
-        this.loginService = loginService;
-    }
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
         return Commands.literal("login")
                 .then(Commands.argument("password", StringArgumentType.string())
                         .executes(context -> {
-                            boolean success = loginService.login(context);
+                            boolean success = LoginService.login(context);
                             return success ? 1 : 0;
                         }));
     }

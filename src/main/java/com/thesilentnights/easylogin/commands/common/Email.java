@@ -8,10 +8,10 @@ import net.minecraft.commands.Commands;
 
 public class Email implements CommonCommands {
 
-    private final EmailService emailService;
+    private final EmailService EmailService;
 
-    public Email(EmailService emailService) {
-        this.emailService = emailService;
+    public Email(EmailService EmailService) {
+        this.EmailService = EmailService;
     }
 
     @Override
@@ -20,7 +20,7 @@ public class Email implements CommonCommands {
                 .then(Commands.literal("bind")
                         .then(Commands.argument("email", StringArgumentType.greedyString())
                                 .executes(commandContext -> {
-                                    if (emailService.bindEmail(commandContext)) {
+                                    if (EmailService.bindEmail(commandContext)) {
                                         return 1;
                                     } else {
                                         return 0;

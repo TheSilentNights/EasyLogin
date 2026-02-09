@@ -9,33 +9,33 @@ import java.util.UUID;
 
 public class AccountService {
 
-    private final DataSource dataSource;
+    private static DataSource dataSource;
 
-    public AccountService(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public static void init(DataSource dataSource) {
+        AccountService.dataSource = dataSource;
     }
 
-    public boolean hasAccount(UUID uuid) {
+    public static boolean hasAccount(UUID uuid) {
         return dataSource.getAuthByUUID(uuid).isPresent();
     }
 
-    public boolean hasAccount(String username) {
+    public static boolean hasAccount(String username) {
         return dataSource.getAuthByName(username).isPresent();
     }
 
-    public Optional<PlayerAccount> getAccount(UUID uuid) {
+    public static Optional<PlayerAccount> getAccount(UUID uuid) {
         return dataSource.getAuthByUUID(uuid);
     }
 
-    public Optional<PlayerAccount> getAccount(String username) {
+    public static Optional<PlayerAccount> getAccount(String username) {
         return dataSource.getAuthByName(username);
     }
 
-    public boolean updateSingleColumn(SqlColumnDefinition key, String value, UUID uuid) {
+    public static boolean updateSingleColumn(SqlColumnDefinition key, String value, UUID uuid) {
         return dataSource.updateColumn(key, value, uuid);
     }
 
-    public void updateAccount(PlayerAccount account) {
+    public static void updateAccount(PlayerAccount account) {
         if (hasAccount(account.getUuid())) {
             dataSource.updateAccount(account);
         } else {

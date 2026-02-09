@@ -5,7 +5,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.thesilentnights.easylogin.pojo.PlayerAccount;
 import com.thesilentnights.easylogin.service.AccountService;
-import com.thesilentnights.easylogin.service.LoginService;
 import com.thesilentnights.easylogin.utils.TextUtil;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -14,12 +13,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class PlayerInfoCommands extends AdminCommands {
-    private final AccountService accountService;
-
-    public PlayerInfoCommands(AccountService accountService, LoginService loginService) {
-        super(loginService);
-        this.accountService = accountService;
-    }
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
@@ -29,7 +22,7 @@ public class PlayerInfoCommands extends AdminCommands {
                                 .then(
                                         Commands.argument("playerName", StringArgumentType.string())
                                                 .executes((CommandContext<CommandSourceStack> context) -> {
-                                                    Optional<PlayerAccount> account = accountService.getAccount(
+                                                    Optional<PlayerAccount> account = AccountService.getAccount(
                                                             UUID.fromString(StringArgumentType.getString(context, "playerName"))
                                                     );
                                                     if (account.isPresent()) {

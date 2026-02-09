@@ -4,7 +4,6 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.thesilentnights.easylogin.pojo.PlayerAccount;
 import com.thesilentnights.easylogin.service.AccountService;
-import com.thesilentnights.easylogin.service.LoginService;
 import com.thesilentnights.easylogin.utils.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -14,13 +13,6 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.Optional;
 
 public class TeleportToOfflinePlayer extends AdminCommands {
-    private final AccountService accountService;
-
-    public TeleportToOfflinePlayer(AccountService accountService, LoginService loginService) {
-        super(loginService);
-        this.accountService = accountService;
-    }
-
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
         return super.MAIN_NODE
@@ -30,10 +22,10 @@ public class TeleportToOfflinePlayer extends AdminCommands {
                                     ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
                                     String targetName = StringArgumentType.getString(context, "targetName");
 
-                                    if (accountService.hasAccount(targetName) &&
+                                    if (AccountService.hasAccount(targetName) &&
                                             context.getSource().getServer().getPlayerList().getPlayerByName(targetName) == null) {
 
-                                        Optional<PlayerAccount> account = accountService.getAccount(targetName);
+                                        Optional<PlayerAccount> account = AccountService.getAccount(targetName);
                                         if (account.isPresent()) {
                                             PlayerAccount playerAccount = account.get();
                                             serverPlayer.teleportTo(

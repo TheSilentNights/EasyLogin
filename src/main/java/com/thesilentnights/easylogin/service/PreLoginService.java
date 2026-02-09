@@ -10,21 +10,13 @@ import net.minecraft.world.effect.MobEffects;
 
 public class PreLoginService {
 
-    private final AccountService accountService;
-    private final LoginService loginService;
-
-    public PreLoginService(AccountService accountService, LoginService loginService) {
-        this.accountService = accountService;
-        this.loginService = loginService;
-    }
-
-    public void preLogin(ServerPlayer serverPlayer) {
+    public static void preLogin(ServerPlayer serverPlayer) {
         if (NPCService.isNPC(serverPlayer)) {
             ByPassService.addBypass(serverPlayer.getUUID());
         }
 
         // Try to re-login from cache
-        if (loginService.reLogFromCache(serverPlayer)) {
+        if (LoginService.reLogFromCache(serverPlayer)) {
             serverPlayer.sendMessage(new TextComponent("relogged from cache"), serverPlayer.getUUID());
             return;
         }
@@ -37,7 +29,7 @@ public class PreLoginService {
                 TaskService.Suffix.MESSAGE.name()
         );
 
-        if (accountService.hasAccount(serverPlayer.getUUID())) {
+        if (AccountService.hasAccount(serverPlayer.getUUID())) {
             TaskService.addTask(
                     taskIdBase,
                     new Message(serverPlayer, new TextComponent("please login your account by /login"), 80, true)
@@ -59,7 +51,7 @@ public class PreLoginService {
         );
     }
 
-    private void addBlindEffectToPlayer(ServerPlayer serverPlayer) {
+    private static void addBlindEffectToPlayer(ServerPlayer serverPlayer) {
         MobEffectInstance blindness = new MobEffectInstance(
                 MobEffects.BLINDNESS,
                 25565,

@@ -22,33 +22,28 @@ import java.util.regex.Pattern;
 public class EmailService {
 
     private static final Logger log = LogManager.getLogger(EmailService.class);
-    private final AccountService accountService;
-    private final LoginService loginService;
-    private MailAccount account;
+    private static MailAccount account;
 
-    public EmailService(AccountService accountService, LoginService loginService) {
-        this.accountService = accountService;
-        this.loginService = loginService;
-
+    static {
         if (EasyLoginConfig.enableEmailFunction.get()) {
-            this.account = new MailAccount();
-            this.account.setFrom(EasyLoginConfig.from.get());
-            this.account.setUser(EasyLoginConfig.username.get());
-            this.account.setPass(EasyLoginConfig.password.get());
-            this.account.setHost(EasyLoginConfig.host.get());
-            this.account.setPort(EasyLoginConfig.port.get());
-            this.account.setAuth(EasyLoginConfig.enableSSL.get());
-            this.account.setStarttlsEnable(EasyLoginConfig.starttlsEnable.get());
-            this.account.setSslEnable(EasyLoginConfig.enableSSL.get());
-            this.account.setTimeout(EasyLoginConfig.timeout.get());
+            account = new MailAccount();
+            account.setFrom(EasyLoginConfig.from.get());
+            account.setUser(EasyLoginConfig.username.get());
+            account.setPass(EasyLoginConfig.password.get());
+            account.setHost(EasyLoginConfig.host.get());
+            account.setPort(EasyLoginConfig.port.get());
+            account.setAuth(EasyLoginConfig.enableSSL.get());
+            account.setStarttlsEnable(EasyLoginConfig.starttlsEnable.get());
+            account.setSslEnable(EasyLoginConfig.enableSSL.get());
+            account.setTimeout(EasyLoginConfig.timeout.get());
         }
     }
 
-    public boolean checkIfInitiated() {
+    public static boolean checkIfInitiated() {
         return account != null;
     }
 
-    public boolean sendEmail(UUID sender, String emailAddress, String data) {
+    public static boolean sendEmail(UUID sender, String emailAddress, String data) {
         String identifier = TimerService.generateIdentifier(sender, EmailService.class);
         if (TimerService.contains(identifier)) {
             return false;
@@ -59,7 +54,7 @@ public class EmailService {
         }
     }
 
-    public boolean sendDebug(CommandContext<CommandSourceStack> context) {
+    public static boolean sendDebug(CommandContext<CommandSourceStack> context) {
         if (!checkIfInitiated()) {
             context.getSource().sendFailure(new TextComponent("the email feature is not enabled. you can modify it in config.yml"));
         }
@@ -68,7 +63,7 @@ public class EmailService {
         return true;
     }
 
-    public boolean bindEmail(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+    public static boolean bindEmail(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         if (!checkIfInitiated()) {
             context.getSource().sendFailure(new TextComponent("the email feature is not enabled"));
             return false;
@@ -78,18 +73,18 @@ public class EmailService {
         ServerPlayer player = context.getSource().getPlayerOrException();
         UUID uuid = player.getUUID();
 
-        if (!loginService.isLoggedIn(uuid)) {
+        if (!LoginService.isLoggedIn(uuid)) {
             context.getSource().sendFailure(new TranslatableComponent("you cannot execute it when you are not logged in"));
             return false;
         }
 
         if (isValidEmail(email)) {
-            Optional<PlayerAccount> accountOpt = accountService.getAccount(uuid);
+            Optional<PlayerAccount> accountOpt = AccountService.getAccount(uuid);
             if (accountOpt.isPresent()) {
                 PlayerAccount playerAccount = accountOpt.get();
                 playerAccount.setEmail(email);
                 log.info(playerAccount.toString());
-                accountService.updateAccount(playerAccount);
+                AccountService.updateAccount(playerAccount);
                 context.getSource().sendSuccess(
                         new TranslatableComponent("bind success")
                                 .withStyle(ChatFormatting.GREEN)
@@ -110,7 +105,7 @@ public class EmailService {
         return false;
     }
 
-    public boolean isValidEmail(String email) {
+    public static boolean isValidEmail(String email) {
         if (email == null || email.isEmpty()) {
             return false;
         }

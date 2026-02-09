@@ -128,11 +128,13 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft "net.minecraftforge:forge:${forge_version}"
 
-    shadowDeps minecraftLibrary("com.zaxxer:HikariCP:${hikaricp_version}")
-    shadowDeps minecraftLibrary("org.xerial:sqlite-jdbc:${sqlite_version}")
-    shadowDeps minecraftLibrary("cn.hutool:hutool-all:${hutool_version}")
-    shadowDeps minecraftLibrary("com.sun.mail:javax.mail:[1.6.2]")
-    shadowDeps minecraftLibrary("com.github.ben-manes.caffeine:caffeine:${caffine_version}")
+    jarJar(
+            minecraftLibrary("com.zaxxer:HikariCP:${hikaricp_version}"),
+            minecraftLibrary("org.xerial:sqlite-jdbc:${sqlite_version}"),
+            minecraftLibrary("cn.hutool:hutool-all:${hutool_version}"),
+            minecraftLibrary("com.sun.mail:javax.mail:[1.6.2]"),
+            minecraftLibrary("com.github.ben-manes.caffeine:caffeine:${caffine_version}"),
+    )
 
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
@@ -150,23 +152,6 @@ jar {
                     "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),])
     }
     finalizedBy("reobfJar")
-}
-
-//find refmap file
-def refmapName = "mixins.${modId}.refmap.json"
-def refmap = fileTree(project.buildDir).files.find { file ->
-    file.name == refmapName
-}
-
-shadowJar {
-    dependsOn(build)
-    configurations = [project.configurations.shadowDeps]
-    if (refmap != null) {
-        from(refmap.parentFile) {
-            include refmapName
-        }
-    }
-    exclude("org/slf4j/**")
 }
 
 

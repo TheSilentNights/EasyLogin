@@ -14,12 +14,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ActionListener {
 
-    private final CommandRejectionService commandRejectionService;
 
-
-    public ActionListener(IEventBus eventBus, CommandRejectionService commandRejectionService) {
+    public ActionListener(IEventBus eventBus) {
         eventBus.register(this);
-        this.commandRejectionService = commandRejectionService;
     }
 
     @SubscribeEvent
@@ -45,6 +42,6 @@ public class ActionListener {
 
     @SubscribeEvent
     public void onPlayerDrop(CommandEvent event) throws CommandSyntaxException {
-        commandRejectionService.handleRejection(event);
+        CommandRejectionService.handleRejection(event);
     }
 }

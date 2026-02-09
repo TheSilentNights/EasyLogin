@@ -17,30 +17,22 @@ import java.util.UUID;
 
 public class PasswordRecoveryService {
 
-    private final LoginService loginService;
-    private final EmailService emailService;
-    private final AccountService accountService;
-    private final Map<UUID, String> code = new HashMap<>();
+    private static final Map<UUID, String> code = new HashMap<>();
 
-    public PasswordRecoveryService(LoginService loginService, EmailService emailService, AccountService accountService) {
-        this.loginService = loginService;
-        this.emailService = emailService;
-        this.accountService = accountService;
-    }
 
-    public boolean recoveryPassword(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+    public static boolean recoveryPassword(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         String emailConfirm = StringArgumentType.getString(context, "emailConfirm");
         ServerPlayer sender = context.getSource().getPlayerOrException();
 
-        if (!loginService.isLoggedIn(sender.getUUID())) {
+        if (!LoginService.isLoggedIn(sender.getUUID())) {
             context.getSource().sendFailure(new TranslatableComponent("you cannot use this feature while unlogged"));
             return false;
         }
 
-        Optional<PlayerAccount> account = accountService.getAccount(sender.getUUID());
+        Optional<PlayerAccount> account = AccountService.getAccount(sender.getUUID());
         if (account.isPresent() && emailConfirm.equals(account.get().getEmail())) {
             String randomCode = new RandomGenerator(20).generate();
-            if (emailService.sendEmail(sender.getUUID(), emailConfirm, randomCode)) {
+            if (EmailService.sendEmail(sender.getUUID(), emailConfirm, randomCode)) {
                 code.put(sender.getUUID(), randomCode);
                 context.getSource().sendSuccess(
                         new TranslatableComponent("commands.email.bind.success")
@@ -58,12 +50,12 @@ public class PasswordRecoveryService {
         return false;
     }
 
-    public boolean confirmRecover(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+    public static boolean confirmRecover(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         String confirmCode = StringArgumentType.getString(context, "confirmCode");
         UUID uuid = context.getSource().getPlayerOrException().getUUID();
-        Optional<PlayerAccount> account = accountService.getAccount(uuid);
+        Optional<PlayerAccount> account = AccountService.getAccount(uuid);
 
-        if (!loginService.isLoggedIn(uuid)) {
+        if (!LoginService.isLoggedIn(uuid)) {
             context.getSource().sendFailure(new TranslatableComponent("you cannot use this feature while unlogged"));
             return false;
         }

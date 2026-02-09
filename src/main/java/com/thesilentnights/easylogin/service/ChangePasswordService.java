@@ -11,16 +11,9 @@ import net.minecraft.network.chat.TranslatableComponent;
 
 public class ChangePasswordService {
 
-    private final LoginService loginService;
-    private final AccountService accountService;
 
-    public ChangePasswordService(LoginService loginService, AccountService accountService) {
-        this.loginService = loginService;
-        this.accountService = accountService;
-    }
-
-    public boolean changePassword(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        if (!loginService.isLoggedIn(context.getSource().getPlayerOrException().getUUID())) {
+    public static boolean changePassword(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        if (!LoginService.isLoggedIn(context.getSource().getPlayerOrException().getUUID())) {
             MutableComponent message = new TranslatableComponent("commands.password.change.failure.unlogged")
                     .withStyle(ChatFormatting.BOLD)
                     .withStyle(ChatFormatting.RED);
@@ -32,7 +25,7 @@ public class ChangePasswordService {
         String newPasswordConfirm = StringArgumentType.getString(context, "newPasswordConfirm");
 
         if (newPassword.equals(newPasswordConfirm)) {
-            accountService.updateSingleColumn(
+            AccountService.updateSingleColumn(
                     SqlColumnDefinition.PASSWORD,
                     newPassword,
                     context.getSource().getPlayerOrException().getUUID()

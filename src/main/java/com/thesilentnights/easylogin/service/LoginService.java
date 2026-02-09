@@ -20,17 +20,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class LoginService {
-    private final AccountService accountService;
 
-    public LoginService(AccountService accountService) {
-        this.accountService = accountService;
-    }
-
-    public boolean login(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+    public static boolean login(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
         UUID uuid = serverPlayer.getUUID();
 
-        if (!accountService.hasAccount(uuid)) {
+        if (!AccountService.hasAccount(uuid)) {
             context.getSource().sendFailure(TextUtil.createText(ChatFormatting.RED, "you haven't registered"));
             return true;
         }
@@ -44,7 +39,7 @@ public class LoginService {
         }
 
         String password = StringArgumentType.getString(context, "password");
-        Optional<PlayerAccount> account = accountService.getAccount(uuid);
+        Optional<PlayerAccount> account = AccountService.getAccount(uuid);
 
         if (account.isPresent()) {
             if (account.get().getPassword().equals(password)) {
@@ -64,13 +59,13 @@ public class LoginService {
         return false;
     }
 
-    private void removeLimit(PlayerAccount account, ServerPlayer serverPlayer) {
+    private static void removeLimit(PlayerAccount account, ServerPlayer serverPlayer) {
         PlayerCache.addAccount(account);
         TaskService.cancelPlayer(serverPlayer.getUUID());
         serverPlayer.removeEffect(MobEffects.BLINDNESS);
     }
 
-    public boolean register(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+    public static boolean register(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
         String password = StringArgumentType.getString(context, "password");
         String repeat = StringArgumentType.getString(context, "repeat");
@@ -96,9 +91,9 @@ public class LoginService {
                 System.currentTimeMillis()
         );
 
-        accountService.updateAccount(newAccount);
+        AccountService.updateAccount(newAccount);
 
-        Optional<PlayerAccount> auth = accountService.getAccount(serverPlayer.getUUID());
+        Optional<PlayerAccount> auth = AccountService.getAccount(serverPlayer.getUUID());
         if (auth.isEmpty()) {
             LogUtil.logError(LoginService.class, "sql error found in registering player", new SQLException());
             return false;
@@ -112,7 +107,7 @@ public class LoginService {
         }
     }
 
-    public void logoutPlayer(ServerPlayer serverPlayer) {
+    public static void logoutPlayer(ServerPlayer serverPlayer) {
         Optional<PlayerAccount> account = PlayerCache.getAccount(serverPlayer.getUUID());
         if (account.isPresent()) {
             PlayerAccount playerAccount = account.get();
@@ -122,16 +117,16 @@ public class LoginService {
             playerAccount.setLastLoginY(serverPlayer.getY());
             playerAccount.setLastLoginZ(serverPlayer.getZ());
             playerAccount.setLoginTimestamp(System.currentTimeMillis());
-            accountService.updateAccount(playerAccount);
+            AccountService.updateAccount(playerAccount);
             PlayerCache.dropAccount(serverPlayer.getUUID(), true);
         }
     }
 
-    public boolean isLoggedIn(UUID key) {
+    public static boolean isLoggedIn(UUID key) {
         return PlayerCache.hasAccount(key);
     }
 
-    public boolean reLogFromCache(ServerPlayer serverPlayer) {
+    public static boolean reLogFromCache(ServerPlayer serverPlayer) {
         if (!PlayerSessionCache.hasSession(serverPlayer.getUUID())) {
             return false;
         }

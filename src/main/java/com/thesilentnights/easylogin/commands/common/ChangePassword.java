@@ -8,11 +8,6 @@ import net.minecraft.commands.Commands;
 
 public class ChangePassword implements CommonCommands {
 
-    private final ChangePasswordService changePasswordService;
-
-    public ChangePassword(ChangePasswordService changePasswordService) {
-        this.changePasswordService = changePasswordService;
-    }
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
@@ -20,7 +15,7 @@ public class ChangePassword implements CommonCommands {
                 .then(Commands.argument("newPassword", StringArgumentType.string())
                         .then(Commands.argument("newPasswordConfirm", StringArgumentType.string())
                                 .executes(context -> {
-                                    boolean success = changePasswordService.changePassword(context);
+                                    boolean success = ChangePasswordService.changePassword(context);
                                     return success ? 1 : 0;
                                 })));
     }
