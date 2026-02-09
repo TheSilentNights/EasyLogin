@@ -25,10 +25,10 @@ object EasyLoginConfig {
 
 
     init {
-        logInfo(EasyLoginConfig::class, "Loading EasyLogin Config")
+        logInfo(EasyLoginConfig::class, "Loading com.thesilentnights.easylogin.EasyLogin Config")
 
         val builder = ForgeConfigSpec.Builder()
-        builder.comment("EasyLogin Config").push("server")
+        builder.comment("com.thesilentnights.easylogin.EasyLogin Config").push("server")
         this.dataBaseType = builder.comment("DataBase Type").defineEnum("databaseType", DataBaseType.SQLITE)
         this.pathToDatabase =
             builder.comment("Path to Database").define("pathToDatabase", "/easylogin/playerAccounts.db")
