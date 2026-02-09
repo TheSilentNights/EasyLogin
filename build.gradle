@@ -119,9 +119,14 @@ minecraft {
 }
 
 mixin {
+<<<<<<< HEAD
     add sourceSets.main, "mixins.${modId}.refmap.json"
     config("${modId}.mixins.json")
+=======
+    add sourceSets.main, "${modId}.refmap.json"
 
+    config "${modId}.mixins.json"
+>>>>>>> parent of 2b3d94a (remove deps)
 }
 
 
