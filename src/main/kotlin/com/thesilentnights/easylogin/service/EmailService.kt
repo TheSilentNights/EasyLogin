@@ -21,12 +21,12 @@ class EmailService {
     val accountService: AccountService
     val loginService: LoginService
 
-    constructor(accountService: AccountService, loginService: LoginService) {
+    constructor(accountService: AccountService,loginService: LoginService) {
         this.accountService = accountService
         this.loginService = loginService
     }
 
-    init {
+    init{
         if (EasyLoginConfig.enableEmailFunction.get()) {
             account = MailAccount()
             with(account!!) {
@@ -51,7 +51,7 @@ class EmailService {
         if (TimerService.contains(TimerService.generateIdentifier(sender, EmailService::class))) {
             return false
         } else {
-            MailUtil.send(account, emailAddress, "com.thesilentnights.easylogin.EasyLogin", data, false)
+            MailUtil.send(account, emailAddress, "EasyLogin", data, false)
             TimerService.add(
                 TimerService.generateIdentifier(sender, EmailService::class),
                 (1000 * 60 * 5).toLong()
@@ -68,7 +68,7 @@ class EmailService {
         MailUtil.send(
             account,
             StringArgumentType.getString(context, "targetEmail"),
-            "com.thesilentnights.easylogin.EasyLogin",
+            "EasyLogin",
             "testEmail",
             false
         )
