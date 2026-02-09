@@ -4,16 +4,20 @@ import cn.hutool.captcha.generator.RandomGenerator
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.CommandSyntaxException
+import com.thesilentnights.easylogin.events.EasyLoginEvents
 import com.thesilentnights.easylogin.pojo.PlayerAccount
 import net.minecraft.ChatFormatting
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.network.chat.TranslatableComponent
 import net.minecraft.server.level.ServerPlayer
-import java.util.*
+import net.minecraftforge.common.MinecraftForge
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 
-object PasswordRecoveryService {
-    var code: MutableMap<UUID, String> =
+class PasswordRecoveryService(val loginService: LoginService,val emailService: EmailService): KoinComponent {
+    var code: MutableMap<java.util.UUID?, String?> =
         HashMap()
+    val accountService: AccountService = get()
 
     /***
      * recover the password
@@ -26,15 +30,15 @@ object PasswordRecoveryService {
         val emailConfirm: String = StringArgumentType.getString(context, "emailConfirm")
         val sender: ServerPlayer = context.getSource().playerOrException
         //not logged in
-        if (!LoginService.isLoggedIn(context.getSource().playerOrException.getUUID())) {
+        if (!loginService.isLoggedIn(context.getSource().playerOrException.getUUID())) {
             context.getSource().sendFailure(TranslatableComponent("you cannot use this feature while unlogged"))
             return false
         }
 
-        val account: java.util.Optional<PlayerAccount> = AccountService.getAccount(sender.getUUID())
+        val account: java.util.Optional<PlayerAccount> = accountService.getAccount(sender.getUUID())
         if (account.isPresent && emailConfirm == account.get().email) {
-            val randomCode: String = RandomGenerator(20).generate()
-            if (EmailService.sendEmail(sender.getUUID(), emailConfirm, randomCode)) {
+            val randomCode: String? = RandomGenerator(20).generate()
+            if (emailService.sendEmail(sender.getUUID(), emailConfirm, randomCode)) {
                 code[sender.getUUID()] = randomCode
                 context.getSource().sendSuccess(
                     TranslatableComponent("commands.email.bind.success").withStyle(ChatFormatting.BOLD)
@@ -60,23 +64,27 @@ object PasswordRecoveryService {
     fun confirmRecover(context: CommandContext<CommandSourceStack>): Boolean {
         val confirmCode: String = StringArgumentType.getString(context, "confirmCode")
         val uuid: java.util.UUID = context.source.playerOrException.getUUID()
-        val account: java.util.Optional<PlayerAccount> = AccountService.getAccount(uuid)
+        val account: java.util.Optional<PlayerAccount> = accountService.getAccount(uuid)
 
         //not logged in
-        if (!LoginService.isLoggedIn(context.getSource().playerOrException.getUUID())) {
+        if (!loginService.isLoggedIn(context.getSource().playerOrException.getUUID())) {
             context.getSource().sendFailure(TranslatableComponent("you cannot use this feature while unlogged"))
             return false
         }
 
         if (code.containsKey(uuid) && account.isPresent) {
-            if (confirmCode == code[uuid]) {
+            if (confirmCode == code.get(uuid)) {
                 code.remove(uuid)
                 //force login
                 context.getSource().sendSuccess(
                     TranslatableComponent("commands.login.success").withStyle(ChatFormatting.GREEN)
                         .withStyle(ChatFormatting.BOLD), true
                 )
-                LoginService.systemLogin(account.get(), context.source.playerOrException)
+                MinecraftForge.EVENT_BUS.post(
+                    EasyLoginEvents.PlayerLoginEvent(
+                        context.getSource().playerOrException, account.get()
+                    )
+                )
                 return true
             }
         }

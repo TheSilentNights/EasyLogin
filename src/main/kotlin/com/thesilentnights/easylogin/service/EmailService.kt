@@ -8,25 +8,25 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.thesilentnights.easylogin.configs.EasyLoginConfig
 import com.thesilentnights.easylogin.configs.EasyLoginConfig.username
 import com.thesilentnights.easylogin.pojo.PlayerAccount
-import com.thesilentnights.easylogin.utils.logError
-import com.thesilentnights.easylogin.utils.logInfo
 import net.minecraft.ChatFormatting
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.network.chat.TranslatableComponent
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import java.util.*
 
+class EmailService {
+    var account: MailAccount? = null
+    val log: Logger = LogManager.getLogger(EmailService::class)
+    val accountService: AccountService
+    val loginService: LoginService
 
-object EmailService {
-    private var account: MailAccount? = null
-    private lateinit var accountService: AccountService
-    private lateinit var loginService: LoginService
-
-    fun init(accountService: AccountService, loginService: LoginService) {
+    constructor(accountService: AccountService,loginService: LoginService) {
         this.accountService = accountService
         this.loginService = loginService
     }
 
-    init {
+    init{
         if (EasyLoginConfig.enableEmailFunction.get()) {
             account = MailAccount()
             with(account!!) {
@@ -94,7 +94,7 @@ object EmailService {
             if (account1.isPresent) {
                 val playerAccount: PlayerAccount = account1.get()
                 playerAccount.email = (email)
-                logInfo(EmailService::class, "update email")
+                log.info(playerAccount.toString())
                 accountService.updateAccount(playerAccount)
                 context.getSource().sendSuccess(
                     TranslatableComponent("bind success").withStyle(ChatFormatting.GREEN)
@@ -108,7 +108,7 @@ object EmailService {
                 )
             }
         } else {
-            logError(EmailService::class, "invalid email", InvalidPropertiesFormatException("invalid email"))
+            log.info("error")
         }
         return false
     }

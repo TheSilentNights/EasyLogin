@@ -3,24 +3,30 @@ package com.thesilentnights.easylogin.service
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.CommandSyntaxException
+import com.thesilentnights.easylogin.events.EasyLoginEvents
 import com.thesilentnights.easylogin.pojo.PlayerAccount
 import com.thesilentnights.easylogin.repo.PlayerCache
 import com.thesilentnights.easylogin.repo.PlayerSessionCache
 import com.thesilentnights.easylogin.utils.TextUtil
-import com.thesilentnights.easylogin.utils.logError
 import net.minecraft.ChatFormatting
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.network.chat.TranslatableComponent
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.effect.MobEffects
-import java.sql.SQLException
+import net.minecraftforge.common.MinecraftForge
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import java.util.*
 
-object LoginService {
+class LoginService : KoinComponent {
+    val log: Logger = LogManager.getLogger(LoginService::class)
+    val accountService: AccountService = get()
 
     @Throws(CommandSyntaxException::class)
     fun login(context: CommandContext<CommandSourceStack>): Boolean {
-        if (!AccountService.hasAccount(context.getSource().playerOrException.getUUID())) {
+        if (!accountService.hasAccount(context.getSource().playerOrException.getUUID())) {
             context.getSource().sendFailure(TextUtil.createText(ChatFormatting.RED, "you haven't registered"))
             return true
         }
@@ -36,7 +42,7 @@ object LoginService {
         }
 
         val password: String = StringArgumentType.getString(context, "password")
-        val account: Optional<PlayerAccount> = AccountService.getAccount(serverPlayer.getUUID())
+        val account: Optional<PlayerAccount> = accountService.getAccount(serverPlayer.getUUID())
 
         if (account.isPresent) {
             if (account.get().password == password) {
@@ -68,16 +74,6 @@ object LoginService {
         serverPlayer.removeEffect(MobEffects.BLINDNESS)
     }
 
-    /***
-     * @param  account  the account to be logged in
-     * @param  serverPlayer  the player to be logged in
-     *
-     * this function is called to force a player to log in
-     */
-    fun systemLogin(account: PlayerAccount, serverPlayer: ServerPlayer) {
-        removeLimit(account, serverPlayer)
-    }
-
     @Throws(CommandSyntaxException::class)
     fun register(context: CommandContext<CommandSourceStack>): Boolean {
         val serverPlayer: ServerPlayer = context.getSource().playerOrException
@@ -94,7 +90,7 @@ object LoginService {
             return false
         }
 
-        AccountService.updateAccount(
+        accountService.updateAccount(
             PlayerAccount(
                 uuid = serverPlayer.uuid,
                 username = serverPlayer.gameProfile.name,
@@ -109,9 +105,9 @@ object LoginService {
             )
         )
 
-        val auth: Optional<PlayerAccount> = AccountService.getAccount(serverPlayer.getUUID())
+        val auth: Optional<PlayerAccount> = accountService.getAccount(serverPlayer.getUUID())
         if (auth.isEmpty) {
-            logError(LoginService::class, "sql error found in registering player", SQLException())
+            log.atError().log("sql error found in registering player")
             return false
         } else {
             context.getSource().sendSuccess(
@@ -120,7 +116,7 @@ object LoginService {
                     withStyle(ChatFormatting.BOLD)
                 }, false
             )
-            removeLimit(auth.get(), serverPlayer)
+            MinecraftForge.EVENT_BUS.post(EasyLoginEvents.PlayerLoginEvent(serverPlayer, auth.get()))
             return true
         }
     }
@@ -142,7 +138,7 @@ object LoginService {
             playerAccount.lastLoginY = serverPlayer.y
             playerAccount.lastLoginZ = serverPlayer.z
             playerAccount.loginTimestamp = System.currentTimeMillis()
-            AccountService.updateAccount(playerAccount)
+            accountService.updateAccount(playerAccount)
             // push events
             PlayerCache.dropAccount(serverPlayer.uuid, true)
         }
