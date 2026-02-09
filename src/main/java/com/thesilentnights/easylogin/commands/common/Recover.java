@@ -6,9 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.thesilentnights.easylogin.service.PasswordRecoveryService;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import org.springframework.stereotype.Component;
 
-@Component
 public class Recover implements CommonCommands {
 
     private final PasswordRecoveryService passwordRecoveryService;
