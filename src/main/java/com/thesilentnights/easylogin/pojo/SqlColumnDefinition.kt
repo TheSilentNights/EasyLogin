@@ -1,6 +1,6 @@
 package com.thesilentnights.easylogin.pojo
 
-public enum SqlColumnDefinition {
+enum class SqlColumnDefinition {
     USERNAME,
     UUID,
     PASSWORD,
