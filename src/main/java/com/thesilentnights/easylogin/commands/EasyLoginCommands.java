@@ -5,10 +5,7 @@ import com.thesilentnights.easylogin.commands.admin.ByPass;
 import com.thesilentnights.easylogin.commands.admin.EmailTest;
 import com.thesilentnights.easylogin.commands.admin.PlayerInfoCommands;
 import com.thesilentnights.easylogin.commands.admin.TeleportToOfflinePlayer;
-import com.thesilentnights.easylogin.commands.common.Login;
-import com.thesilentnights.easylogin.commands.common.Logout;
-import com.thesilentnights.easylogin.commands.common.Recover;
-import com.thesilentnights.easylogin.commands.common.Registrar;
+import com.thesilentnights.easylogin.commands.common.*;
 import net.minecraft.commands.CommandSourceStack;
 
 public class EasyLoginCommands {
@@ -20,12 +17,14 @@ public class EasyLoginCommands {
     private final TeleportToOfflinePlayer teleportToOfflinePlayer;
     private final EmailTest emailTest;
     private final PlayerInfoCommands playerInfoCommands;
+    private final ChangePassword changePassword;
 
 
-    public EasyLoginCommands(Login login, Registrar registrar, Logout logout, Recover recover, ByPass byPass, TeleportToOfflinePlayer teleportToOfflinePlayer, EmailTest emailTest, PlayerInfoCommands playerInfoCommands) {
+    public EasyLoginCommands(Login login, Registrar registrar, Logout logout, ChangePassword changePassword, Recover recover, ByPass byPass, TeleportToOfflinePlayer teleportToOfflinePlayer, EmailTest emailTest, PlayerInfoCommands playerInfoCommands) {
         this.login = login;
         this.registrar = registrar;
         this.logout = logout;
+        this.changePassword = changePassword;
         this.recover = recover;
         this.byPass = byPass;
         this.teleportToOfflinePlayer = teleportToOfflinePlayer;
@@ -40,6 +39,7 @@ public class EasyLoginCommands {
         dispatcher.register(registrar.getCommand());
         dispatcher.register(logout.getCommand());
         dispatcher.register(recover.getCommand());
+        dispatcher.register(changePassword.getCommand());
 
         // Admin commands
         dispatcher.register(byPass.getCommand());
