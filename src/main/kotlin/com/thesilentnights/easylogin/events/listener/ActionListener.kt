@@ -2,6 +2,7 @@ package com.thesilentnights.easylogin.events.listener
 
 import com.thesilentnights.easylogin.service.ActionCheckService
 import com.thesilentnights.easylogin.service.CommandRejectionService
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.LivingEntity
 import net.minecraftforge.event.CommandEvent
@@ -42,6 +43,10 @@ class ActionListener {
     @SubscribeEvent
     fun onPlayerDrop(event: CommandEvent) {
         CommandRejectionService.handleRejection(event)
+    }
+
+    fun onPlayerMove(event: ClientboundPlayerInfoPacket.PlayerUpdate) {
+
     }
 
 
