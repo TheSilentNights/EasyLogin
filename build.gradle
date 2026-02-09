@@ -1,5 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
 buildscript {
     repositories {
         // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
@@ -16,6 +14,7 @@ plugins {
     id("java")
     id("net.minecraftforge.gradle") version('[6.0,6.2)')
     id("com.gradleup.shadow") version("8.3.0")
+    id 'org.parchmentmc.librarian.forgegradle' version '[1.0,2.0)'
 }
 
 apply plugin: 'org.spongepowered.mixin'
@@ -153,14 +152,20 @@ jar {
     finalizedBy("reobfJar")
 }
 
+//find refmap file
+def refmapName = "mixins.${modId}.refmap.json"
+def refmap = fileTree(project.buildDir).files.find { file ->
+    file.name == refmapName
+}
 
-var shadowNoneProject = tasks.register("shadowNoneProject", ShadowJar) {
+shadowJar {
     dependsOn(build)
-    setArchiveClassifier("shadowed")
     configurations = [project.configurations.shadowDeps]
-
-    from(fileTree(tasks.jar.archiveFile))
-
+    if (refmap != null) {
+        from(refmap.parentFile) {
+            include refmapName
+        }
+    }
     exclude("org/slf4j/**")
 }
 
