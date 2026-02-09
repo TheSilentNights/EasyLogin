@@ -1,46 +1,42 @@
-package com.thesilentnights.easylogin.commands.admin;
+package com.thesilentnights.easylogin.commands.admin
 
-import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.context.CommandContext;
-import com.thesilentnights.easylogin.pojo.PlayerAccount;
-import com.thesilentnights.easylogin.service.AccountService;
-import com.thesilentnights.easylogin.service.LoginService;
-import com.thesilentnights.easylogin.utils.TextUtil;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
-import org.springframework.stereotype.Component;
+import com.mojang.brigadier.arguments.StringArgumentType
+import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import com.mojang.brigadier.context.CommandContext
+import com.thesilentnights.easylogin.pojo.PlayerAccount
+import com.thesilentnights.easylogin.service.AccountService
+import com.thesilentnights.easylogin.utils.TextUtil
+import net.minecraft.commands.CommandSourceStack
+import org.koin.core.component.inject
+import java.util.*
 
-import java.util.Optional;
-import java.util.UUID;
-
-@Component
-public class PlayerInfoCommands extends AdminCommands {
-    private final AccountService accountService;
-
-    public PlayerInfoCommands(AccountService accountService, LoginService loginService) {
-        super(loginService);
-        this.accountService = accountService;
-    }
-
-    @Override
-    public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
-        return super.MAIN_NODE
-                .then(
-                        Commands.literal("playerinfo")
-                                .then(
-                                        Commands.argument("playerName", StringArgumentType.string())
-                                                .executes((CommandContext<CommandSourceStack> context) -> {
-                                                    Optional<PlayerAccount> account = accountService.getAccount(
-                                                            UUID.fromString(StringArgumentType.getString(context, "playerName"))
-                                                    );
-                                                    if (account.isPresent()) {
-                                                        context.getSource().sendFailure(TextUtil.createText(account.get().toString()));
-                                                        return 1;
-                                                    }
-                                                    return 0;
-                                                })
+class PlayerInfoCommands : AdminCommands {
+    val accountService: AccountService by inject()
+    override fun getCommand(mainNode: LiteralArgumentBuilder<CommandSourceStack>): LiteralArgumentBuilder<CommandSourceStack> {
+        return mainNode
+            .then(
+                net.minecraft.commands.Commands.literal("playerinfo")
+                    .then(
+                        net.minecraft.commands.Commands.argument(
+                            "playerName",
+                            StringArgumentType.string()
+                        )
+                            .executes { context: CommandContext<CommandSourceStack> ->
+                                val account: Optional<PlayerAccount> = accountService.getAccount(
+                                    UUID.fromString(
+                                        StringArgumentType.getString(
+                                            context,
+                                            "playerName"
+                                        )
+                                    )
                                 )
-                );
+                                if (account.isPresent) {
+                                    context.getSource().sendFailure(TextUtil.createText(account.get().toString()))
+                                    return@executes 1
+                                }
+                                return@executes 0
+                            }
+                    )
+            )
     }
 }

@@ -1,50 +1,28 @@
 package com.thesilentnights.easylogin.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.thesilentnights.easylogin.commands.admin.ByPass;
-import com.thesilentnights.easylogin.commands.admin.EmailTest;
-import com.thesilentnights.easylogin.commands.admin.PlayerInfoCommands;
-import com.thesilentnights.easylogin.commands.admin.TeleportToOfflinePlayer;
 import com.thesilentnights.easylogin.commands.common.Login;
-import com.thesilentnights.easylogin.commands.common.Logout;
-import com.thesilentnights.easylogin.commands.common.Recover;
-import com.thesilentnights.easylogin.commands.common.Registrar;
 import net.minecraft.commands.CommandSourceStack;
+
 
 public class EasyLoginCommands {
     private final Login login;
-    private final Registrar registrar;
-    private final Logout logout;
-    private final Recover recover;
-    private final ByPass byPass;
-    private final TeleportToOfflinePlayer teleportToOfflinePlayer;
-    private final EmailTest emailTest;
-    private final PlayerInfoCommands playerInfoCommands;
 
-
-    public EasyLoginCommands(Login login, Registrar registrar, Logout logout, Recover recover, ByPass byPass, TeleportToOfflinePlayer teleportToOfflinePlayer, EmailTest emailTest, PlayerInfoCommands playerInfoCommands) {
-        this.login = login;
-        this.registrar = registrar;
-        this.logout = logout;
-        this.recover = recover;
-        this.byPass = byPass;
-        this.teleportToOfflinePlayer = teleportToOfflinePlayer;
-        this.emailTest = emailTest;
-        this.playerInfoCommands = playerInfoCommands;
-    }
 
     public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 
         // Common commands
-        dispatcher.register(login.getCommand());
-        dispatcher.register(registrar.getCommand());
-        dispatcher.register(logout.getCommand());
-        dispatcher.register(recover.getCommand());
+        dispatcher.register();
+        dispatcher.register(koin.<Registrar>get().getCommand());
+        dispatcher.register(koin.<Logout>get().getCommand());
+        dispatcher.register(koin.<ChangePassword>get().getCommand());
+        dispatcher.register(koin.<Email>get().getCommand());
+        dispatcher.register(koin.<Recover>get().getCommand());
 
         // Admin commands
-        dispatcher.register(byPass.getCommand());
-        dispatcher.register(emailTest.getCommand());
-        dispatcher.register(teleportToOfflinePlayer.getCommand());
-        dispatcher.register(playerInfoCommands.getCommand());
+        dispatcher.register(koin.<ByPass>get().getCommand(AdminCommands.mainNode));
+        dispatcher.register(koin.<TeleportToOfflinePlayer>get().getCommand(AdminCommands.mainNode));
+        dispatcher.register(koin.<EmailTest>get().getCommand(AdminCommands.mainNode));
+        dispatcher.register(koin.<PlayerInfoCommands>get().getCommand(AdminCommands.mainNode));
     }
 }

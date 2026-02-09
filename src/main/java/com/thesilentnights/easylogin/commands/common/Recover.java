@@ -1,38 +1,43 @@
-package com.thesilentnights.easylogin.commands.common;
+package com.thesilentnights.easylogin.commands.common
 
-import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.context.CommandContext;
-import com.thesilentnights.easylogin.service.PasswordRecoveryService;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
-import org.springframework.stereotype.Component;
+import com.mojang.brigadier.arguments.StringArgumentType
+import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import com.mojang.brigadier.context.CommandContext
+import com.thesilentnights.easylogin.service.PasswordRecoveryService
+import net.minecraft.commands.CommandSourceStack
+import net.minecraft.commands.Commands
 
-@Component
-public class Recover implements CommonCommands {
-
-    private final PasswordRecoveryService passwordRecoveryService;
-
-    public Recover(PasswordRecoveryService passwordRecoveryService) {
-        this.passwordRecoveryService = passwordRecoveryService;
-    }
-
-    @Override
-    public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
-        return Commands.literal("recover")
-                .then(Commands.literal("send")
-                        .then(Commands.argument("emailConfirm", StringArgumentType.greedyString())
-                                .executes((CommandContext<CommandSourceStack> context) ->
-                                        passwordRecoveryService.recoveryPassword(context) ? 1 : 0
-                                )
+class Recover(val passwordRecoveryService: PasswordRecoveryService) : CommonCommands {
+    override val command: LiteralArgumentBuilder<CommandSourceStack>
+        get() = Commands.literal("recover")
+            .then(
+                Commands.literal("send")
+                    .then(
+                        Commands.argument(
+                            "emailConfirm",
+                            StringArgumentType.greedyString()
                         )
-                )
-                .then(Commands.literal("check")
-                        .then(Commands.argument("confirmCode", StringArgumentType.greedyString())
-                                .executes((CommandContext<CommandSourceStack> context) ->
-                                        passwordRecoveryService.confirmRecover(context) ? 1 : 0
-                                )
+                            .executes { context: CommandContext<CommandSourceStack> ->
+                                if (passwordRecoveryService.recoveryPassword(
+                                        context
+                                    )
+                                ) 1 else 0
+                            }
+                    )
+            )
+            .then(
+                Commands.literal("check")
+                    .then(
+                        Commands.argument(
+                            "confirmCode",
+                            StringArgumentType.greedyString()
                         )
-                );
-    }
+                            .executes { context: CommandContext<CommandSourceStack> ->
+                                if (passwordRecoveryService.confirmRecover(
+                                        context
+                                    )
+                                ) 1 else 0
+                            }
+                    )
+            )
 }

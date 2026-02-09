@@ -134,6 +134,9 @@ dependencies {
     shadowDeps minecraftLibrary("com.sun.mail:javax.mail:[1.6.2]")
     shadowDeps minecraftLibrary("com.github.ben-manes.caffeine:caffeine:${caffine_version}")
 
+    // Source: https://mvnrepository.com/artifact/org.springframework/spring-context
+    shadowDeps implementation("org.springframework:spring-context:6.2.15")
+
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }

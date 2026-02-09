@@ -1,35 +1,30 @@
-package com.thesilentnights.easylogin.repo;
+package com.thesilentnights.easylogin.repo
 
-import com.thesilentnights.easylogin.pojo.PlayerAccount;
+import com.thesilentnights.easylogin.pojo.PlayerAccount
+import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+object PlayerCache {
+    private val cacheMap: MutableMap<UUID, PlayerAccount> = ConcurrentHashMap<UUID, PlayerAccount>()
 
-public class PlayerCache {
-
-    private static final Map<UUID, PlayerAccount> cacheMap = new ConcurrentHashMap<>();
-
-    public static void addAccount(PlayerAccount account) {
-        cacheMap.put(account.getUuid(), account);
+    fun addAccount(account: PlayerAccount) {
+        cacheMap[account.uuid] = account
     }
 
-    public static Optional<PlayerAccount> getAccount(UUID uuid) {
-        return Optional.ofNullable(cacheMap.get(uuid));
+    fun getAccount(uuid: UUID): Optional<PlayerAccount> {
+        return Optional.ofNullable(cacheMap[uuid])
     }
 
-    public static boolean hasAccount(UUID uuid) {
-        return cacheMap.containsKey(uuid);
+    fun hasAccount(uuid: UUID): Boolean {
+        return cacheMap.containsKey(uuid)
     }
 
-    public static void dropAccount(UUID uuid, boolean tempDrop) {
+    fun dropAccount(uuid: UUID, tempDrop: Boolean) {
         if (tempDrop) {
-            PlayerAccount uuid1 = cacheMap.get(uuid);
-            if (uuid1 != null) {
-                PlayerSessionCache.scheduleDrop(uuid1);
-            }
+            val uuid1: PlayerAccount = cacheMap[uuid]!!
+            PlayerSessionCache.scheduleDrop(uuid1)
         }
-        cacheMap.remove(uuid);
+        cacheMap.remove(uuid)
     }
+
 }

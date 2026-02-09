@@ -1,30 +1,26 @@
-package com.thesilentnights.easylogin.commands.common;
+package com.thesilentnights.easylogin.commands.common
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.context.CommandContext;
-import com.thesilentnights.easylogin.repo.PlayerCache;
-import com.thesilentnights.easylogin.utils.TextUtil;
-import net.minecraft.ChatFormatting;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
-import net.minecraft.server.level.ServerPlayer;
-import org.springframework.stereotype.Component;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import com.mojang.brigadier.context.CommandContext
+import com.thesilentnights.easylogin.repo.PlayerCache
+import com.thesilentnights.easylogin.utils.TextUtil
+import net.minecraft.ChatFormatting
+import net.minecraft.commands.CommandSourceStack
+import net.minecraft.commands.Commands
+import net.minecraft.server.level.ServerPlayer
 
-@Component
-public class Logout implements CommonCommands {
-
-    @Override
-    public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
-        return Commands.literal("logout")
-                .executes((CommandContext<CommandSourceStack> commandContext) -> {
-                    ServerPlayer player = commandContext.getSource().getPlayerOrException();
-                    if (PlayerCache.hasAccount(player.getUUID())) {
-                        PlayerCache.dropAccount(player.getUUID(), false);
-                        commandContext.getSource().sendFailure(TextUtil.createBold(ChatFormatting.GREEN, "logged out"));
-                    } else {
-                        commandContext.getSource().sendFailure(TextUtil.createBold(ChatFormatting.RED, "you are not logged in"));
-                    }
-                    return 1;
-                });
-    }
+class Logout : CommonCommands {
+    override val command: LiteralArgumentBuilder<CommandSourceStack>
+        get() = Commands.literal("logout")
+            .executes { commandContext: CommandContext<CommandSourceStack> ->
+                val player: ServerPlayer = commandContext.getSource().playerOrException
+                if (PlayerCache.hasAccount(player.getUUID())) {
+                    PlayerCache.dropAccount(player.getUUID(), false)
+                    commandContext.getSource().sendFailure(TextUtil.createBold(ChatFormatting.GREEN, "logged out"))
+                } else {
+                    commandContext.getSource()
+                        .sendFailure(TextUtil.createBold(ChatFormatting.RED, "you are not logged in"))
+                }
+                1
+            }
 }

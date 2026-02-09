@@ -1,31 +1,27 @@
-package com.thesilentnights.easylogin.commands.admin;
+package com.thesilentnights.easylogin.commands.admin
 
-import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.context.CommandContext;
-import com.thesilentnights.easylogin.service.LoginService;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
-import org.springframework.stereotype.Component;
+import com.mojang.brigadier.arguments.StringArgumentType
+import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import com.mojang.brigadier.context.CommandContext
+import net.minecraft.commands.CommandSourceStack
 
-@Component
-public class EmailTest extends AdminCommands {
-
-    public EmailTest(LoginService loginService) {
-        super(loginService);
-    }
-
-    @Override
-    public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
-        return super.MAIN_NODE.then(
-                Commands.literal("email")
+class EmailTest : AdminCommands {
+    override fun getCommand(mainNode: LiteralArgumentBuilder<CommandSourceStack>): LiteralArgumentBuilder<CommandSourceStack> {
+        return mainNode.then(
+            net.minecraft.commands.Commands.literal("email")
+                .then(
+                    net.minecraft.commands.Commands.literal("test")
                         .then(
-                                Commands.literal("test")
-                                        .then(
-                                                Commands.argument("targetEmail", StringArgumentType.greedyString())
-                                                        .executes((CommandContext<CommandSourceStack> context) -> 1)
-                                        )
+                            net.minecraft.commands.Commands.argument<String?>(
+                                "targetEmail",
+                                StringArgumentType.greedyString()
+                            )
+                                .executes { context: CommandContext<CommandSourceStack?>? ->
+                                    //TODO: Send email
+                                    1
+                                }
                         )
-        );
+                )
+        )
     }
 }

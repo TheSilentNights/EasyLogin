@@ -5,7 +5,9 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.thesilentnights.easylogin.service.LoginService;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Login implements CommonCommands {
 
     private final LoginService loginService;

@@ -1,54 +1,58 @@
-package com.thesilentnights.easylogin.events.listener;
+package com.thesilentnights.easylogin.events.listener
 
-import com.thesilentnights.easylogin.service.AccountService;
-import com.thesilentnights.easylogin.service.LoginService;
-import com.thesilentnights.easylogin.service.PreLoginService;
-import com.thesilentnights.easylogin.service.TaskService;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import com.thesilentnights.easylogin.service.AccountService
+import com.thesilentnights.easylogin.service.LoginService
+import com.thesilentnights.easylogin.service.PreLoginService
+import com.thesilentnights.easylogin.service.TaskService
+import net.minecraft.server.level.ServerPlayer
+import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.event.TickEvent.ServerTickEvent
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent
+import net.minecraftforge.eventbus.api.SubscribeEvent
 
-public class Listener {
 
-    private final AccountService accountService;
-    private final LoginService loginService;
-    private final PreLoginService preLoginService;
+class Listener {
+    val accountService: AccountService;
+    val loginService: LoginService;
+    val preLoginService: PreLoginService;
 
-    public Listener(AccountService accountService, LoginService loginService, PreLoginService preLoginService) {
-        this.accountService = accountService;
-        this.loginService = loginService;
-        this.preLoginService = preLoginService;
+    constructor(accountService: AccountService, loginService: LoginService, preLoginService: PreLoginService) {
+        this.accountService = accountService
+        this.loginService = loginService
+        this.preLoginService = preLoginService
 
-        MinecraftForge.EVENT_BUS.register(this);
-    }
-
-    @SubscribeEvent
-    public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.getPlayer() instanceof ServerPlayer) {
-            ServerPlayer serverPlayer = (ServerPlayer) event.getPlayer();
-            preLoginService.preLogin(serverPlayer);
+        with(MinecraftForge.EVENT_BUS) {
+            addListener(this@Listener::onPlayerJoin)
+            addListener(this@Listener::onPlayerQuit)
+            addListener(this@Listener::onServerTick)
         }
     }
 
     @SubscribeEvent
-    public void onPlayerQuit(PlayerEvent.PlayerLoggedOutEvent event) {
-        if (event.getPlayer() instanceof ServerPlayer) {
-            ServerPlayer serverPlayer = (ServerPlayer) event.getPlayer();
-            logoutPlayer(serverPlayer);
+    fun onPlayerJoin(event: PlayerLoggedInEvent) {
+        if (event.player is ServerPlayer) {
+            val serverPlayer = event.player as ServerPlayer
+            preLoginService.preLogin(serverPlayer)
         }
     }
 
-    private void logoutPlayer(ServerPlayer serverPlayer) {
-        loginService.logoutPlayer(serverPlayer);
-        TaskService.cancelPlayer(serverPlayer.getUUID());
+
+    @SubscribeEvent
+    fun onPlayerQuit(event: PlayerLoggedOutEvent) {
+        if (event.player is ServerPlayer) {
+            val serverPlayer = event.player as ServerPlayer
+            logoutPlayer(serverPlayer)
+        }
+    }
+
+    private fun logoutPlayer(serverPlayer: ServerPlayer) {
+        loginService.logoutPlayer(serverPlayer)
+        TaskService.cancelPlayer(serverPlayer.getUUID())
     }
 
     @SubscribeEvent
-    public void onServerTick(TickEvent.ServerTickEvent tickEvent) {
-        if (tickEvent.phase == TickEvent.Phase.END) {
-            TaskService.tick();
-        }
+    fun onServerTick(tickEvent: ServerTickEvent) {
+        TaskService.tick()
     }
 }
