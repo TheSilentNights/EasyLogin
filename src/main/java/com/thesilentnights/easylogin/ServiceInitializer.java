@@ -17,30 +17,11 @@ import com.thesilentnights.easylogin.sql.DatasourceConfigs
 import com.thesilentnights.easylogin.utils.PathAppender
 import com.zaxxer.hikari.HikariDataSource
 import net.minecraftforge.common.MinecraftForge
-import org.koin.core.context.GlobalContext
-import org.koin.dsl.module
+
 
 fun initialize() {
-    GlobalContext.startKoin {
-        modules(
-            module(createdAtStart = true) {
-                //data
-                single {
-                    DataSource({
-                        val config = when (EasyLoginConfig.dataBaseType.get()) {
-                            DataBaseType.SQLITE -> DatasourceConfigs.generateSqliteDataSource(
-                                FileUtil.file(
-                                    PathAppender.append(
-                                        EasyLoginConfig.pathToDatabase.get()
-                                    )
-                                )
-                            )
 
-                            DataBaseType.MYSQL -> DatasourceConfigs.generateMySqlDataSource(EasyLoginConfig.pathToDatabase.get())
-                            else -> throw IllegalArgumentException("Invalid database type")
-                        }
-                        return@DataSource HikariDataSource(config)
-                    })
+
                 }
                 single { DatabaseChecker(get()).checkDatabase() }
 
