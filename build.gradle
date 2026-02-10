@@ -1,23 +1,11 @@
-buildscript {
-    repositories {
-        // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-        maven { url = 'https://maven.parchmentmc.org' } // Add this line
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-    }
-}
-
 plugins {
     id("java")
     id("net.minecraftforge.gradle") version('[6.0,6.2)')
     id("com.gradleup.shadow") version("8.3.0")
+    id 'org.spongepowered.mixin' version '0.7.+'
     id 'org.parchmentmc.librarian.forgegradle' version '[1.0,2.0)'
 }
 
-apply plugin: 'org.spongepowered.mixin'
 
 var modId = 'easylogin'
 version = '1.0'
@@ -25,9 +13,11 @@ group = "com.thesilentnights.${modId}" // http://maven.apache.org/guides/mini/gu
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
+jarJar.enable()
+
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: 'official', version: '1.17.1'
+    mappings channel: 'official', version: '1.18'
 
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
     runs {
@@ -113,9 +103,8 @@ configurations {
 }
 
 repositories {
-    maven {
-        name = 'kotlinforforge'
-        url = 'https://thedarkcolour.github.io/KotlinForForge/'
+    flatDir {
+        dir 'libs'
     }
     mavenCentral()
     gradlePluginPortal()
@@ -128,16 +117,13 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft "net.minecraftforge:forge:${forge_version}"
 
-    jarJar(
-            minecraftLibrary("com.zaxxer:HikariCP:${hikaricp_version}"),
-            minecraftLibrary("org.xerial:sqlite-jdbc:${sqlite_version}"),
-            minecraftLibrary("cn.hutool:hutool-all:${hutool_version}"),
-            minecraftLibrary("com.sun.mail:javax.mail:[1.6.2]"),
-            minecraftLibrary("com.github.ben-manes.caffeine:caffeine:${caffine_version}"),
-    )
+    minecraftLibrary(fileTree(dir: "libs", includes: ['*.jar']))
 
+    jarJar(group: "com.zaxxer.hikari", name: "hikariCP", version: "[7.0.2]")
+    jarJar(group: "cn.hutool", name: "hutool-all", version: "[5.8.40]")
+    jarJar(group: "org.sqlite", name: "sqlite-jdbc", version: "[3.50.3.0]")
 
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    annotationProcessor('org.spongepowered:mixin:0.8.5:processor')
 }
 
 
