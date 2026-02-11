@@ -13,6 +13,8 @@ public class EasyLoginConfig {
     public static final ForgeConfigSpec.ConfigValue<String> pathToDatabase;
     public static final ForgeConfigSpec.BooleanValue enableKickOther;
     public static final ForgeConfigSpec.ConfigValue<Long> loginTimeoutTick;
+    //enable protecting function before logged in
+    public static final ForgeConfigSpec.BooleanValue enablePreLoginProtection;
     public static final ForgeConfigSpec.BooleanValue enableEmailFunction;
 
     // Email configuration fields
@@ -26,9 +28,9 @@ public class EasyLoginConfig {
     public static final ForgeConfigSpec.ConfigValue<Long> timeout;
 
     static {
-        LogUtil.logInfo(EasyLoginConfig.class, "Loading com.thesilentnights.easylogin.EasyLogin Config");
+        LogUtil.logInfo(EasyLoginConfig.class, "Loading EasyLogin Config");
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        builder.comment("com.thesilentnights.easylogin.EasyLogin Config").push("server");
+        builder.comment("EasyLogin Config").push("server");
 
         dataBaseType = builder.comment("DataBase Type")
                 .defineEnum("databaseType", DataBaseType.SQLITE);
@@ -38,6 +40,8 @@ public class EasyLoginConfig {
                 .define("enableKickOther", false);
         loginTimeoutTick = builder.comment("Login timeout tick")
                 .define("loginTimeoutTick", 120 * 20L);
+        enablePreLoginProtection = builder.comment("Enable pre login protection")
+                .define("enablePreLoginProtection", false);
         enableEmailFunction = builder.comment("whether to enable email function.If you enable this,you should change the mailAccountEntry below")
                 .define("enableEmailFunction", false);
 
