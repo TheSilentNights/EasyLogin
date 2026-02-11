@@ -1,7 +1,6 @@
 package com.thesilentnights.easylogin;
 
 import cn.hutool.core.io.FileUtil;
-import com.thesilentnights.easylogin.commands.EasyLoginCommands;
 import com.thesilentnights.easylogin.configs.EasyLoginConfig;
 import com.thesilentnights.easylogin.events.listener.ActionListener;
 import com.thesilentnights.easylogin.events.listener.Listener;
@@ -29,7 +28,7 @@ public class EasyLogin {
             ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, EasyLoginConfig.config);
         }
 
-        if (FMLLoader.isProduction() && FMLLoader.getDist() == Dist.DEDICATED_SERVER) {
+        if (FMLLoader.getDist() == Dist.DEDICATED_SERVER || !FMLLoader.isProduction()) {
             initServer();
         } else {
             initClient();
@@ -64,11 +63,11 @@ public class EasyLogin {
 
         new Listener();
         new ActionListener(MinecraftForge.EVENT_BUS);
-        new CommandRegistrar(new EasyLoginCommands(), MinecraftForge.EVENT_BUS);
+        new CommandRegistrar(MinecraftForge.EVENT_BUS);
     }
 
     private static void initClient() {
-        new CommandRegistrar(new EasyLoginCommands(), MinecraftForge.EVENT_BUS);
+        new CommandRegistrar(MinecraftForge.EVENT_BUS);
     }
 
 }

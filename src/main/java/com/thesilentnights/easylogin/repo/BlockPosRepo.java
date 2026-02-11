@@ -5,10 +5,11 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import net.minecraft.core.BlockPos;
 
 import java.time.Duration;
+import java.util.UUID;
 
 public class BlockPosRepo {
 
-    private static final Cache<String, BlockPos> blockPosCache = Caffeine.newBuilder()
+    private static final Cache<UUID, BlockPos> blockPosCache = Caffeine.newBuilder()
             .maximumSize(60)
             .expireAfterAccess(Duration.ofSeconds(20))
             .build();
@@ -21,7 +22,7 @@ public class BlockPosRepo {
      * @param current the BlockPos to store if the key is not in cache
      * @return the cached or newly stored BlockPos, or null if loading failed
      */
-    public static BlockPos getBlockPos(String key, BlockPos current) {
+    public static BlockPos getBlockPos(UUID key, BlockPos current) {
         return blockPosCache.get(key, k -> current);
     }
 }

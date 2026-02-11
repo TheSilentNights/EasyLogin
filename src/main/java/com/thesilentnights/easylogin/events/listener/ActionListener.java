@@ -1,11 +1,14 @@
 package com.thesilentnights.easylogin.events.listener;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.thesilentnights.easylogin.repo.BlockPosRepo;
 import com.thesilentnights.easylogin.service.ActionCheckService;
 import com.thesilentnights.easylogin.service.CommandRejectionService;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -43,5 +46,17 @@ public class ActionListener {
     @SubscribeEvent
     public void onPlayerDrop(CommandEvent event) throws CommandSyntaxException {
         CommandRejectionService.handleRejection(event);
+    }
+
+    @SubscribeEvent
+    public void onPlayerDrop(TickEvent.PlayerTickEvent event) {
+        if (ActionCheckService.shouldCancelEvent(event.player)) {
+            BlockPos blockPos = BlockPosRepo.getBlockPos(event.player.getUUID(), event.player.blockPosition());
+            event.player.teleportTo(
+                    blockPos.getX(),
+                    blockPos.getY(),
+                    blockPos.getZ()
+            );
+        }
     }
 }

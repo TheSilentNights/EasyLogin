@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 buildscript {
     repositories {
         // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
@@ -128,16 +130,25 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft "net.minecraftforge:forge:${forge_version}"
 
-    jarJar(
-            minecraftLibrary("com.zaxxer:HikariCP:${hikaricp_version}"),
-            minecraftLibrary("org.xerial:sqlite-jdbc:${sqlite_version}"),
-            minecraftLibrary("cn.hutool:hutool-all:${hutool_version}"),
-            minecraftLibrary("com.sun.mail:javax.mail:[1.6.2]"),
-            minecraftLibrary("com.github.ben-manes.caffeine:caffeine:${caffine_version}"),
-    )
+    shadowDeps minecraftLibrary("com.zaxxer:HikariCP:${hikaricp_version}")
+    shadowDeps minecraftLibrary("org.xerial:sqlite-jdbc:${sqlite_version}")
+    shadowDeps minecraftLibrary("cn.hutool:hutool-all:${hutool_version}")
+    shadowDeps minecraftLibrary("com.sun.mail:javax.mail:[1.6.2]")
+    shadowDeps minecraftLibrary("com.github.ben-manes.caffeine:caffeine:${caffine_version}")
 
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+}
+
+tasks.register('shadowDeps', ShadowJar) {
+    configurations = [project.configurations.shadowDeps]
+    from {
+        tasks.jar.archiveFile
+    }
+    archiveClassifier = 'shadow'
+    mergeServiceFiles()
+
+    exclude("org/slf4j/**")
 }
 
 
