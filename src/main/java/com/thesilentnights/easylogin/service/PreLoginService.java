@@ -24,29 +24,17 @@ public class PreLoginService {
         // Apply blindness effect
         addBlindEffectToPlayer(serverPlayer);
 
-        String taskIdBase = TaskService.generateTaskIdentifier(
-                serverPlayer.getUUID(),
-                TaskService.Suffix.MESSAGE.name()
-        );
 
         if (AccountService.hasAccount(serverPlayer.getUUID())) {
-            TaskService.addTask(
-                    taskIdBase,
-                    new Message(serverPlayer, new TextComponent("please login your account by /login"), 80, true)
-            );
+            TaskService.addTask(new Message(serverPlayer, new TextComponent("use /login to login"), 80));
         } else {
             TaskService.addTask(
-                    taskIdBase,
-                    new Message(serverPlayer, new TextComponent("please register your account by /register"), 80, true)
+                    new Message(serverPlayer, new TextComponent("please use /register to register an account"), 80)
             );
         }
 
         // Schedule kick timeout
         TaskService.addTask(
-                TaskService.generateTaskIdentifier(
-                        serverPlayer.getUUID(),
-                        TaskService.Suffix.TIMEOUT.name()
-                ),
                 new KickPlayer(serverPlayer, EasyLoginConfig.loginTimeoutTick.get())
         );
     }
