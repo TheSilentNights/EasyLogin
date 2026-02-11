@@ -2,13 +2,12 @@ package com.thesilentnights.easylogin.service;
 
 import com.thesilentnights.easylogin.service.task.Task;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TaskService {
 
-    private static final Map<String, Task> taskMap = new HashMap<>();
+    private static final ConcurrentHashMap<String, Task> taskMap = new ConcurrentHashMap<>();
 
 
     public static void cancelPlayer(UUID uuid) {
