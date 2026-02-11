@@ -1,44 +1,58 @@
 package com.thesilentnights.easylogin.service;
 
+import com.thesilentnights.easylogin.service.task.Loop;
 import com.thesilentnights.easylogin.service.task.Task;
 
+import java.util.TreeSet;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class TaskService {
+    static TreeSet<Task> tasks = new TreeSet<>();
+    static int nextHook = 0;
+    static int timePassedAfterPrepare = 0;
 
-    private static final ConcurrentHashMap<String, Task> taskMap = new ConcurrentHashMap<>();
-
+    public static void addTask(Task task) {
+        reduceTickDelay();
+        tasks.add(task);
+        prepareNextTask();
+    }
 
     public static void cancelPlayer(UUID uuid) {
-        taskMap.entrySet().removeIf(entry -> entry.getKey().startsWith(uuid.toString()));
+        tasks.removeIf(task -> task.shouldCancel(uuid));
+    }
+
+    private static void reduceTickDelay() {
+        tasks.forEach(task -> task.reduceTickDelay(timePassedAfterPrepare));
+    }
+
+    private static void prepareNextTask() {
+        timePassedAfterPrepare = 0;
+        if (tasks.isEmpty()) {
+            return;
+        }
+        nextHook = tasks.first().getTickDelay();
     }
 
     public static void tick() {
-        if (taskMap.isEmpty()) {
+        if (tasks.isEmpty()) {
             return;
         }
-        taskMap.values().forEach(Task::tick);
+        timePassedAfterPrepare++;
+        if (timePassedAfterPrepare > nextHook) {
+            Task task = tasks.pollFirst();
+            //tasks is not empty
+            assert task != null;
+            task.execute();
+
+            //if is Loop task readd
+            if (task instanceof Loop loop) {
+                addTask(loop.regenerate());
+            } else {
+                reduceTickDelay();
+                prepareNextTask();
+            }
+        }
     }
 
-    public static void addTask(String identifier, Task task) {
-        taskMap.put(identifier, task);
-    }
 
-    public static String generateTaskIdentifier(UUID uuid, String name) {
-        return uuid.toString() + "_" + name;
-    }
-
-    public static void cancelTask(String identifier) {
-        taskMap.remove(identifier);
-    }
-
-    public Task getTask(String identifier) {
-        return taskMap.get(identifier);
-    }
-
-    public enum Suffix {
-        MESSAGE,
-        TIMEOUT
-    }
 }

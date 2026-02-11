@@ -1,33 +1,40 @@
 package com.thesilentnights.easylogin.service.task;
 
-import com.thesilentnights.easylogin.service.TaskService;
+import com.thesilentnights.easylogin.utils.LogUtil;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-public class KickPlayer implements Task {
+import java.util.UUID;
 
-    private static final Logger log = LogManager.getLogger(KickPlayer.class);
+public class KickPlayer extends Task {
+
     private final ServerPlayer serverPlayer;
-    private final long delay;
-    private long tickCount = 0;
+    private int delay;
 
-    public KickPlayer(ServerPlayer serverPlayer, long delay) {
+    public KickPlayer(ServerPlayer serverPlayer, int delay) {
         this.serverPlayer = serverPlayer;
         this.delay = delay;
     }
 
+
     @Override
-    public void tick() {
-        tickCount++;
-        if (tickCount >= delay) {
-            serverPlayer.disconnect();
-            log.info("player {} has been kicked due to timeout in login", serverPlayer.getGameProfile().getName());
-            String taskId = TaskService.generateTaskIdentifier(
-                    serverPlayer.getUUID(),
-                    TaskService.Suffix.TIMEOUT.name()
-            );
-            TaskService.cancelTask(taskId);
-        }
+    public void execute() {
+        LogUtil.logInfo(KickPlayer.class, "KickPlayer: " + serverPlayer.getDisplayName().getString());
+        serverPlayer.connection.disconnect(new TranslatableComponent("You didn't login in time"));
+    }
+
+    @Override
+    public int getTickDelay() {
+        return this.delay;
+    }
+
+    @Override
+    public void reduceTickDelay(int tickDelay) {
+        this.delay -= tickDelay;
+    }
+
+    @Override
+    public boolean shouldCancel(UUID uuid) {
+        return uuid == serverPlayer.getUUID();
     }
 }

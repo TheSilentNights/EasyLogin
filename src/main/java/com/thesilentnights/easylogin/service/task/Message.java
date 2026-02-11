@@ -1,38 +1,45 @@
 package com.thesilentnights.easylogin.service.task;
 
-import com.thesilentnights.easylogin.service.TaskService;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
-public class Message implements Task {
+import java.util.UUID;
 
-    private final ServerPlayer serverPlayer;
-    private final Component message;
-    private final long delay;
-    private final boolean isLoop;
-    private long tickCount = 0;
+public class Message extends Task implements Loop {
+    final int originalDelay;
+    int delay;
+    Component message;
+    ServerPlayer serverPlayer;
 
-    public Message(ServerPlayer serverPlayer, Component message, long delay, boolean isLoop) {
+    public Message(ServerPlayer serverPlayer, Component message, int delay) {
         this.serverPlayer = serverPlayer;
         this.message = message;
         this.delay = delay;
-        this.isLoop = isLoop;
+        this.originalDelay = delay;
     }
 
     @Override
-    public void tick() {
-        tickCount++;
-        if (tickCount >= delay) {
-            serverPlayer.sendMessage(message, serverPlayer.getUUID());
-            if (isLoop) {
-                tickCount = 0;
-            } else {
-                String taskId = TaskService.generateTaskIdentifier(
-                        serverPlayer.getUUID(),
-                        TaskService.Suffix.MESSAGE.name()
-                );
-                TaskService.cancelTask(taskId);
-            }
-        }
+    public void execute() {
+        serverPlayer.sendMessage(message, serverPlayer.getUUID());
+    }
+
+    @Override
+    public int getTickDelay() {
+        return delay;
+    }
+
+    @Override
+    public void reduceTickDelay(int tickDelay) {
+        this.delay -= tickDelay;
+    }
+
+    @Override
+    public boolean shouldCancel(UUID uuid) {
+        return serverPlayer.getUUID() == uuid;
+    }
+
+    @Override
+    public Task regenerate() {
+        return new Message(serverPlayer, message, this.originalDelay);
     }
 }

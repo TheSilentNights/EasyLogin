@@ -37,8 +37,6 @@ public class Listener {
 
     @SubscribeEvent
     public void onServerTick(TickEvent.ServerTickEvent tickEvent) {
-        if (tickEvent.phase == TickEvent.Phase.END) {
-            TaskService.tick();
-        }
+        TaskService.tick();
     }
 }

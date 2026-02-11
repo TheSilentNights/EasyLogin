@@ -12,7 +12,7 @@ public class EasyLoginConfig {
     public static final ForgeConfigSpec.EnumValue<DataBaseType> dataBaseType;
     public static final ForgeConfigSpec.ConfigValue<String> pathToDatabase;
     public static final ForgeConfigSpec.BooleanValue enableKickOther;
-    public static final ForgeConfigSpec.ConfigValue<Long> loginTimeoutTick;
+    public static final ForgeConfigSpec.ConfigValue<Integer> loginTimeoutTick;
     //enable protecting function before logged in
     public static final ForgeConfigSpec.BooleanValue enablePreLoginProtection;
     public static final ForgeConfigSpec.BooleanValue enableEmailFunction;
@@ -39,7 +39,7 @@ public class EasyLoginConfig {
         enableKickOther = builder.comment("Enable kick other player when login")
                 .define("enableKickOther", false);
         loginTimeoutTick = builder.comment("Login timeout tick")
-                .define("loginTimeoutTick", 120 * 20L);
+                .define("loginTimeoutTick", 120 * 20);
         enablePreLoginProtection = builder.comment("Enable pre login protection")
                 .define("enablePreLoginProtection", false);
         enableEmailFunction = builder.comment("whether to enable email function.If you enable this,you should change the mailAccountEntry below")
