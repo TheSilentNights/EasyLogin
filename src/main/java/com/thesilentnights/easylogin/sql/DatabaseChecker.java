@@ -71,13 +71,6 @@ public class DatabaseChecker {
                 );
             }
 
-            if (isColumnMissing(metaData, SqlColumnDefinition.EMAIL.toString().toLowerCase(Locale.getDefault()))) {
-                statement.executeUpdate(
-                        "alter table " + CommonStaticRepo.TABLE_NAME + " add column " +
-                                SqlColumnDefinition.EMAIL.toString().toLowerCase(Locale.getDefault()) + " varchar(255);"
-                );
-            }
-
             if (isColumnMissing(metaData, SqlColumnDefinition.USERNAME.toString().toLowerCase(Locale.getDefault()))) {
                 statement.executeUpdate(
                         "alter table " + CommonStaticRepo.TABLE_NAME + " add column " +
