@@ -4,11 +4,14 @@ pluginManagement {
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
         maven { url = 'https://maven.parchmentmc.org' } // Add this line
         // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
-        maven { url = 'https://maven.minecraftforge.net' }
+        maven {
+            name = 'MinecraftForge'
+            url = 'https://maven.minecraftforge.net/'
+        }
         mavenCentral()
     }
 }
 
-plugins{
+plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }

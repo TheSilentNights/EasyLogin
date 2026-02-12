@@ -4,14 +4,18 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.thesilentnights.easylogin.pojo.PlayerAccount;
+import com.thesilentnights.easylogin.repo.PlayerCache;
+import com.thesilentnights.easylogin.utils.LogUtil;
 import com.thesilentnights.easylogin.utils.TextUtil;
-import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.GameProfileArgument;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
+import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Optional;
+import java.util.UUID;
 
 public class ChangePasswordService {
 
@@ -30,6 +34,7 @@ public class ChangePasswordService {
                     newPassword,
                     context.getSource().getPlayerOrException().getUUID()
             );
+            updateCache(context.getSource().getPlayerOrException().getUUID());
             context.getSource().sendSuccess(
                     TextUtil.serialize(
                             TextUtil.FormatType.SUCCESS,
@@ -39,10 +44,8 @@ public class ChangePasswordService {
 
             return true;
         } else {
-            MutableComponent failureMessage = new TranslatableComponent("commands.password.confirm.failure")
-                    .withStyle(ChatFormatting.BOLD)
-                    .withStyle(ChatFormatting.RED);
-            context.getSource().sendFailure(failureMessage);
+
+            context.getSource().sendFailure(TextUtil.serialize(TextUtil.FormatType.FAILURE, new TranslatableComponent("commands.password.confirm.failure")));
             return false;
         }
     }
@@ -58,17 +61,28 @@ public class ChangePasswordService {
                     newPassword,
                     next.getId()
             );
-            MutableComponent successMessage = new TranslatableComponent("commands.password.change.success")
-                    .withStyle(ChatFormatting.BOLD)
-                    .withStyle(ChatFormatting.GREEN);
-            context.getSource().sendSuccess(successMessage, true);
+            updateCache(next.getId());
+
+            context.getSource().sendSuccess(
+                    TextUtil.serialize(
+                            TextUtil.FormatType.SUCCESS,
+                            new TranslatableComponent("commands.password.change.success")
+                    )
+                    , true
+            );
             return true;
         } else {
-            MutableComponent failureMessage = new TranslatableComponent("commands.password.confirm.failure")
-                    .withStyle(ChatFormatting.BOLD)
-                    .withStyle(ChatFormatting.RED);
-            context.getSource().sendFailure(failureMessage);
+            context.getSource().sendFailure(TextUtil.serialize(TextUtil.FormatType.FAILURE, new TranslatableComponent("commands.password.confirm.failure")));
             return false;
+        }
+    }
+
+    private static void updateCache(UUID uuid) {
+        Optional<PlayerAccount> account = AccountService.getAccount(uuid);
+        if (account.isPresent()) {
+            PlayerCache.addAccount(account.get());
+        } else {
+            LogUtil.logError(ChangePasswordService.class, "Error updating cache", new SQLException("Error updating cache"));
         }
     }
 
