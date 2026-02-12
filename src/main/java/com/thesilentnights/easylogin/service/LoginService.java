@@ -60,6 +60,10 @@ public class LoginService {
         return false;
     }
 
+    public static void forceLogin(PlayerAccount account, ServerPlayer serverPlayer) {
+        removeLimit(account, serverPlayer);
+    }
+
     private static void removeLimit(PlayerAccount account, ServerPlayer serverPlayer) {
         PlayerCache.addAccount(account);
         TaskService.cancelPlayer(serverPlayer.getUUID());
@@ -112,8 +116,8 @@ public class LoginService {
     }
 
     public static void logoutPlayer(ServerPlayer serverPlayer) {
-        Optional<PlayerAccount> account = AccountService.getAccount(serverPlayer.getUUID());
-        if (account.isPresent()) {
+        Optional<PlayerAccount> account = PlayerCache.getAccount(serverPlayer.getUUID());
+        if (account.isPresent() && !account.get().isFake()) {
             PlayerAccount playerAccount = account.get();
             playerAccount.setLastLoginIp(serverPlayer.getIpAddress());
             playerAccount.setLastLoginWorld(serverPlayer.getLevel().dimension().location().getNamespace());

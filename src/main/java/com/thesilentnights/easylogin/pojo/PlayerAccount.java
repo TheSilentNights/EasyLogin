@@ -17,6 +17,7 @@ public class PlayerAccount {
     private double lastLoginZ;
     private String lastLoginWorld;
     private long loginTimestamp;
+    private boolean isFake;
 
     public PlayerAccount(UUID uuid, String username, String password, String lastLoginIp,
                          double lastLoginX, double lastLoginY, double lastLoginZ,
@@ -118,6 +119,14 @@ public class PlayerAccount {
 
     public void setLoginTimestamp(long loginTimestamp) {
         this.loginTimestamp = loginTimestamp;
+    }
+
+    public boolean isFake() {
+        return isFake;
+    }
+
+    public void setFake(boolean fake) {
+        isFake = fake;
     }
 
     @Override
