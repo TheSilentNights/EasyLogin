@@ -26,10 +26,9 @@ public class ActionListener {
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (ActionCheckService.shouldCancelEvent(event.getPlayer())) {
-            event.getPlayer().sendMessage(
-                    TextUtil.serialize(TextUtil.FormatType.FAILURE, "you cannot interact before you log in"),
-                    event.getPlayer().getUUID()
+        if (ActionCheckService.shouldCancelEvent(event.getEntity())) {
+            event.getEntity().sendSystemMessage(
+                    TextUtil.serialize(TextUtil.FormatType.FAILURE, "you cannot interact before you log in")
             );
             event.setCanceled(true);
         }
@@ -37,10 +36,9 @@ public class ActionListener {
 
     @SubscribeEvent
     public void onPlayerAttack(LivingAttackEvent event) {
-        if (event.getEntityLiving() instanceof ServerPlayer && ActionCheckService.shouldCancelEvent(event.getEntityLiving())) {
-            event.getEntityLiving().sendMessage(
-                    TextUtil.serialize(TextUtil.FormatType.FAILURE, "you cannot attack before you log in"),
-                    event.getEntityLiving().getUUID()
+        if (event.getEntity() instanceof ServerPlayer && ActionCheckService.shouldCancelEvent(event.getEntity())) {
+            event.getEntity().sendSystemMessage(
+                    TextUtil.serialize(TextUtil.FormatType.FAILURE, "you cannot attack before you log in")
             );
             event.setCanceled(true);
         }

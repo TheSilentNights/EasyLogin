@@ -20,7 +20,7 @@ public class Message extends Task implements Loop {
 
     @Override
     public void execute() {
-        serverPlayer.sendMessage(message, serverPlayer.getUUID());
+        serverPlayer.sendSystemMessage(message);
     }
 
     @Override

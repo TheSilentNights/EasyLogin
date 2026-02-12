@@ -17,7 +17,7 @@ public class PreLoginService {
 
         // Try to re-login from cache
         if (LoginService.reLogFromCache(serverPlayer)) {
-            serverPlayer.sendMessage(TextUtil.serialize(TextUtil.FormatType.INFO, "relogged from cache"), serverPlayer.getUUID());
+            serverPlayer.sendSystemMessage(TextUtil.serialize(TextUtil.FormatType.INFO, "relogged from cache"));
             return;
         }
 

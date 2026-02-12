@@ -10,7 +10,7 @@ import com.thesilentnights.easylogin.utils.LogUtil;
 import com.thesilentnights.easylogin.utils.TextUtil;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.GameProfileArgument;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 import java.sql.SQLException;
 import java.util.Collection;
@@ -22,7 +22,7 @@ public class ChangePasswordService {
 
     public static boolean changePassword(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         if (!LoginService.isLoggedIn(context.getSource().getPlayerOrException().getUUID())) {
-            context.getSource().sendFailure(TextUtil.serialize(TextUtil.FormatType.FAILURE, new TranslatableComponent("commands.password.change.failure.unlogged")));
+            context.getSource().sendFailure(TextUtil.serialize(TextUtil.FormatType.FAILURE, Component.translatable("commands.login.failure")));
             return false;
         }
 
@@ -38,14 +38,14 @@ public class ChangePasswordService {
             context.getSource().sendSuccess(
                     TextUtil.serialize(
                             TextUtil.FormatType.SUCCESS,
-                            new TranslatableComponent("commands.password.change.success")
+                            Component.translatable("commands.password.change.success")
                     ), true
             );
 
             return true;
         } else {
 
-            context.getSource().sendFailure(TextUtil.serialize(TextUtil.FormatType.FAILURE, new TranslatableComponent("commands.password.confirm.failure")));
+            context.getSource().sendFailure(TextUtil.serialize(TextUtil.FormatType.FAILURE, Component.translatable("commands.password.confirm.failure")));
             return false;
         }
     }
@@ -66,13 +66,13 @@ public class ChangePasswordService {
             context.getSource().sendSuccess(
                     TextUtil.serialize(
                             TextUtil.FormatType.SUCCESS,
-                            new TranslatableComponent("commands.password.change.success")
+                            Component.translatable("commands.password.change.success")
                     )
                     , true
             );
             return true;
         } else {
-            context.getSource().sendFailure(TextUtil.serialize(TextUtil.FormatType.FAILURE, new TranslatableComponent("commands.password.confirm.failure")));
+            context.getSource().sendFailure(TextUtil.serialize(TextUtil.FormatType.FAILURE, Component.translatable("commands.password.confirm.failure")));
             return false;
         }
     }

@@ -1,7 +1,7 @@
 package com.thesilentnights.easylogin.service.task;
 
 import com.thesilentnights.easylogin.utils.LogUtil;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.UUID;
@@ -20,7 +20,7 @@ public class KickPlayer extends Task {
     @Override
     public void execute() {
         LogUtil.logInfo(KickPlayer.class, "KickPlayer: " + serverPlayer.getDisplayName().getString());
-        serverPlayer.connection.disconnect(new TranslatableComponent("You didn't login in time"));
+        serverPlayer.connection.disconnect(Component.literal("You didn't login in time"));
     }
 
     @Override

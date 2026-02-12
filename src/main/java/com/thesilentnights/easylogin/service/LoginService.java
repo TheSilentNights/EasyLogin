@@ -9,7 +9,7 @@ import com.thesilentnights.easylogin.repo.PlayerSessionCache;
 import com.thesilentnights.easylogin.utils.LogUtil;
 import com.thesilentnights.easylogin.utils.TextUtil;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
 
@@ -33,7 +33,7 @@ public class LoginService {
             context.getSource().sendFailure(
                     TextUtil.serialize(
                             TextUtil.FormatType.FAILURE,
-                            new TranslatableComponent("account.already_loggedin")
+                            Component.translatable("account.already_loggedin")
                     )
             );
             return false;
@@ -46,7 +46,7 @@ public class LoginService {
             if (account.get().getPassword().equals(password)) {
 
                 context.getSource().sendSuccess(
-                        TextUtil.serialize(TextUtil.FormatType.SUCCESS, new TranslatableComponent("commands.login.success", serverPlayer.getGameProfile().getName()))
+                        TextUtil.serialize(TextUtil.FormatType.SUCCESS, Component.translatable("commands.login.success", serverPlayer.getGameProfile().getName()))
                         , false
                 );
                 removeLimit(account.get(), serverPlayer);
@@ -55,7 +55,7 @@ public class LoginService {
         }
 
         context.getSource().sendFailure(
-                TextUtil.serialize(TextUtil.FormatType.FAILURE, new TranslatableComponent("commands.login.failure"))
+                TextUtil.serialize(TextUtil.FormatType.FAILURE, Component.translatable("commands.login.failure"))
         );
         return false;
     }
@@ -73,7 +73,7 @@ public class LoginService {
 
         if (!password.equals(repeat)) {
             context.getSource().sendFailure(
-                    TextUtil.serialize(TextUtil.FormatType.FAILURE, new TranslatableComponent("commands.password.confirm.failure"))
+                    TextUtil.serialize(TextUtil.FormatType.FAILURE, Component.translatable("commands.password.confirm.failure"))
             );
             return false;
         }
@@ -100,7 +100,7 @@ public class LoginService {
 
             context.getSource().sendSuccess(
                     TextUtil.serialize(
-                            TextUtil.FormatType.SUCCESS, new TranslatableComponent(
+                            TextUtil.FormatType.SUCCESS, Component.translatable(
                                     "commands.login.success",
                                     serverPlayer.getGameProfile().getName()
                             )
