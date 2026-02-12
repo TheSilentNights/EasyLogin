@@ -118,6 +118,8 @@ dependencies {
     shadowDeps minecraftLibrary("com.github.ben-manes.caffeine:caffeine:${caffine_version}")
     shadowDeps minecraftLibrary("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${jackson_yaml_version}")
 
+    compileOnly(fileTree(dir: "libs", include: "*.jar"))
+
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 

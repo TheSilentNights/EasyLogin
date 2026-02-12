@@ -2,7 +2,7 @@ package com.thesilentnights.easylogin.service;
 
 import com.thesilentnights.easylogin.compact.CurtainCompact;
 import com.thesilentnights.easylogin.compact.NpcCompactor;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.ModList;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class NPCService {
         }
     }
 
-    public static boolean isNPC(LivingEntity entity) {
+    public static boolean isNPC(ServerPlayer entity) {
         if (checkList.isEmpty()) {
             return false;
         }

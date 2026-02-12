@@ -1,6 +1,7 @@
 package com.thesilentnights.easylogin.service;
 
 import com.thesilentnights.easylogin.configs.EasyLoginConfig;
+import com.thesilentnights.easylogin.pojo.PlayerAccount;
 import com.thesilentnights.easylogin.service.task.KickPlayer;
 import com.thesilentnights.easylogin.service.task.Message;
 import com.thesilentnights.easylogin.utils.TextUtil;
@@ -12,7 +13,9 @@ public class PreLoginService {
 
     public static void preLogin(ServerPlayer serverPlayer) {
         if (NPCService.isNPC(serverPlayer)) {
-            ByPassService.addBypass(serverPlayer.getUUID());
+            PlayerAccount playerAccount = new PlayerAccount(serverPlayer.getUUID(), serverPlayer.getGameProfile().getName(), "", "", 0, 0, 0, "", 0);
+            playerAccount.setFake(true);
+            LoginService.forceLogin(playerAccount, serverPlayer);
         }
 
         // Try to re-login from cache
