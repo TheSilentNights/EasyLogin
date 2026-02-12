@@ -8,9 +8,7 @@ import com.thesilentnights.easylogin.repo.PlayerCache;
 import com.thesilentnights.easylogin.repo.PlayerSessionCache;
 import com.thesilentnights.easylogin.utils.LogUtil;
 import com.thesilentnights.easylogin.utils.TextUtil;
-import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
@@ -31,10 +29,13 @@ public class LoginService {
         }
 
         if (PlayerCache.hasAccount(uuid)) {
-            MutableComponent message = new TranslatableComponent("account.already_loggedin", serverPlayer.getGameProfile().getName())
-                    .withStyle(ChatFormatting.GREEN)
-                    .withStyle(ChatFormatting.BOLD);
-            context.getSource().sendFailure(message);
+
+            context.getSource().sendFailure(
+                    TextUtil.serialize(
+                            TextUtil.FormatType.FAILURE,
+                            new TranslatableComponent("account.already_loggedin")
+                    )
+            );
             return false;
         }
 
@@ -43,19 +44,19 @@ public class LoginService {
 
         if (account.isPresent()) {
             if (account.get().getPassword().equals(password)) {
-                MutableComponent successMessage = new TranslatableComponent("commands.login.success", serverPlayer.getDisplayName().getString())
-                        .withStyle(ChatFormatting.GREEN)
-                        .withStyle(ChatFormatting.BOLD);
-                context.getSource().sendSuccess(successMessage, false);
+
+                context.getSource().sendSuccess(
+                        TextUtil.serialize(TextUtil.FormatType.SUCCESS, new TranslatableComponent("commands.login.success", serverPlayer.getGameProfile().getName()))
+                        , false
+                );
                 removeLimit(account.get(), serverPlayer);
                 return true;
             }
         }
 
-        MutableComponent failureMessage = new TranslatableComponent("commands.login.failure")
-                .withStyle(ChatFormatting.RED)
-                .withStyle(ChatFormatting.BOLD);
-        context.getSource().sendFailure(failureMessage);
+        context.getSource().sendFailure(
+                TextUtil.serialize(TextUtil.FormatType.FAILURE, new TranslatableComponent("commands.login.failure"))
+        );
         return false;
     }
 
@@ -71,10 +72,9 @@ public class LoginService {
         String repeat = StringArgumentType.getString(context, "repeat");
 
         if (!password.equals(repeat)) {
-            MutableComponent message = new TranslatableComponent("commands.password.confirm.failure")
-                    .withStyle(ChatFormatting.RED)
-                    .withStyle(ChatFormatting.BOLD);
-            context.getSource().sendFailure(message);
+            context.getSource().sendFailure(
+                    TextUtil.serialize(TextUtil.FormatType.FAILURE, new TranslatableComponent("commands.password.confirm.failure"))
+            );
             return false;
         }
 
@@ -98,10 +98,15 @@ public class LoginService {
             LogUtil.logError(LoginService.class, "sql error found in registering player", new SQLException());
             return false;
         } else {
-            MutableComponent successMessage = new TranslatableComponent("commands.login.success")
-                    .withStyle(ChatFormatting.GREEN)
-                    .withStyle(ChatFormatting.BOLD);
-            context.getSource().sendSuccess(successMessage, false);
+
+            context.getSource().sendSuccess(
+                    TextUtil.serialize(
+                            TextUtil.FormatType.SUCCESS, new TranslatableComponent(
+                                    "commands.login.success",
+                                    serverPlayer.getGameProfile().getName()
+                            )
+                    ), false
+            );
             removeLimit(auth.get(), serverPlayer);
             return true;
         }
