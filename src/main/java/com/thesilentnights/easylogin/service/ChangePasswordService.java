@@ -36,7 +36,7 @@ public class ChangePasswordService {
             );
             updateCache(context.getSource().getPlayerOrException().getUUID());
             context.getSource().sendSuccess(
-                    TextUtil.serialize(
+                    () -> TextUtil.serialize(
                             TextUtil.FormatType.SUCCESS,
                             Component.translatable("commands.password.change.success")
                     ), true
@@ -64,7 +64,7 @@ public class ChangePasswordService {
             updateCache(next.getId());
 
             context.getSource().sendSuccess(
-                    TextUtil.serialize(
+                    () -> TextUtil.serialize(
                             TextUtil.FormatType.SUCCESS,
                             Component.translatable("commands.password.change.success")
                     )

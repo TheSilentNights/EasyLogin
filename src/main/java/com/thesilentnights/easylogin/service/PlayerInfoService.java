@@ -13,7 +13,7 @@ public class PlayerInfoService {
     public static boolean handle(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         Collection<GameProfile> player = GameProfileArgument.getGameProfiles(context, "player");
 
-        context.getSource().sendSuccess(TextUtil.serialize(TextUtil.FormatType.INFO, "Player info: " + AccountService.getAccount(player.iterator().next().getId()).toString()), true);
+        context.getSource().sendSuccess(() -> TextUtil.serialize(TextUtil.FormatType.INFO, "Player info: " + AccountService.getAccount(player.iterator().next().getId()).toString()), true);
 
         return true;
     }

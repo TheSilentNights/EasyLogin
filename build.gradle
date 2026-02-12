@@ -2,7 +2,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     id("java")
-    id("net.minecraftforge.gradle") version('[6.0,6.2)')
+    id("net.minecraftforge.gradle") version('[6.0.24,6.2)')
     id("com.gradleup.shadow") version("8.3.0")
     id 'org.parchmentmc.librarian.forgegradle' version '[1.0,2.0)'
 }
@@ -12,7 +12,7 @@ var modId = 'easylogin'
 version = '1.0'
 group = "com.thesilentnights.${modId}" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
@@ -118,7 +118,6 @@ dependencies {
     shadowDeps minecraftLibrary("com.github.ben-manes.caffeine:caffeine:${caffine_version}")
     shadowDeps minecraftLibrary("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${jackson_yaml_version}")
 
-    compileOnly(fileTree(dir: "libs", include: "*.jar"))
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }

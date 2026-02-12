@@ -46,7 +46,7 @@ public class LoginService {
             if (account.get().getPassword().equals(password)) {
 
                 context.getSource().sendSuccess(
-                        TextUtil.serialize(TextUtil.FormatType.SUCCESS, Component.translatable("commands.login.success", serverPlayer.getGameProfile().getName()))
+                        () -> TextUtil.serialize(TextUtil.FormatType.SUCCESS, Component.translatable("commands.login.success", serverPlayer.getGameProfile().getName()))
                         , false
                 );
                 removeLimit(account.get(), serverPlayer);
@@ -90,7 +90,7 @@ public class LoginService {
                 serverPlayer.getX(),
                 serverPlayer.getY(),
                 serverPlayer.getZ(),
-                serverPlayer.getLevel().dimension().location().getNamespace(),
+                serverPlayer.serverLevel().dimension().location().getNamespace(),
                 System.currentTimeMillis()
         );
 
@@ -103,7 +103,7 @@ public class LoginService {
         } else {
 
             context.getSource().sendSuccess(
-                    TextUtil.serialize(
+                    () -> TextUtil.serialize(
                             TextUtil.FormatType.SUCCESS, Component.translatable(
                                     "commands.login.success",
                                     serverPlayer.getGameProfile().getName()
@@ -120,7 +120,7 @@ public class LoginService {
         if (account.isPresent() && !account.get().isFake()) {
             PlayerAccount playerAccount = account.get();
             playerAccount.setLastLoginIp(serverPlayer.getIpAddress());
-            playerAccount.setLastLoginWorld(serverPlayer.getLevel().dimension().location().getNamespace());
+            playerAccount.setLastLoginWorld(serverPlayer.serverLevel().dimension().location().getNamespace());
             playerAccount.setLastLoginX(serverPlayer.getX());
             playerAccount.setLastLoginY(serverPlayer.getY());
             playerAccount.setLastLoginZ(serverPlayer.getZ());
