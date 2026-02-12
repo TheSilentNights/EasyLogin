@@ -26,7 +26,7 @@ public class LoginService {
         UUID uuid = serverPlayer.getUUID();
 
         if (!AccountService.hasAccount(uuid)) {
-            context.getSource().sendFailure(TextUtil.createText(ChatFormatting.RED, "you haven't registered"));
+            context.getSource().sendFailure(TextUtil.serialize(TextUtil.FormatType.FAILURE, "you haven't registered"));
             return true;
         }
 
@@ -119,6 +119,7 @@ public class LoginService {
             playerAccount.setLoginTimestamp(System.currentTimeMillis());
             AccountService.updateAccount(playerAccount);
             PlayerCache.dropAccount(serverPlayer.getUUID(), true);
+            TaskService.cancelPlayer(serverPlayer.getUUID());
         }
     }
 

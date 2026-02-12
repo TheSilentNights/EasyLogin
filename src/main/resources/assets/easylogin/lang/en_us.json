@@ -1,5 +1,6 @@
 {
   "title": "easyLogin",
+  "easylogin.message.head": "[EasyLogin]: ",
   "command.rejected": "you cannot use command while unlogged except /login and /register",
   "commands.login.success": "Successfully logged in %1$s! ",
   "commands.login.failure": "password error or you logged in a wrong account %1$s",

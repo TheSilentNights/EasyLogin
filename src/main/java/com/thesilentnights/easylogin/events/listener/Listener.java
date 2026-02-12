@@ -26,14 +26,10 @@ public class Listener {
     @SubscribeEvent
     public void onPlayerQuit(PlayerEvent.PlayerLoggedOutEvent event) {
         if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
-            logoutPlayer(serverPlayer);
+            LoginService.logoutPlayer(serverPlayer);
         }
     }
 
-    private void logoutPlayer(ServerPlayer serverPlayer) {
-        LoginService.logoutPlayer(serverPlayer);
-        TaskService.cancelPlayer(serverPlayer.getUUID());
-    }
 
     @SubscribeEvent
     public void onServerTick(TickEvent.ServerTickEvent tickEvent) {

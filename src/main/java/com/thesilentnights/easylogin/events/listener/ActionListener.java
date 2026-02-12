@@ -5,8 +5,8 @@ import com.thesilentnights.easylogin.configs.EasyLoginConfig;
 import com.thesilentnights.easylogin.repo.BlockPosRepo;
 import com.thesilentnights.easylogin.service.ActionCheckService;
 import com.thesilentnights.easylogin.service.CommandRejectionService;
+import com.thesilentnights.easylogin.utils.TextUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.CommandEvent;
@@ -28,7 +28,7 @@ public class ActionListener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (ActionCheckService.shouldCancelEvent(event.getPlayer())) {
             event.getPlayer().sendMessage(
-                    new TranslatableComponent("you cannot interact before you log in"),
+                    TextUtil.serialize(TextUtil.FormatType.FAILURE, "you cannot interact before you log in"),
                     event.getPlayer().getUUID()
             );
             event.setCanceled(true);
@@ -39,7 +39,7 @@ public class ActionListener {
     public void onPlayerAttack(LivingAttackEvent event) {
         if (event.getEntityLiving() instanceof ServerPlayer && ActionCheckService.shouldCancelEvent(event.getEntityLiving())) {
             event.getEntityLiving().sendMessage(
-                    new TranslatableComponent("you cannot attack before you log in"),
+                    TextUtil.serialize(TextUtil.FormatType.FAILURE, "you cannot attack before you log in"),
                     event.getEntityLiving().getUUID()
             );
             event.setCanceled(true);

@@ -3,7 +3,7 @@ package com.thesilentnights.easylogin.service;
 import com.thesilentnights.easylogin.configs.EasyLoginConfig;
 import com.thesilentnights.easylogin.service.task.KickPlayer;
 import com.thesilentnights.easylogin.service.task.Message;
-import net.minecraft.network.chat.TextComponent;
+import com.thesilentnights.easylogin.utils.TextUtil;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -17,7 +17,7 @@ public class PreLoginService {
 
         // Try to re-login from cache
         if (LoginService.reLogFromCache(serverPlayer)) {
-            serverPlayer.sendMessage(new TextComponent("relogged from cache"), serverPlayer.getUUID());
+            serverPlayer.sendMessage(TextUtil.serialize(TextUtil.FormatType.INFO, "relogged from cache"), serverPlayer.getUUID());
             return;
         }
 
@@ -26,10 +26,10 @@ public class PreLoginService {
 
 
         if (AccountService.hasAccount(serverPlayer.getUUID())) {
-            TaskService.addTask(new Message(serverPlayer, new TextComponent("use /login to login"), 80));
+            TaskService.addTask(new Message(serverPlayer, TextUtil.serialize(TextUtil.FormatType.INFO, "use /login to login"), 80));
         } else {
             TaskService.addTask(
-                    new Message(serverPlayer, new TextComponent("please use /register to register an account"), 80)
+                    new Message(serverPlayer, TextUtil.serialize(TextUtil.FormatType.INFO, "use /register to register"), 80)
             );
         }
 

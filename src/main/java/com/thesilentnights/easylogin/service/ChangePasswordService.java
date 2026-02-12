@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.thesilentnights.easylogin.pojo.SqlColumnDefinition;
+import com.thesilentnights.easylogin.utils.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.GameProfileArgument;
@@ -18,10 +19,7 @@ public class ChangePasswordService {
 
     public static boolean changePassword(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         if (!LoginService.isLoggedIn(context.getSource().getPlayerOrException().getUUID())) {
-            MutableComponent message = new TranslatableComponent("commands.password.change.failure.unlogged")
-                    .withStyle(ChatFormatting.BOLD)
-                    .withStyle(ChatFormatting.RED);
-            context.getSource().sendFailure(message);
+            context.getSource().sendFailure(TextUtil.serialize(TextUtil.FormatType.FAILURE, new TranslatableComponent("commands.password.change.failure.unlogged")));
             return false;
         }
 
@@ -34,10 +32,13 @@ public class ChangePasswordService {
                     newPassword,
                     context.getSource().getPlayerOrException().getUUID()
             );
-            MutableComponent successMessage = new TranslatableComponent("commands.password.change.success")
-                    .withStyle(ChatFormatting.BOLD)
-                    .withStyle(ChatFormatting.GREEN);
-            context.getSource().sendSuccess(successMessage, true);
+            context.getSource().sendSuccess(
+                    TextUtil.serialize(
+                            TextUtil.FormatType.SUCCESS,
+                            new TranslatableComponent("commands.password.change.success")
+                    ), true
+            );
+
             return true;
         } else {
             MutableComponent failureMessage = new TranslatableComponent("commands.password.confirm.failure")
