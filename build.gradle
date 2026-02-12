@@ -133,9 +133,8 @@ dependencies {
     shadowDeps minecraftLibrary("com.zaxxer:HikariCP:${hikaricp_version}")
     shadowDeps minecraftLibrary("org.xerial:sqlite-jdbc:${sqlite_version}")
     shadowDeps minecraftLibrary("cn.hutool:hutool-all:${hutool_version}")
-    shadowDeps minecraftLibrary("com.sun.mail:javax.mail:[1.6.2]")
     shadowDeps minecraftLibrary("com.github.ben-manes.caffeine:caffeine:${caffine_version}")
-
+    shadowDeps minecraftLibrary("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${jackson_yaml_version}")
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }

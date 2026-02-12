@@ -1,7 +1,6 @@
 package com.thesilentnights.easylogin.registrys;
 
 import com.thesilentnights.easylogin.commands.*;
-import com.thesilentnights.easylogin.commands.Email;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -14,8 +13,7 @@ public class CommandRegistrar {
             new Login(),
             new Registrar(),
             new ChangePassword(),
-            new Recover(),
-            new Email()
+            new Management()
     );
 
     public CommandRegistrar(IEventBus eventBus) {

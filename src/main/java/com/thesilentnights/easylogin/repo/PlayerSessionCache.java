@@ -19,7 +19,6 @@ public class PlayerSessionCache {
             .build();
 
     public static void scheduleDrop(PlayerAccount account) {
-        log.info(account.toString());
         sessions.put(account.getUuid().toString(), new PlayerSession(account));
     }
 

@@ -1,64 +1,79 @@
 package com.thesilentnights.easylogin.configs;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.resource.ResourceUtil;
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thesilentnights.easylogin.repo.CommonStaticRepo;
 import com.thesilentnights.easylogin.utils.LogUtil;
-import net.minecraftforge.common.ForgeConfigSpec;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class EasyLoginConfig {
-    public static final Logger log = LogManager.getLogger(EasyLoginConfig.class);
-    public static final ForgeConfigSpec config;
+    public static EasyLoginConfig INSTANCE;
 
-    public static final ForgeConfigSpec.EnumValue<DataBaseType> dataBaseType;
-    public static final ForgeConfigSpec.ConfigValue<String> pathToDatabase;
-    public static final ForgeConfigSpec.BooleanValue enableKickOther;
-    public static final ForgeConfigSpec.ConfigValue<Integer> loginTimeoutTick;
-    //enable protecting function before logged in
-    public static final ForgeConfigSpec.BooleanValue enablePreLoginProtection;
-    public static final ForgeConfigSpec.BooleanValue enableEmailFunction;
+    public String pathToDatabase;
+    public boolean enableKickOther;
+    public Integer loginTimeoutTick;
+    public boolean enablePreLoginProtection;
 
-    // Email configuration fields
-    public static final ForgeConfigSpec.ConfigValue<String> username;
-    public static final ForgeConfigSpec.ConfigValue<String> password;
-    public static final ForgeConfigSpec.ConfigValue<String> host;
-    public static final ForgeConfigSpec.ConfigValue<Integer> port;
-    public static final ForgeConfigSpec.ConfigValue<String> from;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> enableSSL;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> starttlsEnable;
-    public static final ForgeConfigSpec.ConfigValue<Long> timeout;
-
-    static {
-        LogUtil.logInfo(EasyLoginConfig.class, "Loading EasyLogin Config");
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        builder.comment("EasyLogin Config").push("server");
-
-        dataBaseType = builder.comment("DataBase Type")
-                .defineEnum("databaseType", DataBaseType.SQLITE);
-        pathToDatabase = builder.comment("Path to Database")
-                .define("pathToDatabase", "/easylogin/playerAccounts.db");
-        enableKickOther = builder.comment("Enable kick other player when login")
-                .define("enableKickOther", false);
-        loginTimeoutTick = builder.comment("Login timeout tick")
-                .define("loginTimeoutTick", 120 * 20);
-        enablePreLoginProtection = builder.comment("Enable pre login protection")
-                .define("enablePreLoginProtection", false);
-        enableEmailFunction = builder.comment("whether to enable email function.If you enable this,you should change the mailAccountEntry below")
-                .define("enableEmailFunction", false);
-
-        builder.comment("for email function").push("emailAccount");
-
-        username = builder.comment("").define("username", "");
-        password = builder.comment("").define("password", "");
-        host = builder.comment("").define("host", "");
-        port = builder.comment("").define("port", 0);
-        from = builder.comment("").define("from", "");
-        enableSSL = builder.comment("").define("enableSSL", false);
-        starttlsEnable = builder.comment("").define("starttlsEnable", false);
-        timeout = builder.comment("").define("timeout", 0L);
-
-        builder.pop(); // pop emailAccount
-        builder.pop(); // pop server
-
-        config = builder.build();
+    public EasyLoginConfig(String pathToDatabase, boolean enableKickOther, Integer loginTimeoutTick, boolean enablePreLoginProtection) {
+        this.pathToDatabase = pathToDatabase;
+        this.enableKickOther = enableKickOther;
+        this.loginTimeoutTick = loginTimeoutTick;
+        this.enablePreLoginProtection = enablePreLoginProtection;
+        INSTANCE = this;
     }
+
+    public EasyLoginConfig() {
+        INSTANCE = this;
+    }
+
+
+    public static void readFromConfigFile() {
+        File configFile = FileUtil.file(CommonStaticRepo.GAME_DIR, CommonStaticRepo.configPath);
+        File readme = FileUtil.file(CommonStaticRepo.GAME_DIR, CommonStaticRepo.readmePath);
+        // create readme if not exists
+        if (!readme.exists()) {
+            FileUtil.copyFile(ResourceUtil.getResourceObj(CommonStaticRepo.readmeResourcePath), readme);
+        }
+
+        // read from configs
+        try {
+            new ObjectMapper(CommonStaticRepo.ymlFactory).readValue(configFile, EasyLoginConfig.class);
+        } catch (FileNotFoundException e) {
+            // create config file
+            writeToConfigFile(getDefaultConfig());
+        } catch (DatabindException e) {
+            LogUtil.logError(EasyLoginConfig.class, "read config file error.Please fix the config file or just regenerate it", e);
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            LogUtil.logError(EasyLoginConfig.class, "internal error occurred {}", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void writeToConfigFile(EasyLoginConfig easyLoginConfig) {
+        File configFile = FileUtil.file(CommonStaticRepo.GAME_DIR, CommonStaticRepo.configPath);
+        try {
+            configFile.createNewFile();
+            new ObjectMapper(CommonStaticRepo.ymlFactory).writeValue(configFile, easyLoginConfig);
+        } catch (IOException e) {
+            LogUtil.logError(EasyLoginConfig.class, "write config file error {}", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static EasyLoginConfig getDefaultConfig() {
+        return new EasyLoginConfig(
+                CommonStaticRepo.defaultSqlitePath,
+                false,
+                60 * 20,
+                false
+        );
+    }
+
+
 }

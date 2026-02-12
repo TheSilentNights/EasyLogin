@@ -35,7 +35,7 @@ public class PreLoginService {
 
         // Schedule kick timeout
         TaskService.addTask(
-                new KickPlayer(serverPlayer, EasyLoginConfig.loginTimeoutTick.get())
+                new KickPlayer(serverPlayer, EasyLoginConfig.INSTANCE.loginTimeoutTick)
         );
     }
 

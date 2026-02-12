@@ -49,7 +49,7 @@ public class ActionListener {
     //protect player
     @SubscribeEvent
     public void onPlayerHurt(LivingHurtEvent event) {
-        if (EasyLoginConfig.enablePreLoginProtection.get() && event.getEntity() instanceof LivingEntity && ActionCheckService.shouldCancelEvent((LivingEntity) event.getEntity())) {
+        if (EasyLoginConfig.INSTANCE.enablePreLoginProtection && event.getEntity() instanceof LivingEntity && ActionCheckService.shouldCancelEvent((LivingEntity) event.getEntity())) {
             event.setCanceled(true);
         }
     }
