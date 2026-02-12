@@ -1,7 +1,7 @@
 package com.thesilentnights.easylogin.service;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.ChatFormatting;
+import com.thesilentnights.easylogin.utils.TextUtil;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.event.CommandEvent;
 
@@ -26,9 +26,7 @@ public class CommandRejectionService {
                 !bypassList.contains(event.getParseResults().getContext().getNodes().get(0).getNode().getName())) {
             event.setCanceled(true);
             playerOrException.displayClientMessage(
-                    new TranslatableComponent("command.rejected")
-                            .withStyle(ChatFormatting.RED)
-                            .withStyle(ChatFormatting.BOLD),
+                    TextUtil.serialize(TextUtil.FormatType.FAILURE, new TranslatableComponent("command.rejected")),
                     false
             );
         }

@@ -16,12 +16,11 @@ public class PlayerAccount {
     private double lastLoginY;
     private double lastLoginZ;
     private String lastLoginWorld;
-    private String email;
     private long loginTimestamp;
 
     public PlayerAccount(UUID uuid, String username, String password, String lastLoginIp,
                          double lastLoginX, double lastLoginY, double lastLoginZ,
-                         String lastLoginWorld, String email, long loginTimestamp) {
+                         String lastLoginWorld, long loginTimestamp) {
         this.uuid = uuid;
         this.username = username;
         this.password = password;
@@ -30,7 +29,6 @@ public class PlayerAccount {
         this.lastLoginY = lastLoginY;
         this.lastLoginZ = lastLoginZ;
         this.lastLoginWorld = lastLoginWorld;
-        this.email = email;
         this.loginTimestamp = loginTimestamp;
     }
 
@@ -49,7 +47,6 @@ public class PlayerAccount {
                 set.getDouble(SqlColumnDefinition.LASTLOGIN_Y.toString().toLowerCase(Locale.getDefault())),
                 set.getDouble(SqlColumnDefinition.LASTLOGIN_Z.toString().toLowerCase(Locale.getDefault())),
                 set.getString(SqlColumnDefinition.LASTLOGIN_WORLD.toString().toLowerCase(Locale.getDefault())),
-                set.getString(SqlColumnDefinition.EMAIL.toString().toLowerCase(Locale.getDefault())),
                 set.getLong(SqlColumnDefinition.LOGIN_TIMESTAMP.toString().toLowerCase(Locale.getDefault()))
         );
     }
@@ -114,13 +111,6 @@ public class PlayerAccount {
         this.lastLoginWorld = lastLoginWorld;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     public long getLoginTimestamp() {
         return loginTimestamp;
@@ -147,13 +137,12 @@ public class PlayerAccount {
                 Objects.equals(username, that.username) &&
                 Objects.equals(password, that.password) &&
                 Objects.equals(lastLoginIp, that.lastLoginIp) &&
-                Objects.equals(lastLoginWorld, that.lastLoginWorld) &&
-                Objects.equals(email, that.email);
+                Objects.equals(lastLoginWorld, that.lastLoginWorld);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, username, password, lastLoginIp, lastLoginX, lastLoginY, lastLoginZ, lastLoginWorld, email, loginTimestamp);
+        return Objects.hash(uuid, username, password, lastLoginIp, lastLoginX, lastLoginY, lastLoginZ, lastLoginWorld, loginTimestamp);
     }
 
     @Override
@@ -167,7 +156,6 @@ public class PlayerAccount {
                 ", lastLoginY=" + lastLoginY +
                 ", lastLoginZ=" + lastLoginZ +
                 ", lastLoginWorld='" + lastLoginWorld + '\'' +
-                ", email='" + email + '\'' +
                 ", loginTimestamp=" + loginTimestamp +
                 '}';
     }

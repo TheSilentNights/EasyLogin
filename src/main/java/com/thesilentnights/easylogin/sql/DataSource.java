@@ -67,7 +67,7 @@ public class DataSource {
     public boolean updateAccount(PlayerAccount account) {
         String sql = "UPDATE " + CommonStaticRepo.TABLE_NAME +
                 " SET password = ?, lastlogin_x = ?, lastlogin_y = ?, lastlogin_z = ?, " +
-                "lastlogin_ip = ?, lastlogin_world = ?, username = ?, email = ?, login_timestamp = ? " +
+                "lastlogin_ip = ?, lastlogin_world = ?, username = ?, login_timestamp = ? " +
                 "WHERE uuid = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -78,9 +78,8 @@ public class DataSource {
             stmt.setString(5, account.getLastLoginIp());
             stmt.setString(6, account.getLastLoginWorld());
             stmt.setString(7, account.getUsername());
-            stmt.setString(8, account.getEmail());
-            stmt.setLong(9, account.getLoginTimestamp());
-            stmt.setString(10, account.getUuid().toString());
+            stmt.setLong(8, account.getLoginTimestamp());
+            stmt.setString(9, account.getUuid().toString());
 
             int updated = stmt.executeUpdate();
             conn.commit();
@@ -93,8 +92,8 @@ public class DataSource {
 
     public boolean insertAccount(PlayerAccount account) {
         String sql = "INSERT INTO " + CommonStaticRepo.TABLE_NAME +
-                " (uuid, password, lastlogin_x, lastlogin_y, lastlogin_z, lastlogin_ip, lastlogin_world, username, email, login_timestamp) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                " (uuid, password, lastlogin_x, lastlogin_y, lastlogin_z, lastlogin_ip, lastlogin_world, username, login_timestamp) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, account.getUuid().toString());
@@ -105,8 +104,7 @@ public class DataSource {
             stmt.setString(6, account.getLastLoginIp());
             stmt.setString(7, account.getLastLoginWorld());
             stmt.setString(8, account.getUsername());
-            stmt.setString(9, account.getEmail());
-            stmt.setLong(10, account.getLoginTimestamp());
+            stmt.setLong(9, account.getLoginTimestamp());
 
             int updated = stmt.executeUpdate();
             conn.commit();

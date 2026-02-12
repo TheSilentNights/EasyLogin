@@ -87,7 +87,6 @@ public class LoginService {
                 serverPlayer.getY(),
                 serverPlayer.getZ(),
                 serverPlayer.getLevel().dimension().location().getNamespace(),
-                null,
                 System.currentTimeMillis()
         );
 
