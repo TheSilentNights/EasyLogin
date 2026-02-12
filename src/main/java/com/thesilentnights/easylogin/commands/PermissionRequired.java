@@ -2,7 +2,6 @@ package com.thesilentnights.easylogin.commands;
 
 import com.thesilentnights.easylogin.service.LoginService;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.server.level.ServerPlayer;
 
 public abstract class PermissionRequired {
     public boolean requireAdminPermission(CommandSourceStack sourceStack) {
@@ -10,8 +9,8 @@ public abstract class PermissionRequired {
     }
 
     public boolean requireLoginAuth(CommandSourceStack sourceStack) {
-        if (sourceStack.getEntity() != null && sourceStack.getEntity() instanceof ServerPlayer player) {
-            return LoginService.isLoggedIn(player.getUUID());
+        if (sourceStack.getEntity() != null) {
+            return LoginService.isLoggedIn(sourceStack.getEntity().getUUID());
         } else {
             return false;
         }

@@ -1,7 +1,6 @@
 package com.thesilentnights.easylogin.service;
 
 import com.thesilentnights.easylogin.pojo.PlayerAccount;
-import com.thesilentnights.easylogin.pojo.SqlColumnDefinition;
 import com.thesilentnights.easylogin.sql.DataSource;
 
 import java.util.Optional;
@@ -31,8 +30,8 @@ public class AccountService {
         return dataSource.getAuthByName(username);
     }
 
-    public static boolean updateSingleColumn(SqlColumnDefinition key, String value, UUID uuid) {
-        return dataSource.updateColumn(key, value, uuid);
+    public static boolean updatePassword(String value, UUID uuid) {
+        return dataSource.updatePassword(value, uuid);
     }
 
     public static void updateAccount(PlayerAccount account) {

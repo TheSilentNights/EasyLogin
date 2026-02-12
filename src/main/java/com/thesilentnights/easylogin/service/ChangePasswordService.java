@@ -4,7 +4,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.thesilentnights.easylogin.pojo.SqlColumnDefinition;
 import com.thesilentnights.easylogin.utils.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -27,8 +26,7 @@ public class ChangePasswordService {
         String newPasswordConfirm = StringArgumentType.getString(context, "newPasswordConfirm");
 
         if (newPassword.equals(newPasswordConfirm)) {
-            AccountService.updateSingleColumn(
-                    SqlColumnDefinition.PASSWORD,
+            AccountService.updatePassword(
                     newPassword,
                     context.getSource().getPlayerOrException().getUUID()
             );
@@ -56,8 +54,7 @@ public class ChangePasswordService {
         String newPassword = StringArgumentType.getString(context, "password");
         String newPasswordConfirm = StringArgumentType.getString(context, "confirm");
         if (newPassword.equals(newPasswordConfirm)) {
-            AccountService.updateSingleColumn(
-                    SqlColumnDefinition.PASSWORD,
+            AccountService.updatePassword(
                     newPassword,
                     next.getId()
             );

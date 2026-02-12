@@ -1,7 +1,6 @@
 package com.thesilentnights.easylogin.sql;
 
 import com.thesilentnights.easylogin.pojo.PlayerAccount;
-import com.thesilentnights.easylogin.pojo.SqlColumnDefinition;
 import com.thesilentnights.easylogin.repo.CommonStaticRepo;
 import com.thesilentnights.easylogin.utils.LogUtil;
 import com.zaxxer.hikari.HikariDataSource;
@@ -49,15 +48,13 @@ public class DataSource {
     }
 
 
-    public boolean updateColumn(SqlColumnDefinition key, String value, UUID uuid) {
-
+    public boolean updatePassword(String value, UUID uuid) {
         String sql = "UPDATE " + CommonStaticRepo.TABLE_NAME +
-                " SET ? = ? WHERE uuid = ?";
+                " SET password = ? WHERE uuid = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, key.name());
-            stmt.setString(2, value);
-            stmt.setString(3, uuid.toString());
+            stmt.setString(1, value);
+            stmt.setString(2, uuid.toString());
             int rowsAffected = stmt.executeUpdate();
             conn.commit();
             return rowsAffected > 0;

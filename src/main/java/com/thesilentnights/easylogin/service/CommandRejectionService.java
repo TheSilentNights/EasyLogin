@@ -12,8 +12,7 @@ public class CommandRejectionService {
 
     private static final List<String> bypassList = Arrays.asList(
             "login",
-            "register",
-            "recover"
+            "register"
     );
 
     public static void handleRejection(CommandEvent event) throws CommandSyntaxException {

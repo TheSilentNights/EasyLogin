@@ -2,6 +2,7 @@ package com.thesilentnights.easylogin.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.thesilentnights.easylogin.service.ChangePasswordService;
 import com.thesilentnights.easylogin.service.PlayerInfoService;
 import net.minecraft.commands.CommandSourceStack;
@@ -14,9 +15,7 @@ public class Management extends PermissionRequired implements ICommands {
 
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        var node = Commands.literal("easylogin").requires(sourceStack -> {
-            return requireAdminPermission(sourceStack) && requireLoginAuth(sourceStack);
-        });
+        LiteralArgumentBuilder<CommandSourceStack> node = Commands.literal("easylogin").requires(sourceStack -> requireAdminPermission(sourceStack) && requireAdminPermission(sourceStack));
 
         node.then(Commands.literal("playerInfo")
                 .then(Commands.argument("player", GameProfileArgument.gameProfile())
