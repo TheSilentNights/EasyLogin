@@ -5,6 +5,7 @@ import com.thesilentnights.easylogin.configs.EasyLoginConfig;
 import com.thesilentnights.easylogin.events.listener.ActionListener;
 import com.thesilentnights.easylogin.events.listener.Listener;
 import com.thesilentnights.easylogin.registrys.CommandRegistrar;
+import com.thesilentnights.easylogin.repo.CommonStaticRepo;
 import com.thesilentnights.easylogin.service.AccountService;
 import com.thesilentnights.easylogin.sql.DataSource;
 import com.thesilentnights.easylogin.sql.DatabaseChecker;
@@ -16,7 +17,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
 
-@Mod(value = "easylogin")
+@Mod(value = CommonStaticRepo.MOD_ID)
 public class EasyLogin {
 
 

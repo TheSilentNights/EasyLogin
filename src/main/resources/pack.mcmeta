@@ -1,6 +1,6 @@
 {
   "pack": {
-    "description": "easylogin resources",
-    "pack_format": 7
+    "description": "${mod_id} resources",
+    "pack_format": 32
   }
 }
