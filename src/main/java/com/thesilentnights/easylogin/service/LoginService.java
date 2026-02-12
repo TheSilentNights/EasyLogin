@@ -112,7 +112,7 @@ public class LoginService {
     }
 
     public static void logoutPlayer(ServerPlayer serverPlayer) {
-        Optional<PlayerAccount> account = PlayerCache.getAccount(serverPlayer.getUUID());
+        Optional<PlayerAccount> account = AccountService.getAccount(serverPlayer.getUUID());
         if (account.isPresent()) {
             PlayerAccount playerAccount = account.get();
             playerAccount.setLastLoginIp(serverPlayer.getIpAddress());
