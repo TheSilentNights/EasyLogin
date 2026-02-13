@@ -13,7 +13,8 @@ public class CommandRegistrar {
             new Login(),
             new Registrar(),
             new ChangePassword(),
-            new Management()
+            new Management(),
+            new Logout()
     );
 
     public CommandRegistrar(IEventBus eventBus) {

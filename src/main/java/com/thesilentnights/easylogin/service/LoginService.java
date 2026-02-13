@@ -131,6 +131,11 @@ public class LoginService {
         }
     }
 
+    public static void forceLogoutPlayer(ServerPlayer serverPlayer) {
+        PlayerCache.dropAccount(serverPlayer.getUUID(), true);
+        TaskService.cancelPlayer(serverPlayer.getUUID());
+    }
+
     public static boolean isLoggedIn(UUID key) {
         return PlayerCache.hasAccount(key);
     }
