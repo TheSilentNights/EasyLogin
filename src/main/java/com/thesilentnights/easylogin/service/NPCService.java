@@ -3,7 +3,7 @@ package com.thesilentnights.easylogin.service;
 import com.thesilentnights.easylogin.compact.CurtainCompact;
 import com.thesilentnights.easylogin.compact.NpcCompactor;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.fml.ModList;
+import net.neoforged.fml.ModList;
 
 import java.util.ArrayList;
 import java.util.List;

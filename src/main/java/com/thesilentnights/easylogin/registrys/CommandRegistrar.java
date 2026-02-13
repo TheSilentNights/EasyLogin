@@ -1,9 +1,9 @@
 package com.thesilentnights.easylogin.registrys;
 
 import com.thesilentnights.easylogin.commands.*;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 import java.util.List;
 

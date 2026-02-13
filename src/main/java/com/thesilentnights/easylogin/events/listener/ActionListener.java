@@ -9,13 +9,13 @@ import com.thesilentnights.easylogin.utils.TextUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.CommandEvent;
+import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
+import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 public class ActionListener {
 
@@ -25,12 +25,14 @@ public class ActionListener {
     }
 
     @SubscribeEvent
-    public void onPlayerInteract(PlayerInteractEvent event) {
+    public void onPlayerInteract(PlayerInteractEvent.EntityInteractSpecific event) {
         if (ActionCheckService.shouldCancelEvent(event.getEntity())) {
             event.getEntity().sendSystemMessage(
                     TextUtil.serialize(TextUtil.FormatType.FAILURE, "you cannot interact before you log in")
             );
+
             event.setCanceled(true);
+
         }
     }
 
@@ -60,10 +62,10 @@ public class ActionListener {
 
     //prevent move
     @SubscribeEvent
-    public void onPlayerDrop(TickEvent.PlayerTickEvent event) {
-        if (ActionCheckService.shouldCancelEvent(event.player)) {
-            BlockPos blockPos = BlockPosRepo.getBlockPos(event.player.getUUID(), event.player.blockPosition());
-            event.player.teleportTo(
+    public void onPlayerDrop(PlayerTickEvent.Pre event) {
+        if (ActionCheckService.shouldCancelEvent(event.getEntity())) {
+            BlockPos blockPos = BlockPosRepo.getBlockPos(event.getEntity().getUUID(), event.getEntity().blockPosition());
+            event.getEntity().teleportTo(
                     blockPos.getX(),
                     blockPos.getY(),
                     blockPos.getZ()

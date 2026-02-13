@@ -11,26 +11,29 @@ import com.thesilentnights.easylogin.sql.DataSource;
 import com.thesilentnights.easylogin.sql.DatabaseChecker;
 import com.thesilentnights.easylogin.sql.DatasourceConfigs;
 import com.thesilentnights.easylogin.utils.PathAppender;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLLoader;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.javafmlmod.FMLModContainer;
+import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.common.NeoForge;
+
+import java.util.Objects;
 
 @Mod(value = CommonStaticRepo.MOD_ID)
 public class EasyLogin {
 
 
-    public EasyLogin(FMLJavaModLoadingContext context) {
+    public EasyLogin(FMLModContainer context) {
         EasyLoginConfig.readFromConfigFile();
         if (FMLLoader.getDist() == Dist.DEDICATED_SERVER || !FMLLoader.isProduction()) {
-            initServer();
+            initServer(context);
         } else {
-            initClient();
+            initClient(context);
         }
     }
 
-    private static void initServer() {
+    private static void initServer(FMLModContainer container) {
         DataSource dataSource = new DataSource(() -> {
             return DatasourceConfigs.generateSqliteDataSource(
                     FileUtil.file(
@@ -44,13 +47,13 @@ public class EasyLogin {
 
         AccountService.init(dataSource);
 
-        new Listener();
-        new ActionListener(MinecraftForge.EVENT_BUS);
-        new CommandRegistrar(MinecraftForge.EVENT_BUS);
+        new Listener(Objects.requireNonNull(NeoForge.EVENT_BUS));
+        new ActionListener(Objects.requireNonNull(NeoForge.EVENT_BUS));
+        new CommandRegistrar(NeoForge.EVENT_BUS);
     }
 
-    private static void initClient() {
-        new CommandRegistrar(MinecraftForge.EVENT_BUS);
+    private static void initClient(ModContainer container) {
+        new CommandRegistrar(Objects.requireNonNull(container.getEventBus()));
     }
 
 }

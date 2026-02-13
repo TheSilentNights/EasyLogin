@@ -4,16 +4,16 @@ import com.thesilentnights.easylogin.service.LoginService;
 import com.thesilentnights.easylogin.service.PreLoginService;
 import com.thesilentnights.easylogin.service.TaskService;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 public class Listener {
 
 
-    public Listener() {
-        MinecraftForge.EVENT_BUS.register(this);
+    public Listener(IEventBus eventBus) {
+        eventBus.register(this);
     }
 
     @SubscribeEvent
@@ -32,7 +32,7 @@ public class Listener {
 
 
     @SubscribeEvent
-    public void onServerTick(TickEvent.ServerTickEvent tickEvent) {
+    public void onServerTick(ServerTickEvent.Pre tickEvent) {
         TaskService.tick();
     }
 }

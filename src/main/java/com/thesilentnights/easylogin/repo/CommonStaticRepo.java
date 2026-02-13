@@ -3,7 +3,7 @@ package com.thesilentnights.easylogin.repo;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.thesilentnights.easylogin.EasyLogin;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

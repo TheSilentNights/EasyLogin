@@ -1,10 +1,11 @@
 package com.thesilentnights.easylogin.utils;
 
-import net.minecraftforge.fml.loading.FMLPaths;
 
+import com.thesilentnights.easylogin.repo.CommonStaticRepo;
 
 public class PathAppender {
     public static String append(String path) {
-        return FMLPaths.GAMEDIR.relative().toAbsolutePath() + path;
+        return CommonStaticRepo.GAME_DIR + path;
+
     }
 }

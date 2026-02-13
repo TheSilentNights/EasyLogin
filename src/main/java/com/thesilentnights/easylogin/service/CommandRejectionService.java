@@ -3,7 +3,7 @@ package com.thesilentnights.easylogin.service;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.thesilentnights.easylogin.utils.TextUtil;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.event.CommandEvent;
+import net.neoforged.neoforge.event.CommandEvent;
 
 import java.util.Arrays;
 import java.util.List;

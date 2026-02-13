@@ -55,7 +55,7 @@ public class LoginService {
         }
 
         context.getSource().sendFailure(
-                TextUtil.serialize(TextUtil.FormatType.FAILURE, Component.translatable("commands.login.failure"))
+                TextUtil.serialize(TextUtil.FormatType.FAILURE, Component.translatable("commands.login.failure", serverPlayer.getGameProfile().getName()))
         );
         return false;
     }
