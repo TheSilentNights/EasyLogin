@@ -19,22 +19,45 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 public class ActionListener {
 
-
     public ActionListener(IEventBus eventBus) {
         eventBus.register(this);
     }
 
-    @SubscribeEvent
-    public void onPlayerInteract(PlayerInteractEvent.EntityInteractSpecific event) {
+    public boolean handleInteract(PlayerInteractEvent event) {
         if (ActionCheckService.shouldCancelEvent(event.getEntity())) {
             event.getEntity().sendSystemMessage(
                     TextUtil.serialize(TextUtil.FormatType.FAILURE, "you cannot interact before you log in")
             );
-
-            event.setCanceled(true);
-
+            return true;
         }
+        return false;
     }
+
+    @SubscribeEvent
+    public void onPlayerInteract(PlayerInteractEvent.EntityInteractSpecific event) {
+        event.setCanceled(handleInteract(event));
+    }
+
+    @SubscribeEvent
+    public void onPlayerInteract(PlayerInteractEvent.EntityInteract event) {
+        event.setCanceled(handleInteract(event));
+    }
+
+    @SubscribeEvent
+    public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
+        event.setCanceled(handleInteract(event));
+    }
+
+    @SubscribeEvent
+    public void onPlayerInteract(PlayerInteractEvent.RightClickItem event) {
+        event.setCanceled(handleInteract(event));
+    }
+
+    @SubscribeEvent
+    public void onPlayerInteract(PlayerInteractEvent.LeftClickBlock event) {
+        event.setCanceled(handleInteract(event));
+    }
+
 
     @SubscribeEvent
     public void onPlayerAttack(LivingAttackEvent event) {
@@ -62,7 +85,7 @@ public class ActionListener {
 
     //prevent move
     @SubscribeEvent
-    public void onPlayerDrop(PlayerTickEvent.Pre event) {
+    public void onPlayerTick(PlayerTickEvent.Pre event) {
         if (ActionCheckService.shouldCancelEvent(event.getEntity())) {
             BlockPos blockPos = BlockPosRepo.getBlockPos(event.getEntity().getUUID(), event.getEntity().blockPosition());
             event.getEntity().teleportTo(

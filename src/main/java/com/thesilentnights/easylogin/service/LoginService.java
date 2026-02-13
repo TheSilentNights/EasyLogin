@@ -126,6 +126,8 @@ public class LoginService {
             playerAccount.setLastLoginZ(serverPlayer.getZ());
             playerAccount.setLoginTimestamp(System.currentTimeMillis());
             AccountService.updateAccount(playerAccount);
+
+
             PlayerCache.dropAccount(serverPlayer.getUUID(), true);
             TaskService.cancelPlayer(serverPlayer.getUUID());
         }
@@ -134,6 +136,10 @@ public class LoginService {
     public static void forceLogoutPlayer(ServerPlayer serverPlayer) {
         PlayerCache.dropAccount(serverPlayer.getUUID(), true);
         TaskService.cancelPlayer(serverPlayer.getUUID());
+        serverPlayer.connection.disconnect(
+                TextUtil.serialize(TextUtil.FormatType.INFO, "kickout")
+        );
+
     }
 
     public static boolean isLoggedIn(UUID key) {
