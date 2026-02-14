@@ -136,6 +136,7 @@ public class LoginService {
     public static void forceLogoutPlayer(ServerPlayer serverPlayer) {
         PlayerCache.dropAccount(serverPlayer.getUUID(), true);
         TaskService.cancelPlayer(serverPlayer.getUUID());
+        PlayerSessionCache.dropSession(serverPlayer.getStringUUID());
         serverPlayer.connection.disconnect(
                 TextUtil.serialize(TextUtil.FormatType.INFO, "kickout")
         );

@@ -6,7 +6,7 @@ import com.thesilentnights.easylogin.service.LoginService;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
-public class Login implements ICommands {
+public class Login extends PermissionRequired implements ICommands {
 
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher) {

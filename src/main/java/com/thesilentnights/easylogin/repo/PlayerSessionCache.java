@@ -22,6 +22,10 @@ public class PlayerSessionCache {
         sessions.put(account.getUuid().toString(), new PlayerSession(account));
     }
 
+    public static void dropSession(String uuid) {
+        sessions.invalidate(uuid);
+    }
+
     public static boolean hasSession(UUID uuid) {
         return sessions.getIfPresent(uuid.toString()) != null;
     }
