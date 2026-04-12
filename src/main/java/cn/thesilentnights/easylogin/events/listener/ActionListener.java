@@ -3,7 +3,6 @@ package cn.thesilentnights.easylogin.events.listener;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import cn.thesilentnights.easylogin.configs.EasyLoginConfig;
-import cn.thesilentnights.easylogin.repo.BlockPosRepo;
 import cn.thesilentnights.easylogin.service.ActionCheckService;
 import cn.thesilentnights.easylogin.service.CommandRejectionService;
 import cn.thesilentnights.easylogin.utils.TextUtil;
@@ -27,8 +26,8 @@ public class ActionListener {
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (ActionCheckService.shouldCancelEvent(event.getPlayer())) {
-            event.getPlayer().sendMessage(
+        if (ActionCheckService.shouldCancelEvent(event.getEntity())) {
+            event.getEntity().sendMessage(
                     TextUtil.serialize(TextUtil.FormatType.FAILURE, "you cannot interact before you log in"),
                     event.getPlayer().getUUID()
             );
