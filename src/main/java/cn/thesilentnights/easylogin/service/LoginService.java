@@ -6,7 +6,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import cn.thesilentnights.easylogin.pojo.PlayerAccount;
 import cn.thesilentnights.easylogin.repo.PlayerCache;
-import cn.thesilentnights.easylogin.repo.PlayerSessionCache;
 import cn.thesilentnights.easylogin.utils.LogUtil;
 import cn.thesilentnights.easylogin.utils.MessageSender;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
@@ -124,7 +123,7 @@ public class LoginService {
 
 
             AccountService.updateAccount(playerAccount);
-            PlayerCache.dropAccount(serverPlayer.getUUID(), true);
+            PlayerCache.dropAccount(serverPlayer.getUUID());
             TaskService.cancelPlayer(serverPlayer.getUUID());
         }
     }
@@ -133,15 +132,7 @@ public class LoginService {
         return PlayerCache.hasAccount(key);
     }
 
-    public static boolean reLogFromCache(ServerPlayer serverPlayer) {
-        if (!PlayerSessionCache.hasSession(serverPlayer.getUUID())) {
-            return false;
-        }
 
-        PlayerAccount account = PlayerSessionCache.getSession(serverPlayer.getUUID()).getAccount();
-        removeLimit(account, serverPlayer);
-        return true;
-    }
 
 
 }

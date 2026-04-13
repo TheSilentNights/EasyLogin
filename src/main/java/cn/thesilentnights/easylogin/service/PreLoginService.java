@@ -17,16 +17,6 @@ public class PreLoginService {
             ByPassService.addBypass(serverPlayer.getUUID());
         }
 
-        // Try to re-login from cache
-        if (LoginService.reLogFromCache(serverPlayer)) {
-            MessageSender.sendMessage(
-                    serverPlayer,
-                    "relogged from cache",
-                    MessageType.INFO
-            );
-            return;
-        }
-
         // Apply blindness effect
         addBlindEffectToPlayer(serverPlayer);
 

@@ -23,13 +23,7 @@ public class PlayerCache {
         return cacheMap.containsKey(uuid);
     }
 
-    public static void dropAccount(UUID uuid, boolean tempDrop) {
-        if (tempDrop) {
-            PlayerAccount uuid1 = cacheMap.get(uuid);
-            if (uuid1 != null) {
-                PlayerSessionCache.scheduleDrop(uuid1, System.currentTimeMillis() + 20 * 60 * 5);
-            }
-        }
+    public static void dropAccount(UUID uuid) {
         cacheMap.remove(uuid);
     }
 }
