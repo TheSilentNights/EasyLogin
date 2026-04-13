@@ -1,7 +1,6 @@
 package cn.thesilentnights.easylogin.registrys;
 
 import cn.thesilentnights.easylogin.data.PasswordData;
-import net.minecraft.client.gui.font.providers.UnihexProvider.Dimensions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;

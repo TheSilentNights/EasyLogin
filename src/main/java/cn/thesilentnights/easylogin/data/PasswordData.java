@@ -4,8 +4,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.mojang.serialization.Codec;
-
 import cn.thesilentnights.easylogin.pojo.PlayerAccount;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

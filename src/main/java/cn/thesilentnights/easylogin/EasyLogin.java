@@ -6,7 +6,6 @@ import cn.thesilentnights.easylogin.events.listener.Listener;
 import cn.thesilentnights.easylogin.registrys.CommandRegistrar;
 import cn.thesilentnights.easylogin.registrys.SDRegistry;
 import cn.thesilentnights.easylogin.repo.CommonStaticRepo;
-import cn.thesilentnights.easylogin.service.AccountService;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModLoadingContext;

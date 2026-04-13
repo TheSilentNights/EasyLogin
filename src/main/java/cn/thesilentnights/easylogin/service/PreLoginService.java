@@ -3,8 +3,6 @@ package cn.thesilentnights.easylogin.service;
 import cn.thesilentnights.easylogin.configs.EasyLoginConfig;
 import cn.thesilentnights.easylogin.service.task.KickPlayer;
 import cn.thesilentnights.easylogin.service.task.Message;
-import cn.thesilentnights.easylogin.utils.MessageSender;
-import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
