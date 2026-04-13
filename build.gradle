@@ -104,7 +104,7 @@ dependencies {
 }
 
 mixin{
-    add sourceSets.main , "mixins.easylogin.json"
+    add sourceSets.main , "mixins.easylogin.refmap.json"
     config "mixins.easylogin.json"
 }
 

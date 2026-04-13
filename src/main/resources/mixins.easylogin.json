@@ -2,6 +2,7 @@
     "required": true,
     "minVersion": "0.8",
     "package": "cn.thesilentnights.easylogin.mixin",
+    "refmap":"mixins.easylogin.refmap.json",
     "compatibility": [
         "JAVA_17"
     ],
