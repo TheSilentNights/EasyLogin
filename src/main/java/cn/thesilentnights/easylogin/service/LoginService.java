@@ -10,7 +10,6 @@ import cn.thesilentnights.easylogin.repo.PlayerSessionCache;
 import cn.thesilentnights.easylogin.utils.LogUtil;
 import cn.thesilentnights.easylogin.utils.MessageSender;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
-import cn.thesilentnights.easylogin.utils.TextUtil;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
@@ -26,7 +25,7 @@ public class LoginService {
         UUID uuid = serverPlayer.getUUID();
 
         if (!AccountService.hasAccount(uuid)) {
-            context.getSource().sendFailure(TextUtil.serialize(TextUtil.FormatType.FAILURE, "you haven't registered"));
+            MessageSender.sendMessage(context, "you haven't registered", MessageType.ERROR);
             return true;
         }
 
@@ -122,6 +121,8 @@ public class LoginService {
             playerAccount.setLastLoginY(serverPlayer.getY());
             playerAccount.setLastLoginZ(serverPlayer.getZ());
             playerAccount.setLoginTimestamp(System.currentTimeMillis());
+
+
             AccountService.updateAccount(playerAccount);
             PlayerCache.dropAccount(serverPlayer.getUUID(), true);
             TaskService.cancelPlayer(serverPlayer.getUUID());

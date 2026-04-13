@@ -8,7 +8,6 @@ import cn.thesilentnights.easylogin.service.ActionCheckService;
 import cn.thesilentnights.easylogin.service.CommandRejectionService;
 import cn.thesilentnights.easylogin.utils.MessageSender;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
-import cn.thesilentnights.easylogin.utils.TextUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;

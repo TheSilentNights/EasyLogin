@@ -5,7 +5,7 @@ import cn.thesilentnights.easylogin.service.task.KickPlayer;
 import cn.thesilentnights.easylogin.service.task.Message;
 import cn.thesilentnights.easylogin.utils.MessageSender;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
-import cn.thesilentnights.easylogin.utils.TextUtil;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -32,10 +32,10 @@ public class PreLoginService {
 
 
         if (AccountService.hasAccount(serverPlayer.getUUID())) {
-            TaskService.addTask(new Message(serverPlayer, TextUtil.serialize(TextUtil.FormatType.INFO, "use /login to login"), 80));
+            TaskService.addTask(new Message(serverPlayer, Component.literal("use /login to login"), 80));
         } else {
             TaskService.addTask(
-                    new Message(serverPlayer, TextUtil.serialize(TextUtil.FormatType.INFO, "use /register to register"), 80)
+                    new Message(serverPlayer, Component.literal("use /register to register"), 80)
             );
         }
 

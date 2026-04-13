@@ -10,7 +10,6 @@ import cn.thesilentnights.easylogin.repo.PlayerCache;
 import cn.thesilentnights.easylogin.utils.LogUtil;
 import cn.thesilentnights.easylogin.utils.MessageSender;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
-import cn.thesilentnights.easylogin.utils.TextUtil;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.GameProfileArgument;
 

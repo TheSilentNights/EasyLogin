@@ -43,7 +43,7 @@ public class MessageSender {
     }
 
     private static MutableComponent serizeMessage(MutableComponent message, MessageType type){
-        MutableComponent head = Component.literal("[SCFMC]:").withStyle(ChatFormatting.LIGHT_PURPLE);
+        MutableComponent head = Component.literal("[EasyLogin]: ").withStyle(ChatFormatting.LIGHT_PURPLE);
         switch (type){
             case INFO:
                 head.append(message.withStyle(ChatFormatting.GRAY));

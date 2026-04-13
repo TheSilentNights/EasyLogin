@@ -18,6 +18,7 @@ import net.minecraftforge.fml.loading.FMLLoader;
 @Mod(value = CommonStaticRepo.MOD_ID)
 public class EasyLogin {
 
+    @SuppressWarnings("removal")
     public EasyLogin() {
         new SDRegistry(MinecraftForge.EVENT_BUS);
 
