@@ -27,7 +27,7 @@ public class PlayerCache {
         if (tempDrop) {
             PlayerAccount uuid1 = cacheMap.get(uuid);
             if (uuid1 != null) {
-                PlayerSessionCache.scheduleDrop(uuid1);
+                PlayerSessionCache.scheduleDrop(uuid1, System.currentTimeMillis() + 20 * 60 * 5);
             }
         }
         cacheMap.remove(uuid);

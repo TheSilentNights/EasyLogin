@@ -3,6 +3,8 @@ package cn.thesilentnights.easylogin.service;
 import cn.thesilentnights.easylogin.configs.EasyLoginConfig;
 import cn.thesilentnights.easylogin.service.task.KickPlayer;
 import cn.thesilentnights.easylogin.service.task.Message;
+import cn.thesilentnights.easylogin.utils.MessageSender;
+import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import cn.thesilentnights.easylogin.utils.TextUtil;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -17,7 +19,11 @@ public class PreLoginService {
 
         // Try to re-login from cache
         if (LoginService.reLogFromCache(serverPlayer)) {
-            serverPlayer.sendMessage(TextUtil.serialize(TextUtil.FormatType.INFO, "relogged from cache"), serverPlayer.getUUID());
+            MessageSender.sendMessage(
+                    serverPlayer,
+                    "relogged from cache",
+                    MessageType.INFO
+            );
             return;
         }
 

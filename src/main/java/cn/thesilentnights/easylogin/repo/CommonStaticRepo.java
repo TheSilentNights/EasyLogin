@@ -4,8 +4,6 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cn.thesilentnights.easylogin.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import cn.thesilentnights.easylogin.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import cn.thesilentnights.easylogin.EasyLogin;
 
 public class CommonStaticRepo {
@@ -16,6 +14,5 @@ public class CommonStaticRepo {
     public static final String defaultSqlitePath = "/easylogin/playerAccounts.db";
     public static final String readmePath = "/easylogin/readme.txt";
     public static final String readmeResourcePath = "./readme.txt";
-    public static final YAMLFactory ymlFactory = YAMLFactory.builder().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER).enable(YAMLGenerator.Feature.ALLOW_LONG_KEYS).build();
     public static final Logger log = LogManager.getLogger(EasyLogin.class);
 }

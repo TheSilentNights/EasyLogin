@@ -1,17 +1,21 @@
 package cn.thesilentnights.easylogin.service.task;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.UUID;
 
+import cn.thesilentnights.easylogin.utils.MessageSender;
+import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
+
 public class Message extends Task implements Loop {
     final int originalDelay;
     int delay;
-    Component message;
+    MutableComponent message;
     ServerPlayer serverPlayer;
 
-    public Message(ServerPlayer serverPlayer, Component message, int delay) {
+    public Message(ServerPlayer serverPlayer, MutableComponent message, int delay) {
         this.serverPlayer = serverPlayer;
         this.message = message;
         this.delay = delay;
@@ -20,7 +24,11 @@ public class Message extends Task implements Loop {
 
     @Override
     public void execute() {
-        serverPlayer.sendMessage(message, serverPlayer.getUUID());
+        MessageSender.sendMessage(
+                serverPlayer,
+                message,
+                MessageType.INFO
+        );
     }
 
     @Override

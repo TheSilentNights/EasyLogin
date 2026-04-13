@@ -3,42 +3,35 @@ package cn.thesilentnights.easylogin.service;
 import java.util.Optional;
 import java.util.UUID;
 
+import cn.thesilentnights.easylogin.data.PasswordData;
 import cn.thesilentnights.easylogin.pojo.PlayerAccount;
-import cn.thesilentnights.easylogin.sql.DataSource;
 
 public class AccountService {
 
-    private static DataSource dataSource;
-
-    public static void init(DataSource dataSource) {
-        AccountService.dataSource = dataSource;
-    }
-
     public static boolean hasAccount(UUID uuid) {
-        return dataSource.getAuthByUUID(uuid).isPresent();
-    }
-
-    public static boolean hasAccount(String username) {
-        return dataSource.getAuthByName(username).isPresent();
+        return PasswordData.getAccount(uuid) != null;
     }
 
     public static Optional<PlayerAccount> getAccount(UUID uuid) {
-        return dataSource.getAuthByUUID(uuid);
-    }
-
-    public static Optional<PlayerAccount> getAccount(String username) {
-        return dataSource.getAuthByName(username);
+        return Optional.ofNullable(PasswordData.getAccount(uuid));
     }
 
     public static boolean updatePassword(String value, UUID uuid) {
-        return dataSource.updatePassword(value, uuid);
+        PlayerAccount previous = PasswordData.getAccount(uuid);
+        if (previous == null) {
+            return false;
+        }
+        previous.setPassword(value);
+        PasswordData.updateAccount(uuid, previous);
+
+        return true;
     }
 
     public static void updateAccount(PlayerAccount account) {
         if (hasAccount(account.getUuid())) {
-            dataSource.updateAccount(account);
+            PasswordData.updateAccount(account.getUuid(), account);
         } else {
-            dataSource.insertAccount(account);
+            PasswordData.registerAccount(account);
         }
     }
 }

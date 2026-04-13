@@ -4,6 +4,7 @@ import cn.thesilentnights.easylogin.configs.EasyLoginConfig;
 import cn.thesilentnights.easylogin.events.listener.ActionListener;
 import cn.thesilentnights.easylogin.events.listener.Listener;
 import cn.thesilentnights.easylogin.registrys.CommandRegistrar;
+import cn.thesilentnights.easylogin.registrys.SDRegistry;
 import cn.thesilentnights.easylogin.repo.CommonStaticRepo;
 import cn.thesilentnights.easylogin.service.AccountService;
 import cn.thesilentnights.easylogin.utils.PathAppender;
@@ -18,7 +19,7 @@ import net.minecraftforge.fml.loading.FMLLoader;
 public class EasyLogin {
 
     public EasyLogin() {
-        EasyLoginConfig.INSTANCE.pathToDatabase.get();
+        new SDRegistry(MinecraftForge.EVENT_BUS);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EasyLoginConfig.SPEC);
 
@@ -30,10 +31,6 @@ public class EasyLogin {
     }
 
     private static void initServer() {
-
-
-        AccountService.init(dataSource);
-
         new Listener();
         new ActionListener(MinecraftForge.EVENT_BUS);
         new CommandRegistrar(MinecraftForge.EVENT_BUS);

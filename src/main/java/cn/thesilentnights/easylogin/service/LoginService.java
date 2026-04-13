@@ -8,9 +8,10 @@ import cn.thesilentnights.easylogin.pojo.PlayerAccount;
 import cn.thesilentnights.easylogin.repo.PlayerCache;
 import cn.thesilentnights.easylogin.repo.PlayerSessionCache;
 import cn.thesilentnights.easylogin.utils.LogUtil;
+import cn.thesilentnights.easylogin.utils.MessageSender;
+import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import cn.thesilentnights.easylogin.utils.TextUtil;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
 
@@ -30,12 +31,10 @@ public class LoginService {
         }
 
         if (PlayerCache.hasAccount(uuid)) {
-
-            context.getSource().sendFailure(
-                    TextUtil.serialize(
-                            TextUtil.FormatType.FAILURE,
-                            new TranslatableComponent("account.already_loggedin")
-                    )
+            MessageSender.sendMessage(
+                    serverPlayer,
+                    "you are already logged in",
+                    MessageType.ERROR
             );
             return false;
         }
@@ -46,17 +45,20 @@ public class LoginService {
         if (account.isPresent()) {
             if (account.get().getPassword().equals(password)) {
 
-                context.getSource().sendSuccess(
-                        TextUtil.serialize(TextUtil.FormatType.SUCCESS, new TranslatableComponent("commands.login.success", serverPlayer.getGameProfile().getName()))
-                        , false
+                MessageSender.sendMessage(
+                        serverPlayer,
+                        "login success",
+                        MessageType.SUCCESS
                 );
                 removeLimit(account.get(), serverPlayer);
                 return true;
             }
         }
 
-        context.getSource().sendFailure(
-                TextUtil.serialize(TextUtil.FormatType.FAILURE, new TranslatableComponent("commands.login.failure"))
+        MessageSender.sendMessage(
+                serverPlayer,
+                "login failed",
+                MessageType.ERROR
         );
         return false;
     }
@@ -73,8 +75,10 @@ public class LoginService {
         String repeat = StringArgumentType.getString(context, "repeat");
 
         if (!password.equals(repeat)) {
-            context.getSource().sendFailure(
-                    TextUtil.serialize(TextUtil.FormatType.FAILURE, new TranslatableComponent("commands.password.confirm.failure"))
+            MessageSender.sendMessage(
+                    serverPlayer,
+                    "password confirm failed",
+                    MessageType.ERROR
             );
             return false;
         }
@@ -87,7 +91,7 @@ public class LoginService {
                 serverPlayer.getX(),
                 serverPlayer.getY(),
                 serverPlayer.getZ(),
-                serverPlayer.getLevel().dimension().location().getNamespace(),
+                serverPlayer.level().dimension().location().getNamespace(),
                 System.currentTimeMillis()
         );
 
@@ -95,16 +99,13 @@ public class LoginService {
 
         Optional<PlayerAccount> auth = AccountService.getAccount(serverPlayer.getUUID());
         if (auth.isEmpty()) {
-            LogUtil.logError(LoginService.class, "sql error found in registering player", new SQLException());
+            LogUtil.getLogger().error("internal error found in registering player", new SQLException());
             return false;
         } else {
-            context.getSource().sendSuccess(
-                    TextUtil.serialize(
-                            TextUtil.FormatType.SUCCESS, new TranslatableComponent(
-                                    "commands.login.success",
-                                    serverPlayer.getGameProfile().getName()
-                            )
-                    ), false
+            MessageSender.sendMessage(
+                    serverPlayer,
+                    "register success",
+                    MessageType.SUCCESS
             );
             removeLimit(auth.get(), serverPlayer);
             return true;
@@ -116,7 +117,7 @@ public class LoginService {
         if (account.isPresent()) {
             PlayerAccount playerAccount = account.get();
             playerAccount.setLastLoginIp(serverPlayer.getIpAddress());
-            playerAccount.setLastLoginWorld(serverPlayer.getLevel().dimension().location().getNamespace());
+            playerAccount.setLastLoginWorld(serverPlayer.level().dimension().location().getNamespace());
             playerAccount.setLastLoginX(serverPlayer.getX());
             playerAccount.setLastLoginY(serverPlayer.getY());
             playerAccount.setLastLoginZ(serverPlayer.getZ());

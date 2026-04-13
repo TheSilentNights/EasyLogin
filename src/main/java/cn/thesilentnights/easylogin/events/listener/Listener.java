@@ -18,14 +18,14 @@ public class Listener {
 
     @SubscribeEvent
     public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             PreLoginService.preLogin(serverPlayer);
         }
     }
 
     @SubscribeEvent
     public void onPlayerQuit(PlayerEvent.PlayerLoggedOutEvent event) {
-        if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             LoginService.logoutPlayer(serverPlayer);
         }
     }

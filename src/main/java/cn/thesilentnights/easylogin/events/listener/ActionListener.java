@@ -3,8 +3,11 @@ package cn.thesilentnights.easylogin.events.listener;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import cn.thesilentnights.easylogin.configs.EasyLoginConfig;
+import cn.thesilentnights.easylogin.repo.BlockPosRepo;
 import cn.thesilentnights.easylogin.service.ActionCheckService;
 import cn.thesilentnights.easylogin.service.CommandRejectionService;
+import cn.thesilentnights.easylogin.utils.MessageSender;
+import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import cn.thesilentnights.easylogin.utils.TextUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,9 +30,10 @@ public class ActionListener {
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (ActionCheckService.shouldCancelEvent(event.getEntity())) {
-            event.getEntity().sendMessage(
-                    TextUtil.serialize(TextUtil.FormatType.FAILURE, "you cannot interact before you log in"),
-                    event.getPlayer().getUUID()
+            MessageSender.sendMessage(
+                    event,
+                    "you cannot interact before you log in",
+                    MessageType.ERROR
             );
             event.setCanceled(true);
         }
@@ -37,10 +41,11 @@ public class ActionListener {
 
     @SubscribeEvent
     public void onPlayerAttack(LivingAttackEvent event) {
-        if (event.getEntityLiving() instanceof ServerPlayer && ActionCheckService.shouldCancelEvent(event.getEntityLiving())) {
-            event.getEntityLiving().sendMessage(
-                    TextUtil.serialize(TextUtil.FormatType.FAILURE, "you cannot attack before you log in"),
-                    event.getEntityLiving().getUUID()
+        if (event.getEntity() instanceof ServerPlayer serverPlayer && ActionCheckService.shouldCancelEvent(event.getEntity())) {
+            MessageSender.sendMessage(
+                    serverPlayer,
+                    "you cannot attack before you log in",
+                    MessageType.ERROR
             );
             event.setCanceled(true);
         }

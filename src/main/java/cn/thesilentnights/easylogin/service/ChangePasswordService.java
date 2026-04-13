@@ -8,10 +8,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import cn.thesilentnights.easylogin.pojo.PlayerAccount;
 import cn.thesilentnights.easylogin.repo.PlayerCache;
 import cn.thesilentnights.easylogin.utils.LogUtil;
+import cn.thesilentnights.easylogin.utils.MessageSender;
+import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import cn.thesilentnights.easylogin.utils.TextUtil;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.GameProfileArgument;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import java.sql.SQLException;
 import java.util.Collection;
@@ -20,10 +21,12 @@ import java.util.UUID;
 
 public class ChangePasswordService {
 
-
     public static boolean changePassword(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         if (!LoginService.isLoggedIn(context.getSource().getPlayerOrException().getUUID())) {
-            context.getSource().sendFailure(TextUtil.serialize(TextUtil.FormatType.FAILURE, new TranslatableComponent("commands.password.change.failure.unlogged")));
+            MessageSender.sendMessage(
+                    context,
+                    "commands.password.change.failure.unlogged",
+                    MessageType.ERROR);
             return false;
         }
 
@@ -33,25 +36,27 @@ public class ChangePasswordService {
         if (newPassword.equals(newPasswordConfirm)) {
             AccountService.updatePassword(
                     newPassword,
-                    context.getSource().getPlayerOrException().getUUID()
-            );
+                    context.getSource().getPlayerOrException().getUUID());
             updateCache(context.getSource().getPlayerOrException().getUUID());
-            context.getSource().sendSuccess(
-                    TextUtil.serialize(
-                            TextUtil.FormatType.SUCCESS,
-                            new TranslatableComponent("commands.password.change.success")
-                    ), true
-            );
+            MessageSender.sendMessage(
+                    context,
+                    "commands.password.change.success",
+                    MessageType.SUCCESS);
 
             return true;
         } else {
 
-            context.getSource().sendFailure(TextUtil.serialize(TextUtil.FormatType.FAILURE, new TranslatableComponent("commands.password.confirm.failure")));
+            MessageSender.sendMessage(
+                    context,
+                    "commands.password.confirm.failure",
+                    MessageType.ERROR);
             return false;
+            
         }
     }
 
-    public static boolean changePasswordAdmin(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+    public static boolean changePasswordAdmin(CommandContext<CommandSourceStack> context)
+            throws CommandSyntaxException {
         Collection<GameProfile> player = GameProfileArgument.getGameProfiles(context, "player");
         GameProfile next = player.iterator().next();
 
@@ -60,20 +65,19 @@ public class ChangePasswordService {
         if (newPassword.equals(newPasswordConfirm)) {
             AccountService.updatePassword(
                     newPassword,
-                    next.getId()
-            );
+                    next.getId());
             updateCache(next.getId());
 
-            context.getSource().sendSuccess(
-                    TextUtil.serialize(
-                            TextUtil.FormatType.SUCCESS,
-                            new TranslatableComponent("commands.password.change.success")
-                    )
-                    , true
-            );
+            MessageSender.sendMessage(
+                    context,
+                    "commands.password.change.success",
+                    MessageType.SUCCESS);
             return true;
         } else {
-            context.getSource().sendFailure(TextUtil.serialize(TextUtil.FormatType.FAILURE, new TranslatableComponent("commands.password.confirm.failure")));
+            MessageSender.sendMessage(
+                    context,
+                    "commands.password.confirm.failure",
+                    MessageType.ERROR);
             return false;
         }
     }
@@ -83,7 +87,8 @@ public class ChangePasswordService {
         if (account.isPresent()) {
             PlayerCache.addAccount(account.get());
         } else {
-            LogUtil.logError(ChangePasswordService.class, "Error updating cache", new SQLException("Error updating cache"));
+            LogUtil.getLogger().error("Error updating cache",
+                    new SQLException("Error updating cache"));
         }
     }
 
