@@ -11,15 +11,15 @@ import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 
 public class Message extends Task implements Loop {
     final int originalDelay;
-    int delay;
+    Long endTimeMillis;
     MutableComponent message;
     ServerPlayer serverPlayer;
 
-    public Message(ServerPlayer serverPlayer, MutableComponent message, int delay) {
+    public Message(ServerPlayer serverPlayer, MutableComponent message, int delaySeconds) {
         this.serverPlayer = serverPlayer;
         this.message = message;
-        this.delay = delay;
-        this.originalDelay = delay;
+        this.endTimeMillis = delaySeconds*1000 + System.currentTimeMillis();
+        this.originalDelay = delaySeconds;
     }
 
     @Override
@@ -32,13 +32,8 @@ public class Message extends Task implements Loop {
     }
 
     @Override
-    public int getTickDelay() {
-        return delay;
-    }
-
-    @Override
-    public void reduceTickDelay(int tickDelay) {
-        this.delay -= tickDelay;
+    public Long getEndTimeMillis() {
+        return endTimeMillis;
     }
 
     @Override
@@ -50,4 +45,6 @@ public class Message extends Task implements Loop {
     public Task regenerate() {
         return new Message(serverPlayer, message, this.originalDelay);
     }
+
+
 }

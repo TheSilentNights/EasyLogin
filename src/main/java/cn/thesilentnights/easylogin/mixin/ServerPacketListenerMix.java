@@ -16,22 +16,20 @@ import net.minecraft.world.phys.Vec3;
 @Mixin(ServerGamePacketListenerImpl.class)
 public class ServerPacketListenerMix {
 
-    @Shadow private ServerPlayer player;
+    @Shadow
+    private ServerPlayer player;
 
-    @Inject(
-        method = "handleMovePlayer",
-        at = @At("RETURN") // 在原始逻辑执行完之后注入
+    @Inject(method = "handleMovePlayer", at = @At("RETURN") // 在原始逻辑执行完之后注入
     )
     private void afterHandleMove(ServerboundMovePlayerPacket packet, CallbackInfo ci) {
-        Vec3 pos = player.position();
 
         if (ActionCheckService.shouldCancelEvent(player)) {
+            Vec3 pos = player.position();
             // ✅ 正确：connection.teleport 会发送同步包给客户端
             Vec3 lastSafePos = PositionRepo.getPos(player.getUUID(), pos);
             player.connection.teleport(
-                lastSafePos.x, lastSafePos.y, lastSafePos.z,
-                player.getYRot(), player.getXRot()
-            );
+                    lastSafePos.x, lastSafePos.y, lastSafePos.z,
+                    player.getYRot(), player.getXRot());
         }
     }
 

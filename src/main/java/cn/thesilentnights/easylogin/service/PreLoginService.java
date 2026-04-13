@@ -32,16 +32,16 @@ public class PreLoginService {
 
 
         if (AccountService.hasAccount(serverPlayer.getUUID())) {
-            TaskService.addTask(new Message(serverPlayer, Component.literal("use /login to login"), 80));
+            TaskService.addTask(new Message(serverPlayer, Component.literal("use /login to login"), 5));
         } else {
             TaskService.addTask(
-                    new Message(serverPlayer, Component.literal("use /register to register"), 80)
+                    new Message(serverPlayer, Component.literal("use /register to register"), 5)
             );
         }
 
         // Schedule kick timeout
         TaskService.addTask(
-                new KickPlayer(serverPlayer, EasyLoginConfig.loginTimeoutTick.get())
+                new KickPlayer(serverPlayer, Long.valueOf(EasyLoginConfig.loginTimeoutSeconds.get()))
         );
     }
 

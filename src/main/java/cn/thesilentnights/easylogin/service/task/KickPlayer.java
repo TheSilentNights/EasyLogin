@@ -10,11 +10,11 @@ import cn.thesilentnights.easylogin.utils.LogUtil;
 public class KickPlayer extends Task {
 
     private final ServerPlayer serverPlayer;
-    private int delay;
+    private Long endTimeMillis;
 
-    public KickPlayer(ServerPlayer serverPlayer, int delay) {
+    public KickPlayer(ServerPlayer serverPlayer, Long delaySeconds) {
         this.serverPlayer = serverPlayer;
-        this.delay = delay;
+        this.endTimeMillis = delaySeconds*1000 + System.currentTimeMillis();
     }
 
 
@@ -25,14 +25,10 @@ public class KickPlayer extends Task {
     }
 
     @Override
-    public int getTickDelay() {
-        return this.delay;
+    public Long getEndTimeMillis() {
+        return endTimeMillis;
     }
 
-    @Override
-    public void reduceTickDelay(int tickDelay) {
-        this.delay -= tickDelay;
-    }
 
     @Override
     public boolean shouldCancel(UUID uuid) {
