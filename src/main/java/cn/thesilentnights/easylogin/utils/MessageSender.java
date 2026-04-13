@@ -20,7 +20,11 @@ public class MessageSender {
     }
 
     public static void sendMessage(CommandContextBuilder<CommandSourceStack> pContext, String message, MessageType type){
-        sendMessage(pContext, message, type);
+        if (pContext.getSource().getPlayer() != null) {
+            sendMessage(pContext.getSource().getPlayer(), message, type);
+        }else{
+            pContext.getSource().sendSystemMessage(serizeMessage(message, type));
+        }
     }
 
     public static void sendMessage(Player p, String message, MessageType type){

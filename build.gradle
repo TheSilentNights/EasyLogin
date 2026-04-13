@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("net.minecraftforge.gradle") version('[6.0,6.2)')
+    id 'org.spongepowered.mixin' version '0.7.+'
 }
 
 
@@ -102,6 +103,10 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
+mixin{
+    add sourceSets.main , "mixins.easylogin.json"
+    config "mixins.easylogin.json"
+}
 
 tasks.named('processResources', ProcessResources).configure {
     var replaceProperties = [

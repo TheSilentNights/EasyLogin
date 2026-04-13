@@ -3,7 +3,7 @@ package cn.thesilentnights.easylogin.events.listener;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import cn.thesilentnights.easylogin.configs.EasyLoginConfig;
-import cn.thesilentnights.easylogin.repo.BlockPosRepo;
+import cn.thesilentnights.easylogin.repo.PositionRepo;
 import cn.thesilentnights.easylogin.service.ActionCheckService;
 import cn.thesilentnights.easylogin.service.CommandRejectionService;
 import cn.thesilentnights.easylogin.utils.MessageSender;
@@ -64,16 +64,16 @@ public class ActionListener {
     }
 
 
-    //prevent move
-    @SubscribeEvent
-    public void onPlayerDrop(TickEvent.PlayerTickEvent event) {
-        if (ActionCheckService.shouldCancelEvent(event.player)) {
-            BlockPos blockPos = BlockPosRepo.getBlockPos(event.player.getUUID(), event.player.blockPosition());
-            event.player.teleportTo(
-                    blockPos.getX(),
-                    blockPos.getY(),
-                    blockPos.getZ()
-            );
-        }
-    }
+    // //prevent move
+    // @SubscribeEvent
+    // public void onPlayerDrop(TickEvent.PlayerTickEvent event) {
+    //     if (ActionCheckService.shouldCancelEvent(event.player)) {
+    //         BlockPos blockPos = BlockPosRepo.getBlockPos(event.player.getUUID(), event.player.blockPosition());
+    //         event.player.teleportTo(
+    //                 blockPos.getX(),
+    //                 blockPos.getY(),
+    //                 blockPos.getZ()
+    //         );
+    //     }
+    // }
 }

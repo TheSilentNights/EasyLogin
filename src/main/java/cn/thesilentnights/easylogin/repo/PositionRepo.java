@@ -4,16 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 
-public class BlockPosRepo {
-    private static final Map<UUID, BlockPos> cacheMap = new HashMap<>();
+public class PositionRepo {
+    private static final Map<UUID, Vec3> cacheMap = new HashMap<>();
 
-    public static void addBlockPos(UUID uuid, BlockPos pos) {
+    public static void addPos(UUID uuid, Vec3 pos) {
         cacheMap.put(uuid, pos);
     }
 
-    public static BlockPos getBlockPos(UUID uuid, BlockPos pos) {
+    public static Vec3 getPos(UUID uuid, Vec3 pos) {
         if (cacheMap.containsKey(uuid)) {
             return cacheMap.get(uuid);
         }

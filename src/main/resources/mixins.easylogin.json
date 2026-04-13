@@ -1,0 +1,16 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "package": "cn.thesilentnights.easylogin.mixin",
+    "compatibility": [
+        "JAVA_17"
+    ],
+    "mixins": [
+        "ServerPacketListenerMix"
+    ],
+    "client":[],
+    "server":[],
+    "injectors":{
+        "defaultRequire": 1
+    }
+}
