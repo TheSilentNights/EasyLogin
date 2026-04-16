@@ -26,7 +26,7 @@ public class LoginService {
 
         if (!AccountService.hasAccount(uuid)) {
             MessageSender.sendMessage(context, "you haven't registered", MessageType.ERROR);
-            return true;
+            return false;
         }
 
         if (PlayerCache.hasAccount(uuid)) {

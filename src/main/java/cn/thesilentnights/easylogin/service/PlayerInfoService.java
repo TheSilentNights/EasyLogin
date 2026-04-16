@@ -16,15 +16,16 @@ import java.util.Optional;
 public class PlayerInfoService {
     public static boolean handle(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         Collection<GameProfile> player = GameProfileArgument.getGameProfiles(context, "player");
-        GameProfile next = player.iterator().next();
 
-        if(next == null) {
+        if (player.isEmpty()) {
             MessageSender.sendMessage(
                     context,
                     "player not found",
                     MessageType.ERROR);
             return false;
         }
+        
+        GameProfile next = player.iterator().next();
 
         Optional<PlayerAccount> account = AccountService.getAccount(next.getId());
 

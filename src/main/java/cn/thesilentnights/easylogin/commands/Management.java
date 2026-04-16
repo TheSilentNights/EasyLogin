@@ -21,16 +21,22 @@ public class Management extends PermissionRequired implements ICommands {
                 .requires(this::requireAdminPermission);
 
         var playerInfo = Commands.literal("playerInfo");
-        var playerArg = Commands.argument("player", GameProfileArgument.gameProfile());
-        var changePassword = Commands.literal("changePassword".toLowerCase(Locale.ROOT));
-        var passwordArg = Commands.argument("password", StringArgumentType.string());
-        var confirmArg = Commands.argument("confirm", StringArgumentType.string());
+        var playerArgInfo = Commands.argument("player", GameProfileArgument.gameProfile());
+        
 
-        playerArg.executes(
+        playerArgInfo.executes(
                 (CommandContext<CommandSourceStack> context) -> PlayerInfoService.handle(context)
                         ? 1
                         : 0
         );
+
+        dispatcher.register(easylogin.then(playerInfo.then(playerArgInfo)));
+
+
+        var playerArgChangePassword = Commands.argument("player", GameProfileArgument.gameProfile());
+        var changePassword = Commands.literal("changePassword".toLowerCase(Locale.ROOT));
+        var passwordArg = Commands.argument("password", StringArgumentType.string());
+        var confirmArg = Commands.argument("confirm", StringArgumentType.string());
 
         confirmArg.executes(
                 (CommandContext<CommandSourceStack> context) -> ChangePasswordService.changePasswordAdmin(context)
@@ -38,7 +44,6 @@ public class Management extends PermissionRequired implements ICommands {
                         : 0
         );
 
-        dispatcher.register(easylogin.then(playerInfo.then(playerArg)));
-        dispatcher.register(easylogin.then(changePassword.then(playerArg.then(passwordArg.then(confirmArg)))));
+        dispatcher.register(easylogin.then(changePassword.then(playerArgChangePassword.then(passwordArg.then(confirmArg)))));
     }
 }

@@ -57,15 +57,16 @@ public class ChangePasswordService {
     public static boolean changePasswordAdmin(CommandContext<CommandSourceStack> context)
             throws CommandSyntaxException {
         Collection<GameProfile> player = GameProfileArgument.getGameProfiles(context, "player");
-        GameProfile next = player.iterator().next();
-
-        if(next == null) {
+                
+        if (player.isEmpty()) {
             MessageSender.sendMessage(
                     context,
                     "player not found",
                     MessageType.ERROR);
             return false;
         }
+        
+        GameProfile next = player.iterator().next();
 
         String newPassword = StringArgumentType.getString(context, "password");
         String newPasswordConfirm = StringArgumentType.getString(context, "confirm");
