@@ -1,13 +1,13 @@
 package cn.thesilentnights.easylogin.service;
 
-import java.util.TreeSet;
+import java.util.PriorityQueue;
 import java.util.UUID;
 
 import cn.thesilentnights.easylogin.service.task.Loop;
 import cn.thesilentnights.easylogin.service.task.Task;
 
 public class TaskService {
-    private static final TreeSet<Task> taskQueue = new TreeSet<>();
+    private static final PriorityQueue<Task> taskQueue = new PriorityQueue<>();
 
     public static void addTask(Task task) {
         taskQueue.add(task);
@@ -22,9 +22,9 @@ public class TaskService {
             return;
         }
 
-        Task firstTask = taskQueue.first();
+        Task firstTask = taskQueue.peek();
         if (System.currentTimeMillis() >= firstTask.getEndTimeMillis()) {
-            taskQueue.pollFirst();
+            taskQueue.poll();
             firstTask.execute();
 
             if (firstTask instanceof Loop loop) {

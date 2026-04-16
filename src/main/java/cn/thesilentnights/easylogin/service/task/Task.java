@@ -1,5 +1,6 @@
 package cn.thesilentnights.easylogin.service.task;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public abstract class Task implements Comparable<Task> {
@@ -12,6 +13,16 @@ public abstract class Task implements Comparable<Task> {
 
     @Override
     public int compareTo(Task o) {
-        return (this.getEndTimeMillis() - o.getEndTimeMillis()) > 0 ? 1 : -1;
+        return Long.compare(this.getEndTimeMillis(), o.getEndTimeMillis());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
+
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(this);
     }
 }
