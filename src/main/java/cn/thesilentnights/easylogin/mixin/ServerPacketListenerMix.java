@@ -25,7 +25,6 @@ public class ServerPacketListenerMix {
 
         if (ActionCheckService.shouldCancelEvent(player)) {
             Vec3 pos = player.position();
-            // ✅ 正确：connection.teleport 会发送同步包给客户端
             Vec3 lastSafePos = PositionRepo.getPos(player.getUUID(), pos);
             player.connection.teleport(
                     lastSafePos.x, lastSafePos.y, lastSafePos.z,

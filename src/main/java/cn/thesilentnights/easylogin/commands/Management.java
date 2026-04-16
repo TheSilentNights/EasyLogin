@@ -2,6 +2,7 @@ package cn.thesilentnights.easylogin.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import cn.thesilentnights.easylogin.service.ChangePasswordService;
@@ -16,22 +17,28 @@ public class Management extends PermissionRequired implements ICommands {
 
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        LiteralArgumentBuilder<CommandSourceStack> node = Commands.literal("easylogin").requires(sourceStack -> requireAdminPermission(sourceStack) && requireAdminPermission(sourceStack));
+        LiteralArgumentBuilder<CommandSourceStack> easylogin = Commands.literal("easylogin")
+                .requires(this::requireAdminPermission);
 
-        node.then(Commands.literal("playerInfo")
-                .then(Commands.argument("player", GameProfileArgument.gameProfile())
-                        .executes(commandContext -> {
-                            return PlayerInfoService.handle(commandContext) ? 1 : 0;
-                        })));
+        var playerInfo = Commands.literal("playerInfo");
+        var playerArg = Commands.argument("player", GameProfileArgument.gameProfile());
+        var changePassword = Commands.literal("changepassword".toLowerCase(Locale.ROOT));
+        var passwordArg = Commands.argument("password", StringArgumentType.string());
+        var confirmArg = Commands.argument("confirm", StringArgumentType.string());
 
-        node.then(Commands.literal("changePassword".toLowerCase(Locale.CHINA))
-                .then(Commands.argument("player", GameProfileArgument.gameProfile())
-                        .then(Commands.argument("password", StringArgumentType.string())
-                                .then(Commands.argument("confirm", StringArgumentType.string())
-                                        .executes(commandContext -> {
-                                            return ChangePasswordService.changePasswordAdmin(commandContext) ? 1 : 0;
-                                        })))));
+        playerArg.executes(
+                (CommandContext<CommandSourceStack> context) -> PlayerInfoService.handle(context)
+                        ? 1
+                        : 0
+        );
 
-        dispatcher.register(node);
+        confirmArg.executes(
+                (CommandContext<CommandSourceStack> context) -> ChangePasswordService.changePasswordAdmin(context)
+                        ? 1
+                        : 0
+        );
+
+        dispatcher.register(easylogin.then(playerInfo.then(playerArg)));
+        dispatcher.register(easylogin.then(changePassword.then(playerArg.then(passwordArg.then(confirmArg)))));
     }
 }

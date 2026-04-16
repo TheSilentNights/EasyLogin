@@ -4,11 +4,8 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public class EasyLoginConfig {
     public static final ForgeConfigSpec SPEC;
-    public static final EasyLoginConfig INSTANCE;
 
-    public static final ForgeConfigSpec.ConfigValue<Boolean> enableKickOther;
     public static final ForgeConfigSpec.ConfigValue<Integer> loginTimeoutSeconds;
-    public static final ForgeConfigSpec.ConfigValue<Long> sessionExpire;
     public static final ForgeConfigSpec.ConfigValue<Boolean> enablePreLoginProtection;
 
     static {
@@ -16,12 +13,9 @@ public class EasyLoginConfig {
 
         builder.comment("EasyLogin configuration").push("general");
         
-        sessionExpire = builder.define("sessionExpire", 1*60*20L);
 
         
-        enableKickOther = builder
-                .comment("Kick other players when a new player with the same username joins")
-                .define("enableKickOther", true);
+
         loginTimeoutSeconds = builder
                 .comment("Login timeout in seconds")
                 .define("loginTimeoutSeconds", 120);
@@ -31,7 +25,6 @@ public class EasyLoginConfig {
         builder.pop();
 
         SPEC = builder.build();
-        INSTANCE = new EasyLoginConfig();
     }
 
 
