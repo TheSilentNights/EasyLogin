@@ -32,6 +32,6 @@ public class KickPlayer extends Task {
 
     @Override
     public boolean shouldCancel(UUID uuid) {
-        return uuid == serverPlayer.getUUID();
+        return uuid.equals(serverPlayer.getUUID());
     }
 }

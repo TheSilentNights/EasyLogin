@@ -59,6 +59,14 @@ public class ChangePasswordService {
         Collection<GameProfile> player = GameProfileArgument.getGameProfiles(context, "player");
         GameProfile next = player.iterator().next();
 
+        if(next == null) {
+            MessageSender.sendMessage(
+                    context,
+                    "player not found",
+                    MessageType.ERROR);
+            return false;
+        }
+
         String newPassword = StringArgumentType.getString(context, "password");
         String newPasswordConfirm = StringArgumentType.getString(context, "confirm");
         if (newPassword.equals(newPasswordConfirm)) {

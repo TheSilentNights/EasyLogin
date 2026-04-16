@@ -37,7 +37,7 @@ public class Message extends Task implements Loop {
 
     @Override
     public boolean shouldCancel(UUID uuid) {
-        return serverPlayer.getUUID() == uuid;
+        return uuid.equals(serverPlayer.getUUID());
     }
 
     @Override

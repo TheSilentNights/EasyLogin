@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import cn.thesilentnights.easylogin.data.PasswordData;
 import cn.thesilentnights.easylogin.pojo.PlayerAccount;
+import cn.thesilentnights.easylogin.utils.PasswordHasher;
 
 public class AccountService {
 
@@ -16,12 +17,12 @@ public class AccountService {
         return Optional.ofNullable(PasswordData.getAccount(uuid));
     }
 
-    public static boolean updatePassword(String value, UUID uuid) {
+    public static boolean updatePassword(String rawPassword, UUID uuid) {
         PlayerAccount previous = PasswordData.getAccount(uuid);
         if (previous == null) {
             return false;
         }
-        previous.setPassword(value);
+        previous.setPassword(PasswordHasher.hash(rawPassword));
         PasswordData.updateAccount(uuid, previous);
 
         return true;

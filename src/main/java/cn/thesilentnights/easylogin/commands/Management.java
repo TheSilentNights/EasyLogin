@@ -22,7 +22,7 @@ public class Management extends PermissionRequired implements ICommands {
 
         var playerInfo = Commands.literal("playerInfo");
         var playerArg = Commands.argument("player", GameProfileArgument.gameProfile());
-        var changePassword = Commands.literal("changepassword".toLowerCase(Locale.ROOT));
+        var changePassword = Commands.literal("changePassword".toLowerCase(Locale.ROOT));
         var passwordArg = Commands.argument("password", StringArgumentType.string());
         var confirmArg = Commands.argument("confirm", StringArgumentType.string());
 

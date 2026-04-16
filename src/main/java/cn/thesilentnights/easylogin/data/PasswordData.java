@@ -45,7 +45,7 @@ public class PasswordData extends SavedData {
     public static PasswordData load(CompoundTag pTag) {
         PasswordData passwordData = new PasswordData();
 
-        ListTag passwords = pTag.getList("passwords", Tag.TAG_COMPOUND);
+        ListTag passwords = pTag.getList("playerData", Tag.TAG_COMPOUND);
 
         for (int i = 0; i < passwords.size(); i++) {
             CompoundTag passwordTag = passwords.getCompound(i);
@@ -89,7 +89,7 @@ public class PasswordData extends SavedData {
             listTag.add(passwordTag);
         }
 
-        pTag.put("passwords", listTag);
+        pTag.put("playerData", listTag);
         return pTag;
     }
 

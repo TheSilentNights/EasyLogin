@@ -9,6 +9,7 @@ import cn.thesilentnights.easylogin.repo.PlayerCache;
 import cn.thesilentnights.easylogin.utils.LogUtil;
 import cn.thesilentnights.easylogin.utils.MessageSender;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
+import cn.thesilentnights.easylogin.utils.PasswordHasher;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
@@ -41,7 +42,7 @@ public class LoginService {
         Optional<PlayerAccount> account = AccountService.getAccount(uuid);
 
         if (account.isPresent()) {
-            if (account.get().getPassword().equals(password)) {
+            if (PasswordHasher.verify(password, account.get().getPassword())) {
 
                 MessageSender.sendMessage(
                         serverPlayer,
@@ -50,6 +51,13 @@ public class LoginService {
                 );
                 removeLimit(account.get(), serverPlayer);
                 return true;
+            }else{
+                MessageSender.sendMessage(
+                        serverPlayer,
+                        "password failed",
+                        MessageType.ERROR
+                );
+                return false;
             }
         }
 
@@ -84,7 +92,7 @@ public class LoginService {
         PlayerAccount newAccount = new PlayerAccount(
                 serverPlayer.getUUID(),
                 serverPlayer.getGameProfile().getName(),
-                password,
+                PasswordHasher.hash(password),
                 serverPlayer.getIpAddress(),
                 serverPlayer.getX(),
                 serverPlayer.getY(),
