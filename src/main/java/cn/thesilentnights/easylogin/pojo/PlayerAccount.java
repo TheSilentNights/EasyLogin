@@ -32,24 +32,7 @@ public class PlayerAccount {
         this.loginTimestamp = loginTimestamp;
     }
 
-    public static PlayerAccount fromResultSet(ResultSet set) throws SQLException {
-        String uuidColumn = SqlColumnDefinition.UUID.toString().toLowerCase(Locale.getDefault());
-        if (set.getString(uuidColumn) == null) {
-            return null;
-        }
 
-        return new PlayerAccount(
-                UUID.fromString(set.getString(uuidColumn)),
-                set.getString(SqlColumnDefinition.USERNAME.toString().toLowerCase(Locale.getDefault())),
-                set.getString(SqlColumnDefinition.PASSWORD.toString().toLowerCase(Locale.getDefault())),
-                set.getString(SqlColumnDefinition.LASTLOGIN_IP.toString().toLowerCase(Locale.getDefault())),
-                set.getDouble(SqlColumnDefinition.LASTLOGIN_X.toString().toLowerCase(Locale.getDefault())),
-                set.getDouble(SqlColumnDefinition.LASTLOGIN_Y.toString().toLowerCase(Locale.getDefault())),
-                set.getDouble(SqlColumnDefinition.LASTLOGIN_Z.toString().toLowerCase(Locale.getDefault())),
-                set.getString(SqlColumnDefinition.LASTLOGIN_WORLD.toString().toLowerCase(Locale.getDefault())),
-                set.getLong(SqlColumnDefinition.LOGIN_TIMESTAMP.toString().toLowerCase(Locale.getDefault()))
-        );
-    }
 
     public UUID getUuid() {
         return uuid;
