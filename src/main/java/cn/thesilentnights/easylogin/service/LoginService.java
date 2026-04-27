@@ -13,6 +13,7 @@ import cn.thesilentnights.easylogin.utils.PasswordHasher;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.player.Player;
 
 import java.sql.SQLException;
 import java.util.Optional;
@@ -21,7 +22,6 @@ import java.util.UUID;
 public class LoginService {
 
     public static boolean login(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-
         ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
         UUID uuid = serverPlayer.getUUID();
 
@@ -69,6 +69,12 @@ public class LoginService {
                 "login failed",
                 MessageType.ERROR);
         return false;
+    }
+
+    public static boolean fakeLogin(ServerPlayer serverPlayer) {
+        TaskService.cancelPlayer(serverPlayer.getUUID());
+        serverPlayer.removeEffect(MobEffects.BLINDNESS);
+        return true;
     }
 
     private static void removeLimit(PlayerAccount account, ServerPlayer serverPlayer) {
