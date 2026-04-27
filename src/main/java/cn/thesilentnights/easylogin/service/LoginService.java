@@ -21,8 +21,14 @@ import java.util.UUID;
 public class LoginService {
 
     public static boolean login(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+
         ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
         UUID uuid = serverPlayer.getUUID();
+
+        // bypass
+        if (ByPassService.isBypassed(uuid)) {
+            return true;
+        }
 
         if (!AccountService.hasAccount(uuid)) {
             MessageSender.sendMessage(context, "you haven't registered", MessageType.ERROR);
@@ -33,8 +39,7 @@ public class LoginService {
             MessageSender.sendMessage(
                     serverPlayer,
                     "you are already logged in",
-                    MessageType.ERROR
-            );
+                    MessageType.ERROR);
             return false;
         }
 
@@ -47,16 +52,14 @@ public class LoginService {
                 MessageSender.sendMessage(
                         serverPlayer,
                         "login success",
-                        MessageType.SUCCESS
-                );
+                        MessageType.SUCCESS);
                 removeLimit(account.get(), serverPlayer);
                 return true;
-            }else{
+            } else {
                 MessageSender.sendMessage(
                         serverPlayer,
                         "password failed",
-                        MessageType.ERROR
-                );
+                        MessageType.ERROR);
                 return false;
             }
         }
@@ -64,8 +67,7 @@ public class LoginService {
         MessageSender.sendMessage(
                 serverPlayer,
                 "login failed",
-                MessageType.ERROR
-        );
+                MessageType.ERROR);
         return false;
     }
 
@@ -84,8 +86,7 @@ public class LoginService {
             MessageSender.sendMessage(
                     serverPlayer,
                     "password confirm failed",
-                    MessageType.ERROR
-            );
+                    MessageType.ERROR);
             return false;
         }
 
@@ -98,8 +99,7 @@ public class LoginService {
                 serverPlayer.getY(),
                 serverPlayer.getZ(),
                 serverPlayer.level().dimension().location().getNamespace(),
-                System.currentTimeMillis()
-        );
+                System.currentTimeMillis());
 
         AccountService.updateAccount(newAccount);
 
@@ -111,14 +111,19 @@ public class LoginService {
             MessageSender.sendMessage(
                     serverPlayer,
                     "register success",
-                    MessageType.SUCCESS
-            );
+                    MessageType.SUCCESS);
             removeLimit(auth.get(), serverPlayer);
             return true;
         }
     }
 
     public static void logoutPlayer(ServerPlayer serverPlayer) {
+
+        if (ByPassService.isBypassed(serverPlayer.getUUID())) {
+            ByPassService.removeBypass(serverPlayer.getUUID());
+            return;
+        }
+
         Optional<PlayerAccount> account = AccountService.getAccount(serverPlayer.getUUID());
         if (account.isPresent()) {
             PlayerAccount playerAccount = account.get();
@@ -129,7 +134,6 @@ public class LoginService {
             playerAccount.setLastLoginZ(serverPlayer.getZ());
             playerAccount.setLoginTimestamp(System.currentTimeMillis());
 
-
             AccountService.updateAccount(playerAccount);
             PlayerCache.dropAccount(serverPlayer.getUUID());
             TaskService.cancelPlayer(serverPlayer.getUUID());
@@ -137,10 +141,7 @@ public class LoginService {
     }
 
     public static boolean isLoggedIn(UUID key) {
-        return PlayerCache.hasAccount(key);
+        return PlayerCache.hasAccount(key) || ByPassService.isBypassed(key);
     }
-
-
-
 
 }

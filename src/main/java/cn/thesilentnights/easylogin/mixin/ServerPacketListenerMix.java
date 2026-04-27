@@ -25,6 +25,7 @@ public class ServerPacketListenerMix {
 
         if (ActionCheckService.shouldCancelEvent(player)) {
             Vec3 pos = player.position();
+
             Vec3 lastSafePos = PositionRepo.getPos(player.getUUID(), pos);
             player.connection.teleport(
                     lastSafePos.x, lastSafePos.y, lastSafePos.z,

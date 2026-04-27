@@ -11,10 +11,9 @@ import net.minecraft.world.effect.MobEffects;
 public class PreLoginService {
 
     public static void preLogin(ServerPlayer serverPlayer) {
-        if (NPCService.isNPC(serverPlayer)) {
-            ByPassService.addBypass(serverPlayer.getUUID());
+        if (ByPassService.isBypassed(serverPlayer.getUUID())) {
+            return;
         }
-
         // Apply blindness effect
         addBlindEffectToPlayer(serverPlayer);
 

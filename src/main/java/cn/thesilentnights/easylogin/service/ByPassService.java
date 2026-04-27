@@ -17,7 +17,7 @@ public class ByPassService {
         return list.contains(uuid);
     }
 
-    public void removeBypass(UUID uuid) {
+    public static void removeBypass(UUID uuid) {
         list.remove(uuid);
     }
 }
