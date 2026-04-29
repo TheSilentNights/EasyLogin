@@ -14,11 +14,11 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.GameProfileArgument;
 
-public class ByPass implements ICommands {
+public class ByPass extends PermissionRequired implements ICommands {
 
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        var bypass = Commands.literal("bypass");
+        var bypass = Commands.literal("bypass").requires((sourceStack) -> requireAdminPermission(sourceStack) && requireLoginAuth(sourceStack));
         var playerArg = Commands.argument("player", GameProfileArgument.gameProfile());
 
         bypass.then(playerArg.executes(
