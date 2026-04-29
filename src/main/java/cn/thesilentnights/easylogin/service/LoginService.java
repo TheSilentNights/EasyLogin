@@ -53,7 +53,9 @@ public class LoginService {
                         serverPlayer,
                         "login success",
                         MessageType.SUCCESS);
-                removeLimit(account.get(), serverPlayer);
+
+                PlayerCache.addAccount(account.get());
+                removeLimit(serverPlayer);
                 return true;
             } else {
                 MessageSender.sendMessage(
@@ -72,13 +74,11 @@ public class LoginService {
     }
 
     public static boolean fakeLogin(ServerPlayer serverPlayer) {
-        TaskService.cancelPlayer(serverPlayer.getUUID());
-        serverPlayer.removeEffect(MobEffects.BLINDNESS);
+        removeLimit(serverPlayer);
         return true;
     }
 
-    private static void removeLimit(PlayerAccount account, ServerPlayer serverPlayer) {
-        PlayerCache.addAccount(account);
+    private static void removeLimit( ServerPlayer serverPlayer) {
         TaskService.cancelPlayer(serverPlayer.getUUID());
         serverPlayer.removeEffect(MobEffects.BLINDNESS);
     }
@@ -106,7 +106,7 @@ public class LoginService {
                 serverPlayer.getZ(),
                 serverPlayer.level().dimension().location().getNamespace(),
                 System.currentTimeMillis());
-
+        // data check
         AccountService.updateAccount(newAccount);
 
         Optional<PlayerAccount> auth = AccountService.getAccount(serverPlayer.getUUID());
@@ -118,7 +118,8 @@ public class LoginService {
                     serverPlayer,
                     "register success",
                     MessageType.SUCCESS);
-            removeLimit(auth.get(), serverPlayer);
+            PlayerCache.addAccount(auth.get());
+            removeLimit(serverPlayer);
             return true;
         }
     }

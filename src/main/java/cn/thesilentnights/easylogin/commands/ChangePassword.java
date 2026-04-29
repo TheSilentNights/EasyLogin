@@ -8,11 +8,11 @@ import cn.thesilentnights.easylogin.service.ChangePasswordService;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
-public class ChangePassword implements ICommands {
+public class ChangePassword extends PermissionRequired implements ICommands {
 
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        var changepassword = Commands.literal("changepassword");
+        var changepassword = Commands.literal("changepassword").requires(this::requireLoginAuth);
         var newPassword = Commands.argument("newPassword", StringArgumentType.string());
         var confirm = Commands.argument("confirm", StringArgumentType.string());
 
