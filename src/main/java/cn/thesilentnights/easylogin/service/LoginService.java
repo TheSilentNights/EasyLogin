@@ -90,6 +90,11 @@ public class LoginService {
         String password = StringArgumentType.getString(context, "password");
         String repeat = StringArgumentType.getString(context, "repeat");
 
+        UUID uuid = serverPlayer.getUUID();
+        if (ByPassService.isBypassed(uuid)) {
+            return true;
+        }
+
         if (!password.equals(repeat)) {
             MessageSender.sendMessage(
                     serverPlayer,
@@ -99,7 +104,7 @@ public class LoginService {
         }
 
         PlayerAccount newAccount = new PlayerAccount(
-                serverPlayer.getUUID(),
+                uuid,
                 serverPlayer.getGameProfile().getName(),
                 PasswordHasher.hash(password),
                 serverPlayer.getIpAddress(),
