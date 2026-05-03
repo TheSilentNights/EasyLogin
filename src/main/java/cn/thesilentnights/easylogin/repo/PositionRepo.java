@@ -21,4 +21,8 @@ public class PositionRepo {
         return pos;
     }
 
+    public static void removePos(UUID uuid) {
+        cacheMap.remove(uuid);
+    }
+
 }

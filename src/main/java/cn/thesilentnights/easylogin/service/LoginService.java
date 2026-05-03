@@ -6,6 +6,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import cn.thesilentnights.easylogin.pojo.PlayerAccount;
 import cn.thesilentnights.easylogin.repo.PlayerCache;
+import cn.thesilentnights.easylogin.repo.PositionRepo;
 import cn.thesilentnights.easylogin.utils.LogUtil;
 import cn.thesilentnights.easylogin.utils.MessageSender;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
@@ -80,6 +81,7 @@ public class LoginService {
 
     private static void removeLimit( ServerPlayer serverPlayer) {
         TaskService.cancelPlayer(serverPlayer.getUUID());
+        PositionRepo.removePos(serverPlayer.getUUID());
         serverPlayer.removeEffect(MobEffects.BLINDNESS);
     }
 
