@@ -6,7 +6,7 @@ plugins {
 
 
 var modId = 'easylogin'
-version = '1.0'
+version = mod_version
 group = "com.thesilentnights.${modId}" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
