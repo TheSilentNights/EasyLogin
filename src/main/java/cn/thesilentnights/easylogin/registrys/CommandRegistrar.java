@@ -14,7 +14,8 @@ public class CommandRegistrar {
             new Login(),
             new Registrar(),
             new ChangePassword(),
-            new Management()
+            new Management(),
+            new ByPass()
     );
 
     public CommandRegistrar(IEventBus eventBus) {
