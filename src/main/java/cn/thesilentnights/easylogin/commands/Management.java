@@ -18,7 +18,7 @@ public class Management extends PermissionRequired implements ICommands {
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralArgumentBuilder<CommandSourceStack> easylogin = Commands.literal("easylogin")
-                .requires(this::requireAdminPermission);
+                .requires((source) -> requireAdminPermission(source) && requireLoginAuth(source));
 
         var playerInfo = Commands.literal("playerInfo");
         var playerArgInfo = Commands.argument("player", GameProfileArgument.gameProfile());
