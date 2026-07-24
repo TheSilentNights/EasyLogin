@@ -89,6 +89,9 @@ minecraft {
 }
 
 repositories {
+    maven{
+        url 'https://mirrors.cloud.tencent.com/gradle/'
+    }
     mavenCentral()
     gradlePluginPortal()
 }
