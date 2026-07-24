@@ -1,17 +1,29 @@
-plugins {
-    id("java")
-    id("net.minecraftforge.gradle") version('[6.0,6.2)')
-    id 'org.spongepowered.mixin' version '0.7.+'
+buildscript {
+    repositories {
+        // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
+        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath "net.minecraftforge.gradle:ForgeGradle:5.1.+"
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+    }
 }
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'maven-publish'
 
 
 var modId = 'easylogin'
 version = mod_version
 group = "com.thesilentnights.${modId}" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+
 minecraft {
     mappings channel: "official", version: "${minecraft_version}"
 
@@ -128,6 +140,7 @@ tasks.named('processResources', ProcessResources).configure {
 
 
 jar {
+    archiveBaseName = "easylogin-forge-${minecraft_version}"
     manifest {
         attributes(["Specification-Title"     : "easylogin",
                     "Specification-Vendor"    : "easyloginsareus",

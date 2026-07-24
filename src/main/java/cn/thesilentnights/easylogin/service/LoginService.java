@@ -111,7 +111,7 @@ public class LoginService {
                 serverPlayer.getX(),
                 serverPlayer.getY(),
                 serverPlayer.getZ(),
-                serverPlayer.level().dimension().location().getNamespace(),
+                serverPlayer.level.dimension().location().getNamespace(),
                 System.currentTimeMillis());
         // data check
         AccountService.updateAccount(newAccount);
@@ -142,7 +142,7 @@ public class LoginService {
         if (account.isPresent()) {
             PlayerAccount playerAccount = account.get();
             playerAccount.setLastLoginIp(serverPlayer.getIpAddress());
-            playerAccount.setLastLoginWorld(serverPlayer.level().dimension().location().getNamespace());
+            playerAccount.setLastLoginWorld(serverPlayer.level.dimension().location().getNamespace());
             playerAccount.setLastLoginX(serverPlayer.getX());
             playerAccount.setLastLoginY(serverPlayer.getY());
             playerAccount.setLastLoginZ(serverPlayer.getZ());

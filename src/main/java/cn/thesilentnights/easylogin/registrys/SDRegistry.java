@@ -4,9 +4,11 @@ import cn.thesilentnights.easylogin.data.PasswordData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraftforge.event.level.LevelEvent;
+import net.minecraft.world.level.block.LevelEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStartedEvent;
+import net.minecraftforge.fmlserverevents.ServerLifecycleEvent;
 
 public class SDRegistry {
 
@@ -15,18 +17,8 @@ public class SDRegistry {
     }
 
     @SubscribeEvent
-    public void registerPasswordData(LevelEvent.Load event) {
-        if (event.getLevel() instanceof ServerLevel level && level.dimension() == Level.OVERWORLD) {
-            PasswordData.refreshLevel(level);
-        }
-    }
-
-    @SubscribeEvent
-    public static void onLevelUnload(LevelEvent.Unload event) {
-        LevelAccessor level = event.getLevel();
-        if (level instanceof ServerLevel serverLevel && serverLevel.dimension() == Level.OVERWORLD) {
-            PasswordData.invalidate();
-        }
+    public void registerPasswordData(FMLServerStartedEvent event) {
+        PasswordData.refreshLevel(event.getServer().overworld());
     }
 
 }
