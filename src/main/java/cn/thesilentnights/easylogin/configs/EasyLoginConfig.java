@@ -1,15 +1,16 @@
 package cn.thesilentnights.easylogin.configs;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class EasyLoginConfig {
-    public static final ForgeConfigSpec SPEC;
+    public static final ModConfigSpec SPEC;
 
-    public static final ForgeConfigSpec.ConfigValue<Integer> loginTimeoutSeconds;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> enablePreLoginProtection;
+    public static final ModConfigSpec.ConfigValue<Integer> loginTimeoutSeconds;
+    public static final ModConfigSpec.ConfigValue<Boolean> enablePreLoginProtection;
 
     static {
-        final ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        final ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
         builder.comment("EasyLogin configuration").push("general");
         

@@ -5,11 +5,14 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import cn.thesilentnights.easylogin.pojo.PlayerAccount;
+import com.mojang.serialization.Codec;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
 public class PasswordData extends SavedData {
     private static PasswordData instance;
@@ -17,11 +20,20 @@ public class PasswordData extends SavedData {
 
        private PasswordData() {}
 
+    public static final Codec<Map<UUID, PlayerAccount>> MAP_CODEC = Codec.unboundedMap(UUIDUtil.STRING_CODEC, PlayerAccount.CODEC);
+
+    public static final Codec<PasswordData> CODEC = Codec.of(
+            pTag -> load(pTag),
+            passwordData -> save(passwordData)
+    );
+
     public static void refreshLevel(ServerLevel level) {
         PasswordData.instance = level.getDataStorage().computeIfAbsent(
-                PasswordData::load,
-                PasswordData::new,
-                "easylogin-playerData");
+                new SavedDataType<PasswordData>(
+                        "password_data",
+                        PasswordData::new,
+                )
+        );
     }
 
     public static PlayerAccount getAccount(UUID uuid) {
@@ -53,14 +65,7 @@ public class PasswordData extends SavedData {
             UUID uuid = passwordTag.getUUID("uuid");
             String username = passwordTag.getString("username");
             String password = passwordTag.getString("password");
-            String lastLoginIp = passwordTag.getString("lastLoginIp");
-            double lastLoginX = passwordTag.getDouble("lastLoginX");
-            double lastLoginY = passwordTag.getDouble("lastLoginY");
-            double lastLoginZ = passwordTag.getDouble("lastLoginZ");
-            String lastLoginWorld = passwordTag.getString("lastLoginWorld");
-            long loginTimestamp = passwordTag.getLong("loginTimestamp");
-            PlayerAccount account = new PlayerAccount(uuid, username, password, lastLoginIp,
-                    lastLoginX, lastLoginY, lastLoginZ, lastLoginWorld, loginTimestamp);
+            PlayerAccount account = new PlayerAccount(uuid, username, password);
             passwordData.passwords.put(uuid, account);
 
         }
@@ -79,13 +84,7 @@ public class PasswordData extends SavedData {
             CompoundTag passwordTag = new CompoundTag();
             passwordTag.putUUID("uuid", uuid);
             passwordTag.putString("username", account.getUsername());
-            passwordTag.putString("lastLoginIp", account.getLastLoginIp());
-            passwordTag.putDouble("lastLoginX", account.getLastLoginX());
-            passwordTag.putDouble("lastLoginY", account.getLastLoginY());
-            passwordTag.putDouble("lastLoginZ", account.getLastLoginZ());
-            passwordTag.putString("lastLoginWorld", account.getLastLoginWorld());
             passwordTag.putString("password", account.getPassword());
-            passwordTag.putLong("loginTimestamp", account.getLoginTimestamp());
             listTag.add(passwordTag);
         }
 
