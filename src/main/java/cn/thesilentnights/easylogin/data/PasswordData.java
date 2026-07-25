@@ -21,7 +21,7 @@ public class PasswordData extends SavedData {
         PasswordData.instance = level.getDataStorage().computeIfAbsent(
                 PasswordData::load,
                 PasswordData::new,
-                "easylogin-passwords");
+                "easylogin-playerData");
     }
 
     public static PlayerAccount getAccount(UUID uuid) {
