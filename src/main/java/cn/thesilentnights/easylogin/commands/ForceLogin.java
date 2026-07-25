@@ -1,20 +1,17 @@
 package cn.thesilentnights.easylogin.commands;
 
-import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 
-import cn.thesilentnights.easylogin.service.ByPassService;
 import cn.thesilentnights.easylogin.service.LoginService;
 import cn.thesilentnights.easylogin.utils.MessageSender;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.GameProfileArgument;
+import net.minecraft.server.players.NameAndId;
 
-public class ByPass extends PermissionRequired implements ICommands {
+public class ForceLogin extends PermissionRequired implements ICommands {
 
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -31,10 +28,8 @@ public class ByPass extends PermissionRequired implements ICommands {
                                 MessageType.ERROR);
                         return 0;
                     }
-                    GameProfile gameProfile = player.iterator().next();
-                    ByPassService.addBypass(gameProfile.getId());
-                    LoginService.fakeLogin(context.getSource().getServer().getPlayerList().getPlayer(gameProfile.getId()));
-                    
+                    NameAndId next = player.iterator().next();
+
                     MessageSender.sendMessage(
                             context.getSource().getPlayerOrException(),
                             "bypass success",

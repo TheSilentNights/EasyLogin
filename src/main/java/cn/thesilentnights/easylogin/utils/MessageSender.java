@@ -1,14 +1,12 @@
 package cn.thesilentnights.easylogin.utils;
 
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.context.CommandContextBuilder;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
 public class MessageSender {
     public static void sendMessage(CommandContext<CommandSourceStack> pContext, String message, MessageType type){

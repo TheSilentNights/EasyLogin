@@ -4,7 +4,7 @@
     "package": "cn.thesilentnights.easylogin.mixin",
     "refmap":"mixins.easylogin.refmap.json",
     "compatibility": [
-        "JAVA_17"
+        "JAVA_21"
     ],
     "mixins": [
         "ServerPacketListenerMix"

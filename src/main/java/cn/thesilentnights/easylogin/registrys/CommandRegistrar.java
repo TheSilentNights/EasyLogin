@@ -1,12 +1,12 @@
 package cn.thesilentnights.easylogin.registrys;
 
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.List;
 
 import cn.thesilentnights.easylogin.commands.*;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 public class CommandRegistrar {
 
@@ -15,7 +15,7 @@ public class CommandRegistrar {
             new Registrar(),
             new ChangePassword(),
             new Management(),
-            new ByPass()
+            new ForceLogin()
     );
 
     public CommandRegistrar(IEventBus eventBus) {
