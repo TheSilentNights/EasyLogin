@@ -1,6 +1,7 @@
 package cn.thesilentnights.easylogin.service;
 
 import cn.thesilentnights.easylogin.configs.EasyLoginConfig;
+import cn.thesilentnights.easylogin.repo.PlayerCache;
 import cn.thesilentnights.easylogin.service.task.KickPlayer;
 import cn.thesilentnights.easylogin.service.task.Message;
 import net.minecraft.network.chat.Component;
@@ -11,7 +12,7 @@ import net.minecraft.world.effect.MobEffects;
 public class PreLoginService {
 
     public static void preLogin(ServerPlayer serverPlayer) {
-        if (ByPassService.isBypassed(serverPlayer.getUUID())) {
+        if (PlayerCache.isPlayerLogged(serverPlayer.getUUID())) {
             return;
         }
         // Apply blindness effect

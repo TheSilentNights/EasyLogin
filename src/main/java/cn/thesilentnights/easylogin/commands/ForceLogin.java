@@ -9,13 +9,14 @@ import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.GameProfileArgument;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.NameAndId;
 
 public class ForceLogin extends PermissionRequired implements ICommands {
 
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        var bypass = Commands.literal("bypass").requires((sourceStack) -> requireAdminPermission(sourceStack) && requireLoginAuth(sourceStack));
+        var bypass = Commands.literal("forceLogin").requires((sourceStack) -> requireAdminPermission(sourceStack) && requireLoginAuth(sourceStack));
         var playerArg = Commands.argument("player", GameProfileArgument.gameProfile());
 
         bypass.then(playerArg.executes(
@@ -30,9 +31,12 @@ public class ForceLogin extends PermissionRequired implements ICommands {
                     }
                     NameAndId next = player.iterator().next();
 
+                    ServerPlayer serverPlayer = context.getSource().getServer().getPlayerList().getPlayer(next.id());
+                    LoginService.forceLogin(serverPlayer);
+                    
                     MessageSender.sendMessage(
                             context.getSource().getPlayerOrException(),
-                            "bypass success",
+                            "forceLogin success",
                             MessageType.SUCCESS);
                     return 1;
                 }));

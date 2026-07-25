@@ -94,7 +94,7 @@ public class ChangePasswordService {
     private static void updateCache(UUID id) {
         Optional<PlayerAccount> account = AccountService.getAccount(id);
         if (account.isPresent()) {
-            PlayerCache.addAccount(account.get());
+            PlayerCache.addPlayer(id);
         } else {
             LogUtil.getLogger().error("Error updating cache",
                     new SQLException("Error updating cache"));

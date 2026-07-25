@@ -11,12 +11,12 @@ public class ActionCheckService {
 
     public static boolean shouldCancelEvent(LivingEntity entity) {
         if (entity instanceof ServerPlayer) {
-            return !isLoggedIn(entity.getUUID()) && !ByPassService.isBypassed(entity.getUUID());
+            return !isLoggedIn(entity.getUUID());
         }
         return false;
     }
 
     public static boolean isLoggedIn(UUID uuid) {
-        return PlayerCache.hasAccount(uuid);
+        return PlayerCache.isPlayerLogged(uuid);
     }
 }

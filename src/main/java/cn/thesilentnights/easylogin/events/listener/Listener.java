@@ -31,7 +31,7 @@ public class Listener {
 
 
     @SubscribeEvent
-    public void onServerTick(ServerTickEvent tickEvent) {
+    public void onServerTick(ServerTickEvent.Pre tickEvent) {
         TaskService.tick();
     }
 }

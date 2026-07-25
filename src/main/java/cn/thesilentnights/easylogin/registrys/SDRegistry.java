@@ -23,7 +23,7 @@ public class SDRegistry {
     }
 
     @SubscribeEvent
-    public static void onLevelUnload(LevelEvent.Unload event) {
+    public void onLevelUnload(LevelEvent.Unload event) {
         LevelAccessor level = event.getLevel();
         if (level instanceof ServerLevel serverLevel && serverLevel.dimension() == Level.OVERWORLD) {
             PasswordData.invalidate();

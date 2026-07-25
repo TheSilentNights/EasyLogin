@@ -14,7 +14,6 @@ import cn.thesilentnights.easylogin.utils.PasswordHasher;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.player.Player;
 
 import java.sql.SQLException;
 import java.util.Optional;
@@ -26,17 +25,12 @@ public class LoginService {
         ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
         UUID uuid = serverPlayer.getUUID();
 
-        // bypass
-        if (ByPassService.isBypassed(uuid)) {
-            return true;
-        }
-
         if (!AccountService.hasAccount(uuid)) {
             MessageSender.sendMessage(context, "you haven't registered", MessageType.ERROR);
             return false;
         }
 
-        if (PlayerCache.hasAccount(uuid)) {
+        if (PlayerCache.isPlayerLogged(uuid)) {
             MessageSender.sendMessage(
                     serverPlayer,
                     "you are already logged in",
@@ -55,7 +49,7 @@ public class LoginService {
                         "login success",
                         MessageType.SUCCESS);
 
-                PlayerCache.addAccount(account.get());
+                PlayerCache.addPlayer(uuid);
                 removeLimit(serverPlayer);
                 return true;
             } else {
@@ -74,8 +68,9 @@ public class LoginService {
         return false;
     }
 
-    public static boolean fakeLogin(ServerPlayer serverPlayer) {
+    public static boolean forceLogin(ServerPlayer serverPlayer) {
         removeLimit(serverPlayer);
+        PlayerCache.addPlayer(serverPlayer.getUUID());
         return true;
     }
 
@@ -91,9 +86,6 @@ public class LoginService {
         String repeat = StringArgumentType.getString(context, "repeat");
 
         UUID uuid = serverPlayer.getUUID();
-        if (ByPassService.isBypassed(uuid)) {
-            return true;
-        }
 
         if (!password.equals(repeat)) {
             MessageSender.sendMessage(
@@ -119,25 +111,30 @@ public class LoginService {
                     serverPlayer,
                     "register success",
                     MessageType.SUCCESS);
-            PlayerCache.addAccount(auth.get());
+            PlayerCache.addPlayer(uuid);
             removeLimit(serverPlayer);
             return true;
         }
     }
 
     public static void logoutPlayer(ServerPlayer serverPlayer) {
-
-        if (ByPassService.isBypassed(serverPlayer.getUUID())) {
-            ByPassService.removeBypass(serverPlayer.getUUID());
+        //
+        if (!PlayerCache.isPlayerLogged(serverPlayer.getUUID())) {
+            MessageSender.sendMessage(
+                    serverPlayer,
+                    "you are not logged in",
+                    MessageType.ERROR);
             return;
         }
 
-        PlayerCache.dropAccount(serverPlayer.getUUID());
-        TaskService.cancelPlayer(serverPlayer.getUUID());
+        if (PlayerCache.isPlayerLogged(serverPlayer.getUUID())) {
+            PlayerCache.dropPlayerLogged(serverPlayer.getUUID());
+            TaskService.cancelPlayer(serverPlayer.getUUID());
+        }
     }
 
     public static boolean isLoggedIn(UUID key) {
-        return PlayerCache.hasAccount(key) || ByPassService.isBypassed(key);
+        return PlayerCache.isPlayerLogged(key);
     }
 
 }

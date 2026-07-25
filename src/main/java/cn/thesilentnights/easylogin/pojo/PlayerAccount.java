@@ -4,10 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Locale;
-import java.util.Objects;
 import java.util.UUID;
 
 public class PlayerAccount {

@@ -1,5 +1,7 @@
 package cn.thesilentnights.easylogin.repo;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -9,21 +11,18 @@ import cn.thesilentnights.easylogin.pojo.PlayerAccount;
 
 public class PlayerCache {
 
-    private static final Map<UUID, PlayerAccount> cacheMap = new ConcurrentHashMap<>();
+    private static final List<UUID> loggedPlayers = new ArrayList<>();
 
-    public static void addAccount(PlayerAccount account) {
-        cacheMap.put(account.getUuid(), account);
+
+    public static void addPlayer(UUID uuid) {
+        loggedPlayers.add(uuid);
     }
 
-    public static Optional<PlayerAccount> getAccount(UUID uuid) {
-        return Optional.ofNullable(cacheMap.get(uuid));
+    public static boolean isPlayerLogged(UUID uuid) {
+        return loggedPlayers.contains(uuid);
     }
 
-    public static boolean hasAccount(UUID uuid) {
-        return cacheMap.containsKey(uuid);
-    }
-
-    public static void dropAccount(UUID uuid) {
-        cacheMap.remove(uuid);
+    public static void dropPlayerLogged(UUID uuid) {    
+        loggedPlayers.remove(uuid);
     }
 }
