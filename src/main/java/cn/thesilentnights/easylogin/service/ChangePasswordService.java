@@ -12,6 +12,7 @@ import cn.thesilentnights.easylogin.utils.MessageSender;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.GameProfileArgument;
+import net.minecraft.server.players.NameAndId;
 
 import java.sql.SQLException;
 import java.util.Collection;
@@ -56,7 +57,7 @@ public class ChangePasswordService {
 
     public static boolean changePasswordAdmin(CommandContext<CommandSourceStack> context)
             throws CommandSyntaxException {
-        Collection<GameProfile> player = GameProfileArgument.getGameProfiles(context, "player");
+        Collection<NameAndId> player = GameProfileArgument.getGameProfiles(context, "player");
                 
         if (player.isEmpty()) {
             MessageSender.sendMessage(
@@ -66,15 +67,15 @@ public class ChangePasswordService {
             return false;
         }
         
-        GameProfile next = player.iterator().next();
+        NameAndId next = player.iterator().next();
 
         String newPassword = StringArgumentType.getString(context, "password");
         String newPasswordConfirm = StringArgumentType.getString(context, "confirm");
         if (newPassword.equals(newPasswordConfirm)) {
             AccountService.updatePassword(
                     newPassword,
-                    next.getId());
-            updateCache(next.getId());
+                    next.id());
+            updateCache(next.id());
 
             MessageSender.sendMessage(
                     context,
@@ -90,8 +91,8 @@ public class ChangePasswordService {
         }
     }
 
-    private static void updateCache(UUID uuid) {
-        Optional<PlayerAccount> account = AccountService.getAccount(uuid);
+    private static void updateCache(UUID id) {
+        Optional<PlayerAccount> account = AccountService.getAccount(id);
         if (account.isPresent()) {
             PlayerCache.addAccount(account.get());
         } else {

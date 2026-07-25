@@ -7,23 +7,23 @@ import cn.thesilentnights.easylogin.registrys.CommandRegistrar;
 import cn.thesilentnights.easylogin.registrys.SDRegistry;
 import cn.thesilentnights.easylogin.repo.CommonStaticRepo;
 import cn.thesilentnights.easylogin.utils.LogUtil;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.loading.FMLLoader;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig.Type;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.NeoForge;
 
-@Mod(value = CommonStaticRepo.MOD_ID)
+@Mod(value = CommonStaticRepo.MOD_ID,dist = Dist.DEDICATED_SERVER)
 public class EasyLogin {
 
     @SuppressWarnings("removal")
-    public EasyLogin() {
-        new SDRegistry(MinecraftForge.EVENT_BUS);
+    public EasyLogin(ModContainer modContainer) {
+        new SDRegistry(NeoForge.EVENT_BUS);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EasyLoginConfig.SPEC);
+        modContainer.registerConfig(Type.SERVER, EasyLoginConfig.SPEC);
 
-        if (FMLLoader.getDist() == Dist.DEDICATED_SERVER || !FMLLoader.isProduction()) {
+        if (FMLEnvironment.getDist() == Dist.DEDICATED_SERVER || !FMLEnvironment.isProduction()) {
             initServer();
         } else {
             initClient();
@@ -32,12 +32,12 @@ public class EasyLogin {
 
     private static void initServer() {
         new Listener();
-        new ActionListener(MinecraftForge.EVENT_BUS);
-        new CommandRegistrar(MinecraftForge.EVENT_BUS);
+        new ActionListener(NeoForge.EVENT_BUS);
+        new CommandRegistrar(NeoForge.EVENT_BUS);
     }
 
     private static void initClient() {
-        new CommandRegistrar(MinecraftForge.EVENT_BUS);
+        new CommandRegistrar(NeoForge.EVENT_BUS);
     }
 
 }

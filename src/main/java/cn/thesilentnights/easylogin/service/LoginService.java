@@ -79,7 +79,7 @@ public class LoginService {
         return true;
     }
 
-    private static void removeLimit( ServerPlayer serverPlayer) {
+    private static void removeLimit(ServerPlayer serverPlayer) {
         TaskService.cancelPlayer(serverPlayer.getUUID());
         PositionRepo.removePos(serverPlayer.getUUID());
         serverPlayer.removeEffect(MobEffects.BLINDNESS);
@@ -105,14 +105,8 @@ public class LoginService {
 
         PlayerAccount newAccount = new PlayerAccount(
                 uuid,
-                serverPlayer.getGameProfile().getName(),
-                PasswordHasher.hash(password),
-                serverPlayer.getIpAddress(),
-                serverPlayer.getX(),
-                serverPlayer.getY(),
-                serverPlayer.getZ(),
-                serverPlayer.level().dimension().location().getNamespace(),
-                System.currentTimeMillis());
+                PasswordHasher.hash(password));
+
         // data check
         AccountService.updateAccount(newAccount);
 
@@ -138,20 +132,8 @@ public class LoginService {
             return;
         }
 
-        Optional<PlayerAccount> account = AccountService.getAccount(serverPlayer.getUUID());
-        if (account.isPresent()) {
-            PlayerAccount playerAccount = account.get();
-            playerAccount.setLastLoginIp(serverPlayer.getIpAddress());
-            playerAccount.setLastLoginWorld(serverPlayer.level().dimension().location().getNamespace());
-            playerAccount.setLastLoginX(serverPlayer.getX());
-            playerAccount.setLastLoginY(serverPlayer.getY());
-            playerAccount.setLastLoginZ(serverPlayer.getZ());
-            playerAccount.setLoginTimestamp(System.currentTimeMillis());
-
-            AccountService.updateAccount(playerAccount);
-            PlayerCache.dropAccount(serverPlayer.getUUID());
-            TaskService.cancelPlayer(serverPlayer.getUUID());
-        }
+        PlayerCache.dropAccount(serverPlayer.getUUID());
+        TaskService.cancelPlayer(serverPlayer.getUUID());
     }
 
     public static boolean isLoggedIn(UUID key) {

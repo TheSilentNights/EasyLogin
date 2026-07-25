@@ -9,13 +9,14 @@ import cn.thesilentnights.easylogin.utils.MessageSender;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.GameProfileArgument;
+import net.minecraft.server.players.NameAndId;
 
 import java.util.Collection;
 import java.util.Optional;
 
 public class PlayerInfoService {
     public static boolean handle(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        Collection<GameProfile> player = GameProfileArgument.getGameProfiles(context, "player");
+        Collection<NameAndId> player = GameProfileArgument.getGameProfiles(context, "player");
 
         if (player.isEmpty()) {
             MessageSender.sendMessage(
@@ -25,9 +26,9 @@ public class PlayerInfoService {
             return false;
         }
         
-        GameProfile next = player.iterator().next();
+        NameAndId next = player.iterator().next();
 
-        Optional<PlayerAccount> account = AccountService.getAccount(next.getId());
+        Optional<PlayerAccount> account = AccountService.getAccount(next.id());
 
         if (account.isEmpty()) {
             MessageSender.sendMessage(context, "Player not found", MessageType.ERROR);

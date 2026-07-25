@@ -1,6 +1,9 @@
 package cn.thesilentnights.easylogin.utils;
 
 
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.context.CommandContextBuilder;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
@@ -27,12 +30,12 @@ public class MessageSender {
 
     public static void sendMessage(Player p, String message, MessageType type){
         MutableComponent component = serizeMessage(message, type);
-        p.sendSystemMessage(component);
+        p.displayClientMessage(component,false);
     }
 
     public static void sendMessage(Player p, MutableComponent message, MessageType type){
         MutableComponent component = serizeMessage(message, type);
-        p.sendSystemMessage(component);
+        p.displayClientMessage(component,false);
     }
 
     public static void sendMessage(PlayerEvent event, String message, MessageType type){

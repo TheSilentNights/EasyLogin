@@ -2,10 +2,11 @@ package cn.thesilentnights.easylogin.commands;
 
 import cn.thesilentnights.easylogin.service.LoginService;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.permissions.Permissions;
 
 public abstract class PermissionRequired {
     public boolean requireAdminPermission(CommandSourceStack sourceStack) {
-        return sourceStack.hasPermission(4);
+        return sourceStack.permissions().hasPermission(Permissions.COMMANDS_ADMIN);
     }
 
     public boolean requireLoginAuth(CommandSourceStack sourceStack) {

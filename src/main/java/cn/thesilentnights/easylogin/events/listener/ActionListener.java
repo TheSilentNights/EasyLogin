@@ -2,19 +2,14 @@ package cn.thesilentnights.easylogin.events.listener;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import cn.thesilentnights.easylogin.configs.EasyLoginConfig;
 import cn.thesilentnights.easylogin.service.ActionCheckService;
 import cn.thesilentnights.easylogin.service.CommandRejectionService;
 import cn.thesilentnights.easylogin.utils.MessageSender;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.CommandEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 
 public class ActionListener {
 
@@ -24,7 +19,7 @@ public class ActionListener {
     }
 
     @SubscribeEvent
-    public void onPlayerInteract(PlayerInteractEvent event) {
+    public void onPlayerInteract(EntityInteract event) {
         if (ActionCheckService.shouldCancelEvent(event.getEntity())) {
             MessageSender.sendMessage(
                     event,
@@ -35,25 +30,6 @@ public class ActionListener {
         }
     }
 
-    @SubscribeEvent
-    public void onPlayerAttack(LivingAttackEvent event) {
-        if (event.getEntity() instanceof ServerPlayer serverPlayer && ActionCheckService.shouldCancelEvent(event.getEntity())) {
-            MessageSender.sendMessage(
-                    serverPlayer,
-                    "you cannot attack before you log in",
-                    MessageType.ERROR
-            );
-            event.setCanceled(true);
-        }
-    }
-
-    //protect player
-    @SubscribeEvent
-    public void onPlayerHurt(LivingHurtEvent event) {
-        if (EasyLoginConfig.enablePreLoginProtection.get() && event.getEntity() instanceof LivingEntity && ActionCheckService.shouldCancelEvent((LivingEntity) event.getEntity())) {
-            event.setCanceled(true);
-        }
-    }
 
     @SubscribeEvent
     public void onPlayerExecuteCommand(CommandEvent event) throws CommandSyntaxException {

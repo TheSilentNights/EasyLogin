@@ -4,7 +4,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import cn.thesilentnights.easylogin.utils.MessageSender;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
-import net.minecraftforge.event.CommandEvent;
+import net.neoforged.neoforge.event.CommandEvent;
 
 import java.util.Arrays;
 import java.util.List;
