@@ -1,19 +1,21 @@
 buildscript {
     repositories {
-        // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
-        maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
         mavenCentral()
     }
     dependencies {
-        classpath "net.minecraftforge.gradle:ForgeGradle:5.1.+"
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 
-apply plugin: 'net.minecraftforge.gradle'
+plugins {
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+}
+
 apply plugin: 'org.spongepowered.mixin'
-apply plugin: 'maven-publish'
 
 
 var modId = 'easylogin'
@@ -22,7 +24,8 @@ group = "com.thesilentnights.${modId}" // http://maven.apache.org/guides/mini/gu
 
 
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+// 1.18+ 需要 Java 17
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
     mappings channel: "official", version: "${minecraft_version}"
