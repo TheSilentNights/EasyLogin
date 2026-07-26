@@ -30,12 +30,12 @@ public class MessageSender {
 
     public static void sendMessage(Player p, String message, MessageType type){
         MutableComponent component = serizeMessage(message, type);
-        p.displayClientMessage(component,false);
+        p.sendSystemMessage(component);
     }
 
     public static void sendMessage(Player p, MutableComponent message, MessageType type){
         MutableComponent component = serizeMessage(message, type);
-        p.displayClientMessage(component,false);
+        p.sendSystemMessage(component);
     }
 
     public static void sendMessage(PlayerEvent event, String message, MessageType type){

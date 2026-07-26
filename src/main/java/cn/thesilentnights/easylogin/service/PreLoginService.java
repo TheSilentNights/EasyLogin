@@ -8,6 +8,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.neoforged.neoforge.client.event.ClientChatReceivedEvent.Player;
+
 
 public class PreLoginService {
 

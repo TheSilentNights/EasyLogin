@@ -1,6 +1,9 @@
 package cn.thesilentnights.easylogin.registrys;
 
 import cn.thesilentnights.easylogin.data.PasswordData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.neoforged.bus.EventBus;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;

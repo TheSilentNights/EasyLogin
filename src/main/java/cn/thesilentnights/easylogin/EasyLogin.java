@@ -1,5 +1,8 @@
 package cn.thesilentnights.easylogin;
 
+import com.mojang.authlib.minecraft.MinecraftSessionService;
+import com.mojang.authlib.minecraft.client.MinecraftClient;
+
 import cn.thesilentnights.easylogin.configs.EasyLoginConfig;
 import cn.thesilentnights.easylogin.events.listener.ActionListener;
 import cn.thesilentnights.easylogin.events.listener.Listener;
@@ -17,7 +20,6 @@ import net.neoforged.neoforge.common.NeoForge;
 @Mod(value = CommonStaticRepo.MOD_ID,dist = Dist.DEDICATED_SERVER)
 public class EasyLogin {
 
-    @SuppressWarnings("removal")
     public EasyLogin(ModContainer modContainer) {
         new SDRegistry(NeoForge.EVENT_BUS);
 

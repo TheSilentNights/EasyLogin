@@ -9,6 +9,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
@@ -43,7 +44,7 @@ public class PasswordData extends SavedData {
 
     public static void refreshLevel(ServerLevel level) {
         SavedDataType<PasswordData> dataType = new SavedDataType<PasswordData>(
-                        "password_data",
+                Identifier.fromNamespaceAndPath("easylogin", "passwords"),
                         PasswordData::new,
                         CODEC
                 );
