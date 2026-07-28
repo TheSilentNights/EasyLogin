@@ -6,19 +6,19 @@ import net.minecraft.core.UUIDUtil;
 
 import java.util.UUID;
 
-public class PlayerAccount {
+public class PlayerPasswordData {
 
     private final UUID uuid;
     private String password;
 
-    public static final Codec<PlayerAccount> CODEC = RecordCodecBuilder.create(instance ->
+    public static final Codec<PlayerPasswordData> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                    UUIDUtil.CODEC.fieldOf("uuid").forGetter(PlayerAccount::getUuid),
-                    Codec.STRING.fieldOf("password").forGetter(PlayerAccount::getPassword)
-            ).apply(instance, PlayerAccount::new)
+                    UUIDUtil.CODEC.fieldOf("uuid").forGetter(PlayerPasswordData::getUuid),
+                    Codec.STRING.fieldOf("password").forGetter(PlayerPasswordData::getPassword)
+            ).apply(instance, PlayerPasswordData::new)
     );
 
-    public PlayerAccount(UUID uuid, String password) {
+    public PlayerPasswordData(UUID uuid, String password) {
         this.uuid = uuid;
         this.password = password;
     }
