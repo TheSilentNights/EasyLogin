@@ -1,10 +1,9 @@
 package cn.thesilentnights.easylogin.service;
 
-import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import cn.thesilentnights.easylogin.pojo.PlayerAccount;
+import cn.thesilentnights.easylogin.pojo.PlayerPasswordData;
 import cn.thesilentnights.easylogin.utils.MessageSender;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import net.minecraft.commands.CommandSourceStack;
@@ -29,7 +28,7 @@ public class PlayerInfoService {
         
         NameAndId next = player.iterator().next();
 
-        Optional<PlayerAccount> account = AccountService.getAccount(next.id());
+        Optional<PlayerPasswordData> account = AccountService.getAccount(next.id());
 
         if (account.isEmpty()) {
             MessageSender.sendMessage(context, "Player not found", MessageType.ERROR);

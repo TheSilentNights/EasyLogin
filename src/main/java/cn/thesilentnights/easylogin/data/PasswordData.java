@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import cn.thesilentnights.easylogin.pojo.PlayerAccount;
+import cn.thesilentnights.easylogin.pojo.PlayerPasswordData;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -16,17 +16,17 @@ import net.minecraft.world.level.saveddata.SavedDataType;
 
 public class PasswordData extends SavedData {
     private static PasswordData instance;
-    private Map<UUID, PlayerAccount> passwords = new ConcurrentHashMap<>();
+    private Map<UUID, PlayerPasswordData> passwords = new ConcurrentHashMap<>();
 
     public PasswordData() {
 
     }
 
-    public PasswordData(Map<UUID, PlayerAccount> passwords) {
+    public PasswordData(Map<UUID, PlayerPasswordData> passwords) {
         this.passwords = passwords;
     }
 
-    public static final Codec<Map<UUID, PlayerAccount>> MAP_CODEC = Codec.unboundedMap(UUIDUtil.STRING_CODEC, PlayerAccount.CODEC);
+    public static final Codec<Map<UUID, PlayerPasswordData>> MAP_CODEC = Codec.unboundedMap(UUIDUtil.STRING_CODEC, PlayerPasswordData.CODEC);
 
     public static final Codec<PasswordData> CODEC = RecordCodecBuilder.create(instance ->
         instance.group(
@@ -52,16 +52,16 @@ public class PasswordData extends SavedData {
         PasswordData.instance = level.getDataStorage().computeIfAbsent(dataType);
     }
 
-    public static PlayerAccount getAccount(UUID uuid) {
+    public static PlayerPasswordData getAccount(UUID uuid) {
         return instance.passwords.get(uuid);
     }
 
-    public static void updateAccount(UUID uuid, PlayerAccount account) {
+    public static void updateAccount(UUID uuid, PlayerPasswordData account) {
         instance.passwords.put(uuid, account);
         instance.setDirty();
     }
 
-    public static void registerAccount(PlayerAccount account) {
+    public static void registerAccount(PlayerPasswordData account) {
         instance.passwords.put(account.getUuid(), account);
         instance.setDirty();
     }

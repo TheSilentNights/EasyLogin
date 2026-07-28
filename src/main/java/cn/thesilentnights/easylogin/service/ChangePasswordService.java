@@ -1,11 +1,10 @@
 package cn.thesilentnights.easylogin.service;
 
-import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import cn.thesilentnights.easylogin.pojo.PlayerAccount;
+import cn.thesilentnights.easylogin.pojo.PlayerPasswordData;
 import cn.thesilentnights.easylogin.repo.PlayerCache;
 import cn.thesilentnights.easylogin.utils.LogUtil;
 import cn.thesilentnights.easylogin.utils.MessageSender;
@@ -92,7 +91,7 @@ public class ChangePasswordService {
     }
 
     private static void updateCache(UUID id) {
-        Optional<PlayerAccount> account = AccountService.getAccount(id);
+        Optional<PlayerPasswordData> account = AccountService.getAccount(id);
         if (account.isPresent()) {
             PlayerCache.addPlayer(id);
         } else {

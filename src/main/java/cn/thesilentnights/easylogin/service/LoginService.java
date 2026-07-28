@@ -4,7 +4,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import cn.thesilentnights.easylogin.pojo.PlayerAccount;
+import cn.thesilentnights.easylogin.pojo.PlayerPasswordData;
 import cn.thesilentnights.easylogin.repo.PlayerCache;
 import cn.thesilentnights.easylogin.repo.PositionRepo;
 import cn.thesilentnights.easylogin.utils.LogUtil;
@@ -39,7 +39,7 @@ public class LoginService {
         }
 
         String password = StringArgumentType.getString(context, "password");
-        Optional<PlayerAccount> account = AccountService.getAccount(uuid);
+        Optional<PlayerPasswordData> account = AccountService.getAccount(uuid);
 
         if (account.isPresent()) {
             if (PasswordHasher.verify(password, account.get().getPassword())) {
@@ -95,14 +95,14 @@ public class LoginService {
             return false;
         }
 
-        PlayerAccount newAccount = new PlayerAccount(
+        PlayerPasswordData newAccount = new PlayerPasswordData(
                 uuid,
                 PasswordHasher.hash(password));
 
         // data check
         AccountService.updateAccount(newAccount);
 
-        Optional<PlayerAccount> auth = AccountService.getAccount(serverPlayer.getUUID());
+        Optional<PlayerPasswordData> auth = AccountService.getAccount(serverPlayer.getUUID());
         if (auth.isEmpty()) {
             LogUtil.getLogger().error("internal error found in registering player", new SQLException());
             return false;
