@@ -37,16 +37,5 @@ public class ActionListener {
     }
 
 
-    // //prevent move
-    // @SubscribeEvent
-    // public void onPlayerDrop(TickEvent.PlayerTickEvent event) {
-    //     if (ActionCheckService.shouldCancelEvent(event.player)) {
-    //         BlockPos blockPos = BlockPosRepo.getBlockPos(event.player.getUUID(), event.player.blockPosition());
-    //         event.player.teleportTo(
-    //                 blockPos.getX(),
-    //                 blockPos.getY(),
-    //                 blockPos.getZ()
-    //         );
-    //     }
-    // }
+
 }
