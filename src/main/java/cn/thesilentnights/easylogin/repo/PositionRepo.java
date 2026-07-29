@@ -3,11 +3,12 @@ package cn.thesilentnights.easylogin.repo;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.world.phys.Vec3;
 
 public class PositionRepo {
-    private static final Map<UUID, Vec3> cacheMap = new HashMap<>();
+    private static final Map<UUID, Vec3> cacheMap = new ConcurrentHashMap<>();
 
     public static void addPos(UUID uuid, Vec3 pos) {
         cacheMap.put(uuid, pos);

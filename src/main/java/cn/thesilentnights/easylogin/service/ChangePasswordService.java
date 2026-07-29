@@ -33,7 +33,7 @@ public class ChangePasswordService {
         String newPasswordConfirm = StringArgumentType.getString(context, "newPasswordConfirm");
 
         if (newPassword.equals(newPasswordConfirm)) {
-            AccountService.updatePassword(
+            DataService.updatePassword(
                     newPassword,
                     context.getSource().getPlayerOrException().getUUID());
             updateCache(context.getSource().getPlayerOrException().getUUID());
@@ -71,7 +71,7 @@ public class ChangePasswordService {
         String newPassword = StringArgumentType.getString(context, "password");
         String newPasswordConfirm = StringArgumentType.getString(context, "confirm");
         if (newPassword.equals(newPasswordConfirm)) {
-            AccountService.updatePassword(
+            DataService.updatePassword(
                     newPassword,
                     next.id());
             updateCache(next.id());
@@ -91,7 +91,7 @@ public class ChangePasswordService {
     }
 
     private static void updateCache(UUID id) {
-        Optional<PlayerPasswordData> account = AccountService.getAccount(id);
+        Optional<PlayerPasswordData> account = DataService.getPlayerPasswordData(id);
         if (account.isPresent()) {
             PlayerCache.addPlayer(id);
         } else {

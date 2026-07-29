@@ -28,7 +28,7 @@ public class PlayerInfoService {
         
         NameAndId next = player.iterator().next();
 
-        Optional<PlayerPasswordData> account = AccountService.getAccount(next.id());
+        Optional<PlayerPasswordData> account = DataService.getPlayerPasswordData(next.id());
 
         if (account.isEmpty()) {
             MessageSender.sendMessage(context, "Player not found", MessageType.ERROR);

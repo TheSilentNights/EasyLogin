@@ -25,7 +25,7 @@ public class LoginService {
         ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
         UUID uuid = serverPlayer.getUUID();
 
-        if (!AccountService.hasAccount(uuid)) {
+        if (!DataService.hasAccount(uuid)) {
             MessageSender.sendMessage(context, "you haven't registered", MessageType.ERROR);
             return false;
         }
@@ -39,7 +39,7 @@ public class LoginService {
         }
 
         String password = StringArgumentType.getString(context, "password");
-        Optional<PlayerPasswordData> account = AccountService.getAccount(uuid);
+        Optional<PlayerPasswordData> account = DataService.getPlayerPasswordData(uuid);
 
         if (account.isPresent()) {
             if (PasswordHasher.verify(password, account.get().getPassword())) {
@@ -95,14 +95,10 @@ public class LoginService {
             return false;
         }
 
-        PlayerPasswordData newAccount = new PlayerPasswordData(
-                uuid,
-                PasswordHasher.hash(password));
-
         // data check
-        AccountService.updateAccount(newAccount);
+        DataService.updatePassword(uuid,PasswordHasher.hash(password));
 
-        Optional<PlayerPasswordData> auth = AccountService.getAccount(serverPlayer.getUUID());
+        Optional<PlayerPasswordData> auth = DataService.getPlayerPasswordData(serverPlayer.getUUID());
         if (auth.isEmpty()) {
             LogUtil.getLogger().error("internal error found in registering player", new SQLException());
             return false;
@@ -124,10 +120,9 @@ public class LoginService {
                     serverPlayer,
                     "you are not logged in",
                     MessageType.ERROR);
-            return;
-        }
-
-        if (PlayerCache.isPlayerLogged(serverPlayer.getUUID())) {
+        } else {
+            // save player status
+            DataService.recordPlayer(serverPlayer);
             PlayerCache.dropPlayerLogged(serverPlayer.getUUID());
             TaskService.cancelPlayer(serverPlayer.getUUID());
         }

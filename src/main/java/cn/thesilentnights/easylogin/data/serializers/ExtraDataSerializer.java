@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.UUID;
 
 import cn.thesilentnights.easylogin.data.SqlGenerator;
 import cn.thesilentnights.easylogin.data.connections.ConnectionProvider;
@@ -23,11 +24,12 @@ public class ExtraDataSerializer implements DataSerializer<PlayerExtraData> {
     static {
         COLUMNS.put("uuid", "TEXT PRIMARY KEY");
         COLUMNS.put("display_name", "TEXT");
-        COLUMNS.put("last_login_x", "INTEGER");
-        COLUMNS.put("last_login_y", "INTEGER");
-        COLUMNS.put("last_login_z", "INTEGER");
+        COLUMNS.put("last_login_x", "REAL");
+        COLUMNS.put("last_login_y", "REAL");
+        COLUMNS.put("last_login_z", "REAL");
         COLUMNS.put("last_login_dimension", "TEXT");
         COLUMNS.put("last_login_timestamp", "INTEGER");
+        COLUMNS.put("last_login_ip", "TEXT");
         COLUMN_NAMES = List.copyOf(COLUMNS.keySet());
         SELECT_COLUMNS = COLUMN_NAMES.subList(1, COLUMN_NAMES.size());
     }
@@ -53,14 +55,15 @@ public class ExtraDataSerializer implements DataSerializer<PlayerExtraData> {
                 if (rs.next()) {
 
                     String displayName = rs.getString("display_name");
-                    int x = rs.getInt("last_login_x");
-                    int y = rs.getInt("last_login_y");
-                    int z = rs.getInt("last_login_z");
+                    double x = rs.getDouble("last_login_x");
+                    double y = rs.getDouble("last_login_y");
+                    double z = rs.getDouble("last_login_z");
                     String dimension = rs.getString("last_login_dimension");
                     long timestamp = rs.getLong("last_login_timestamp");
                     Long lastLoginTimestamp = rs.wasNull() ? null : timestamp;
+                    String lastLoginIp = rs.getString("last_login_ip");
 
-                    return new PlayerExtraData(uuid, displayName, x, y, z, dimension, lastLoginTimestamp);
+                    return new PlayerExtraData(UUID.fromString(uuid), displayName, x, y, z, dimension, lastLoginTimestamp, lastLoginIp);
                 }
             }
         }
@@ -75,17 +78,18 @@ public class ExtraDataSerializer implements DataSerializer<PlayerExtraData> {
                 PreparedStatement ps = conn.prepareStatement(sql)
         ) {
             //inject value
-            ps.setString(1, data.getUuid());
+            ps.setString(1, data.getUuid().toString());
             ps.setString(2, data.getDisplayName());
-            ps.setInt(3, data.getLastLoginX());
-            ps.setInt(4, data.getLastLoginY());
-            ps.setInt(5, data.getLastLoginZ());
+            ps.setDouble(3, data.getLastLoginX());
+            ps.setDouble(4, data.getLastLoginY());
+            ps.setDouble(5, data.getLastLoginZ());
             ps.setString(6, data.getLastLoginDimension());
             if (data.getLastLoginTimestamp() != null) {
                 ps.setLong(7, data.getLastLoginTimestamp());
             } else {
                 ps.setNull(7, java.sql.Types.INTEGER);
             }
+            ps.setString(8, data.getLastLoginIp());
             ps.executeUpdate();
         }
     }

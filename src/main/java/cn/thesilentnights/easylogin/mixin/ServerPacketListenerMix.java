@@ -17,7 +17,7 @@ import net.minecraft.world.phys.Vec3;
 public class ServerPacketListenerMix {
 
     @Shadow
-    private ServerPlayer player;
+    public ServerPlayer player;
 
     @Inject(method = "handleMovePlayer", at = @At("RETURN") // 在原始逻辑执行完之后注入
     )
