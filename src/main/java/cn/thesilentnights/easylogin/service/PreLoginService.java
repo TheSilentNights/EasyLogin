@@ -12,6 +12,13 @@ import net.neoforged.neoforge.client.event.ClientChatReceivedEvent.Player;
 
 
 public class PreLoginService {
+    static MobEffectInstance blindness = new MobEffectInstance(
+            MobEffects.BLINDNESS,
+            25565,
+            10,
+            false,
+            false
+    );
 
     public static void preLogin(ServerPlayer serverPlayer) {
         if (PlayerCache.isPlayerLogged(serverPlayer.getUUID())) {
@@ -36,13 +43,6 @@ public class PreLoginService {
     }
 
     private static void addBlindEffectToPlayer(ServerPlayer serverPlayer) {
-        MobEffectInstance blindness = new MobEffectInstance(
-                MobEffects.BLINDNESS,
-                25565,
-                10,
-                false,
-                false
-        );
         serverPlayer.addEffect(blindness);
     }
 }
