@@ -9,6 +9,7 @@ public class SQLiteConnectionProvider implements ConnectionProvider {
 
     @Override
     public void init(String connectionString) throws Exception {
+        Class.forName("org.sqlite.JDBC");
         connection = DriverManager.getConnection("jdbc:sqlite:" + connectionString);
     }
 

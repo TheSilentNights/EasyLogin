@@ -23,6 +23,10 @@ public class DataManager {
 
     private static boolean initialized = false;
 
+    public static void init(Path baseDir){
+        init(baseDir.toString());
+    }
+
     public static synchronized void init(String baseDir) {
         if (initialized) {
             return;

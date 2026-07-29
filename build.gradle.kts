@@ -100,6 +100,7 @@ dependencies {
         strictly("[3.53.0.0]")
         prefer("3.53.0.0")
     }
+    runtimeOnly(sqliteDep)
     jarJar(sqliteDep)
 }
 

@@ -1,5 +1,6 @@
 package cn.thesilentnights.easylogin;
 
+import cn.thesilentnights.easylogin.data.DataManager;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.minecraft.client.MinecraftClient;
 
@@ -17,6 +18,8 @@ import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 
+import java.nio.file.Paths;
+
 @Mod(value = CommonStaticRepo.MOD_ID,dist = Dist.DEDICATED_SERVER)
 public class EasyLogin {
 
@@ -27,8 +30,6 @@ public class EasyLogin {
 
         if (FMLEnvironment.getDist() == Dist.DEDICATED_SERVER || !FMLEnvironment.isProduction()) {
             initServer();
-        } else {
-            initClient();
         }
     }
 
@@ -36,6 +37,8 @@ public class EasyLogin {
         new Listener();
         new ActionListener(NeoForge.EVENT_BUS);
         new CommandRegistrar(NeoForge.EVENT_BUS);
+
+        DataManager.init(Paths.get(CommonStaticRepo.GAME_DIR,"easylogin").toAbsolutePath());
     }
 
     private static void initClient() {
