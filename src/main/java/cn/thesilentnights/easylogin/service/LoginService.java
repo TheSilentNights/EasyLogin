@@ -96,7 +96,7 @@ public class LoginService {
         }
 
         // data check
-        DataService.updatePassword(uuid,PasswordHasher.hash(password));
+        DataService.updatePassword(uuid,password);
 
         Optional<PlayerPasswordData> auth = DataService.getPlayerPasswordData(serverPlayer.getUUID());
         if (auth.isEmpty()) {

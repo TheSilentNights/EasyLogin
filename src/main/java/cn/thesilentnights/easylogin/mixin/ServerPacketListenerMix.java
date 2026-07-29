@@ -29,7 +29,7 @@ public class ServerPacketListenerMix {
             Vec3 lastSafePos = PositionRepo.getPos(player.getUUID(), pos);
             player.connection.teleport(
                     lastSafePos.x, lastSafePos.y, lastSafePos.z,
-                    player.getYRot(), player.getXRot());
+                    0,0);
         }
     }
 

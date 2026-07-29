@@ -22,10 +22,7 @@ public class ChangePasswordService {
 
     public static boolean changePassword(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         if (!LoginService.isLoggedIn(context.getSource().getPlayerOrException().getUUID())) {
-            MessageSender.sendMessage(
-                    context,
-                    "commands.password.change.failure.unlogged",
-                    MessageType.ERROR);
+            MessageSender.sendMessage(context, "commands.password.change.failure.unlogged", MessageType.ERROR);
             return false;
         }
 
@@ -33,59 +30,39 @@ public class ChangePasswordService {
         String newPasswordConfirm = StringArgumentType.getString(context, "newPasswordConfirm");
 
         if (newPassword.equals(newPasswordConfirm)) {
-            DataService.updatePassword(
-                    newPassword,
-                    context.getSource().getPlayerOrException().getUUID());
+            DataService.updatePassword(context.getSource().getPlayerOrException().getUUID(), newPassword);
             updateCache(context.getSource().getPlayerOrException().getUUID());
-            MessageSender.sendMessage(
-                    context,
-                    "commands.password.change.success",
-                    MessageType.SUCCESS);
+            MessageSender.sendMessage(context, "commands.password.change.success", MessageType.SUCCESS);
 
             return true;
         } else {
 
-            MessageSender.sendMessage(
-                    context,
-                    "commands.password.confirm.failure",
-                    MessageType.ERROR);
+            MessageSender.sendMessage(context, "commands.password.confirm.failure", MessageType.ERROR);
             return false;
-            
+
         }
     }
 
-    public static boolean changePasswordAdmin(CommandContext<CommandSourceStack> context)
-            throws CommandSyntaxException {
+    public static boolean changePasswordAdmin(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         Collection<NameAndId> player = GameProfileArgument.getGameProfiles(context, "player");
-                
+
         if (player.isEmpty()) {
-            MessageSender.sendMessage(
-                    context,
-                    "player not found",
-                    MessageType.ERROR);
+            MessageSender.sendMessage(context, "player not found", MessageType.ERROR);
             return false;
         }
-        
+
         NameAndId next = player.iterator().next();
 
         String newPassword = StringArgumentType.getString(context, "password");
         String newPasswordConfirm = StringArgumentType.getString(context, "confirm");
         if (newPassword.equals(newPasswordConfirm)) {
-            DataService.updatePassword(
-                    newPassword,
-                    next.id());
+            DataService.updatePassword(next.id(), newPassword);
             updateCache(next.id());
 
-            MessageSender.sendMessage(
-                    context,
-                    "commands.password.change.success",
-                    MessageType.SUCCESS);
+            MessageSender.sendMessage(context, "commands.password.change.success", MessageType.SUCCESS);
             return true;
         } else {
-            MessageSender.sendMessage(
-                    context,
-                    "commands.password.confirm.failure",
-                    MessageType.ERROR);
+            MessageSender.sendMessage(context, "commands.password.confirm.failure", MessageType.ERROR);
             return false;
         }
     }
@@ -95,8 +72,7 @@ public class ChangePasswordService {
         if (account.isPresent()) {
             PlayerCache.addPlayer(id);
         } else {
-            LogUtil.getLogger().error("Error updating cache",
-                    new SQLException("Error updating cache"));
+            LogUtil.getLogger().error("Error updating cache", new SQLException("Error updating cache"));
         }
     }
 

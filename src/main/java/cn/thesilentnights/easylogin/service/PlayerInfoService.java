@@ -1,9 +1,10 @@
 package cn.thesilentnights.easylogin.service;
 
+import cn.thesilentnights.easylogin.configs.EasyLoginConfig;
+import cn.thesilentnights.easylogin.pojo.PlayerExtraData;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import cn.thesilentnights.easylogin.pojo.PlayerPasswordData;
 import cn.thesilentnights.easylogin.utils.MessageSender;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import net.minecraft.commands.CommandSourceStack;
@@ -28,7 +29,14 @@ public class PlayerInfoService {
         
         NameAndId next = player.iterator().next();
 
-        Optional<PlayerPasswordData> account = DataService.getPlayerPasswordData(next.id());
+        if (!EasyLoginConfig.enableExtraDataRecord.get()){
+             MessageSender.sendMessage(
+                    context,
+                    "Extra data record is disabled",
+                    MessageType.ERROR);
+        }
+
+        Optional<PlayerExtraData> account = DataService.getPlayerExtraData(next.id());
 
         if (account.isEmpty()) {
             MessageSender.sendMessage(context, "Player not found", MessageType.ERROR);
@@ -37,7 +45,7 @@ public class PlayerInfoService {
 
         MessageSender.sendMessage(
                 context,
-                "Player info: " + account.get().toString(),
+                "Player info: " + account.get(),
                 MessageType.SUCCESS
         );
         return true;

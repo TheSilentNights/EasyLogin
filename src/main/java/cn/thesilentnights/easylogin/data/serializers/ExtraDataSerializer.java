@@ -39,8 +39,8 @@ public class ExtraDataSerializer implements DataSerializer<PlayerExtraData> {
     @Override
     public void init(ConnectionProvider provider) throws Exception {
         this.provider = provider;
-        try (Connection conn = provider.getConnection();
-             Statement stmt = conn.createStatement()) {
+        Connection conn = provider.getConnection();
+        try (Statement stmt = conn.createStatement()) {
             stmt.execute(SqlGenerator.createTable(TABLE, COLUMNS));
         }
     }
@@ -48,8 +48,8 @@ public class ExtraDataSerializer implements DataSerializer<PlayerExtraData> {
     @Override
     public PlayerExtraData get(String uuid) throws Exception {
         String sql = SqlGenerator.select(TABLE, SELECT_COLUMNS, PK);
-        try (Connection conn = provider.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        Connection conn = provider.getConnection();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, uuid);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -73,10 +73,8 @@ public class ExtraDataSerializer implements DataSerializer<PlayerExtraData> {
     @Override
     public void save(PlayerExtraData data) throws Exception {
         String sql = SqlGenerator.updateOrInsert(TABLE, COLUMN_NAMES, PK);
-        try (
-                Connection conn = provider.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)
-        ) {
+        Connection conn = provider.getConnection();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             //inject value
             ps.setString(1, data.getUuid().toString());
             ps.setString(2, data.getDisplayName());
@@ -97,8 +95,8 @@ public class ExtraDataSerializer implements DataSerializer<PlayerExtraData> {
     @Override
     public void delete(String uuid) throws Exception {
         String sql = SqlGenerator.delete(TABLE, PK);
-        try (Connection conn = provider.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        Connection conn = provider.getConnection();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, uuid);
             ps.executeUpdate();
         }

@@ -28,6 +28,14 @@ public class DataService {
         }
     }
 
+    public static Optional<PlayerExtraData> getPlayerExtraData(UUID uuid) {
+        try {
+            return Optional.ofNullable(DataManager.extra().get(uuid.toString()));
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to query account for " + uuid, e);
+        }
+    }
+
     public static boolean updatePassword(UUID uuid,String rawPassword) {
         try {
             DataManager.password().save(new PlayerPasswordData(
