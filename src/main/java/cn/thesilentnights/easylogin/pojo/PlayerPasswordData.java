@@ -2,37 +2,36 @@ package cn.thesilentnights.easylogin.pojo;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.UUIDUtil;
-
 import java.util.UUID;
+import net.minecraft.core.UUIDUtil;
 
 public class PlayerPasswordData {
 
-    private final UUID uuid;
-    private String password;
+        private final UUID uuid;
+        private String password;
 
-    public static final Codec<PlayerPasswordData> CODEC = RecordCodecBuilder.create(instance ->
-            instance.group(
-                    UUIDUtil.CODEC.fieldOf("uuid").forGetter(PlayerPasswordData::getUuid),
-                    Codec.STRING.fieldOf("password").forGetter(PlayerPasswordData::getPassword)
-            ).apply(instance, PlayerPasswordData::new)
-    );
+        public static final Codec<PlayerPasswordData> CODEC = RecordCodecBuilder.create(instance ->
+                instance.group(
+                        UUIDUtil.CODEC.fieldOf("uuid").forGetter(PlayerPasswordData::getUuid),
+                        Codec.STRING.fieldOf("password").forGetter(PlayerPasswordData::getPassword)
+                ).apply(instance, PlayerPasswordData::new)
+        );
 
-    public PlayerPasswordData(UUID uuid, String password) {
-        this.uuid = uuid;
-        this.password = password;
-    }
+        public PlayerPasswordData(UUID uuid, String password) {
+                this.uuid = uuid;
+                this.password = password;
+        }
 
-    public UUID getUuid() {
-        return uuid;
-    }
+        public UUID getUuid() {
+                return uuid;
+        }
 
 
-    public String getPassword() {
-        return password;
-    }
+        public String getPassword() {
+                return password;
+        }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+        public void setPassword(String password) {
+                this.password = password;
+        }
 }

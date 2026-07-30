@@ -1,49 +1,57 @@
 package cn.thesilentnights.easylogin.commands;
 
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-
 import cn.thesilentnights.easylogin.service.ChangePasswordService;
 import cn.thesilentnights.easylogin.service.PlayerInfoService;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.GameProfileArgument;
-
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
 import java.util.Locale;
+import net.minecraft.commands.arguments.GameProfileArgument;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.CommandSourceStack;
 
 public class Management extends PermissionRequired implements ICommands {
 
-    @Override
-    public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        LiteralArgumentBuilder<CommandSourceStack> easylogin = Commands.literal("easylogin")
-                .requires((source) -> requireAdminPermission(source) && requireLoginAuth(source));
+        @Override
+        public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+                LiteralArgumentBuilder<CommandSourceStack> easylogin = Commands.literal("easylogin")
+                        .requires(
+                                (source) ->
+                                        requireAdminPermission(source) && requireLoginAuth(source)
+                        );
 
-        var playerInfo = Commands.literal("playerInfo");
-        var playerArgInfo = Commands.argument("player", GameProfileArgument.gameProfile());
-        
-
-        playerArgInfo.executes(
-                (CommandContext<CommandSourceStack> context) -> PlayerInfoService.handle(context)
-                        ? 1
-                        : 0
-        );
-
-        dispatcher.register(easylogin.then(playerInfo.then(playerArgInfo)));
+                var playerInfo = Commands.literal("playerInfo");
+                var playerArgInfo = Commands.argument("player", GameProfileArgument.gameProfile());
 
 
-        var playerArgChangePassword = Commands.argument("player", GameProfileArgument.gameProfile());
-        var changePassword = Commands.literal("changePassword".toLowerCase(Locale.ROOT));
-        var passwordArg = Commands.argument("password", StringArgumentType.string());
-        var confirmArg = Commands.argument("confirm", StringArgumentType.string());
+                playerArgInfo.executes(
+                        (CommandContext<CommandSourceStack> context) -> PlayerInfoService.handle(context)
+                                ? 1
+                                : 0
+                );
 
-        confirmArg.executes(
-                (CommandContext<CommandSourceStack> context) -> ChangePasswordService.changePasswordAdmin(context)
-                        ? 1
-                        : 0
-        );
+                dispatcher.register(easylogin.then(playerInfo.then(playerArgInfo)));
 
-        dispatcher.register(easylogin.then(changePassword.then(playerArgChangePassword.then(passwordArg.then(confirmArg)))));
-    }
+
+                var playerArgChangePassword = Commands.argument("player", GameProfileArgument.gameProfile());
+                var changePassword = Commands.literal("changePassword".toLowerCase(Locale.ROOT));
+                var passwordArg = Commands.argument("password", StringArgumentType.string());
+                var confirmArg = Commands.argument("confirm", StringArgumentType.string());
+
+                confirmArg.executes(
+                        (CommandContext<CommandSourceStack> context) ->
+                                ChangePasswordService.changePasswordAdmin(context) ? 1 : 0
+                );
+
+                dispatcher.register(
+                        easylogin.then(
+                                changePassword.then(
+                                        playerArgChangePassword.then(
+                                                passwordArg.then(confirmArg)
+                                        )
+                                )
+                        )
+                );
+        }
 }

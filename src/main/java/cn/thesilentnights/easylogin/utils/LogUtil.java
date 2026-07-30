@@ -1,14 +1,13 @@
 package cn.thesilentnights.easylogin.utils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import cn.thesilentnights.easylogin.repo.CommonStaticRepo;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class LogUtil {
-    static Logger logger = LogManager.getLogger(CommonStaticRepo.MOD_ID);
+        static Logger logger = LogManager.getLogger(CommonStaticRepo.MOD_ID);
 
-    public static Logger getLogger() {
-        return logger;
-    }
+        public static Logger getLogger() {
+                return logger;
+        }
 }
