@@ -1,6 +1,6 @@
 package cn.thesilentnights.easylogin.commands;
 
-import cn.thesilentnights.easylogin.service.LoginService;
+import cn.thesilentnights.easylogin.services.LoginService;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;

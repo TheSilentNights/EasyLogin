@@ -1,9 +1,9 @@
-package cn.thesilentnights.easylogin.service;
+package cn.thesilentnights.easylogin.services;
 
 import cn.thesilentnights.easylogin.configs.EasyLoginConfig;
 import cn.thesilentnights.easylogin.repo.PlayerCache;
-import cn.thesilentnights.easylogin.service.task.KickPlayer;
-import cn.thesilentnights.easylogin.service.task.Message;
+import cn.thesilentnights.easylogin.services.task.KickPlayer;
+import cn.thesilentnights.easylogin.services.task.Message;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;

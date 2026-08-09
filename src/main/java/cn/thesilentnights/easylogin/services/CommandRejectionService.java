@@ -1,4 +1,4 @@
-package cn.thesilentnights.easylogin.service;
+package cn.thesilentnights.easylogin.services;
 
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import cn.thesilentnights.easylogin.utils.MessageSender;

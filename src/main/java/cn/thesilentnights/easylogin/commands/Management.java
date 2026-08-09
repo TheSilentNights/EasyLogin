@@ -1,7 +1,7 @@
 package cn.thesilentnights.easylogin.commands;
 
-import cn.thesilentnights.easylogin.service.ChangePasswordService;
-import cn.thesilentnights.easylogin.service.PlayerInfoService;
+import cn.thesilentnights.easylogin.services.ChangePasswordService;
+import cn.thesilentnights.easylogin.services.PlayerInfoService;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.CommandDispatcher;

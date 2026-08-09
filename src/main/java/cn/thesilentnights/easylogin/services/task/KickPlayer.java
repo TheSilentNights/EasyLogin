@@ -1,4 +1,4 @@
-package cn.thesilentnights.easylogin.service.task;
+package cn.thesilentnights.easylogin.services.task;
 
 import cn.thesilentnights.easylogin.utils.LogUtil;
 import java.util.UUID;

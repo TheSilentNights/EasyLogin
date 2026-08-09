@@ -1,6 +1,6 @@
 package cn.thesilentnights.easylogin.commands;
 
-import cn.thesilentnights.easylogin.service.ChangePasswordService;
+import cn.thesilentnights.easylogin.services.ChangePasswordService;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;

@@ -1,4 +1,4 @@
-package cn.thesilentnights.easylogin.service;
+package cn.thesilentnights.easylogin.services;
 
 import cn.thesilentnights.easylogin.configs.EasyLoginConfig;
 import cn.thesilentnights.easylogin.data.DataManager;
