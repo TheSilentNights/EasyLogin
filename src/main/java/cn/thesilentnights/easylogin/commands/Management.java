@@ -2,6 +2,7 @@ package cn.thesilentnights.easylogin.commands;
 
 import cn.thesilentnights.easylogin.services.commands.PlayerInfoService;
 import cn.thesilentnights.easylogin.services.passwords.ChangePasswordService;
+import cn.thesilentnights.easylogin.utils.Dependencies;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -27,7 +28,7 @@ public class Management extends PermissionRequired implements ICommands {
 
 
                 playerArgInfo.executes(
-                        (CommandContext<CommandSourceStack> context) -> PlayerInfoService.handle(context)
+                        (CommandContext<CommandSourceStack> context) -> Dependencies.getDependency(PlayerInfoService.class).handle(context)
                                 ? 1
                                 : 0
                 );
@@ -42,7 +43,7 @@ public class Management extends PermissionRequired implements ICommands {
 
                 confirmArg.executes(
                         (CommandContext<CommandSourceStack> context) ->
-                                ChangePasswordService.changePasswordAdmin(context) ? 1 : 0
+                                Dependencies.getDependency(ChangePasswordService.class).changePasswordAdmin(context) ? 1 : 0
                 );
 
                 dispatcher.register(

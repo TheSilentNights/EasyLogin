@@ -5,6 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 
 import cn.thesilentnights.easylogin.services.auth.LoginService;
+import cn.thesilentnights.easylogin.utils.Dependencies;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.CommandSourceStack;
 
@@ -16,7 +17,7 @@ public class Login implements ICommands {
                 var password = Commands.argument("password", StringArgumentType.string());
 
                 password.executes(
-                        (CommandContext<CommandSourceStack> context) -> LoginService.login(context)
+                        (CommandContext<CommandSourceStack> context) -> Dependencies.getDependency(LoginService.class).login(context)
                                 ? 1
                                 : 0
                 );

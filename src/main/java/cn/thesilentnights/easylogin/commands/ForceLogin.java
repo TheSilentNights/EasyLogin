@@ -2,6 +2,7 @@ package cn.thesilentnights.easylogin.commands;
 
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import cn.thesilentnights.easylogin.services.auth.LoginService;
+import cn.thesilentnights.easylogin.utils.Dependencies;
 import cn.thesilentnights.easylogin.utils.MessageSender;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
@@ -41,7 +42,7 @@ public class ForceLogin extends PermissionRequired implements ICommands {
                                         .getPlayer(next.id());
 
 
-                                LoginService.forceLogin(serverPlayer);
+                                Dependencies.getDependency(LoginService.class).forceLogin(serverPlayer);
 
                                 MessageSender.sendMessage(
                                         context.getSource().getPlayerOrException(),

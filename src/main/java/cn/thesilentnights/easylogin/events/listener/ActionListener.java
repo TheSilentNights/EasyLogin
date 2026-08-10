@@ -14,14 +14,24 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 public class ActionListener {
 
+        private final ActionCheckService actionCheckService;
+        private final CommandRejectionService commandRejectionService;
 
-        public ActionListener(IEventBus eventBus) {
+
+
+        public ActionListener(
+                IEventBus eventBus,
+                ActionCheckService actionCheckService,
+                CommandRejectionService commandRejectionService
+        ) {
+                this.actionCheckService = actionCheckService;
+                this.commandRejectionService = commandRejectionService;
                 eventBus.register(this);
         }
 
         @SubscribeEvent
         public void onPlayerInteract(EntityInteract event) {
-                if (ActionCheckService.shouldCancelEvent(event.getEntity())) {
+                if (actionCheckService.shouldCancelEvent(event.getEntity())) {
                         MessageSender.sendMessage(
                                 event,
                                 "you cannot interact before you log in",
@@ -34,7 +44,7 @@ public class ActionListener {
 
         @SubscribeEvent
         public void onPlayerLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
-                if (ActionCheckService.shouldCancelEvent(event.getEntity())) {
+                if (actionCheckService.shouldCancelEvent(event.getEntity())) {
                         MessageSender.sendMessage(
                                 event,
                                 "you cannot interact before you log in",
@@ -46,7 +56,7 @@ public class ActionListener {
 
         @SubscribeEvent
         public void onPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-                if (ActionCheckService.shouldCancelEvent(event.getEntity())) {
+                if (actionCheckService.shouldCancelEvent(event.getEntity())) {
                         MessageSender.sendMessage(
                                 event,
                                 "you cannot interact before you log in",
@@ -58,7 +68,7 @@ public class ActionListener {
 
         @SubscribeEvent
         public void onPlayerRightClickItem(PlayerInteractEvent.RightClickItem event) {
-                if (ActionCheckService.shouldCancelEvent(event.getEntity())) {
+                if (actionCheckService.shouldCancelEvent(event.getEntity())) {
                         MessageSender.sendMessage(
                                 event,
                                 "you cannot interact before you log in",
@@ -71,7 +81,7 @@ public class ActionListener {
 
         @SubscribeEvent
         public void onPlayerExecuteCommand(CommandEvent event) throws CommandSyntaxException {
-                CommandRejectionService.handleRejection(event);
+                commandRejectionService.handleRejection(event);
         }
 
 

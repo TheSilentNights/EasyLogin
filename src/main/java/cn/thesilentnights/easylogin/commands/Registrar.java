@@ -5,6 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 
 import cn.thesilentnights.easylogin.services.auth.LoginService;
+import cn.thesilentnights.easylogin.utils.Dependencies;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.CommandSourceStack;
 
@@ -17,7 +18,7 @@ public class Registrar implements ICommands {
                 var repeat = Commands.argument("repeat", StringArgumentType.string());
 
                 repeat.executes(
-                        (CommandContext<CommandSourceStack> context) -> LoginService.register(context) ? 1 : 0
+                        (CommandContext<CommandSourceStack> context) -> Dependencies.getDependency(LoginService.class).register(context) ? 1 : 0
                 );
 
                 //serialize

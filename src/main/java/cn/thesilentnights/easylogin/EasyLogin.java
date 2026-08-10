@@ -6,6 +6,13 @@ import cn.thesilentnights.easylogin.events.listener.ActionListener;
 import cn.thesilentnights.easylogin.events.listener.Listener;
 import cn.thesilentnights.easylogin.registrys.CommandRegistrar;
 import cn.thesilentnights.easylogin.repo.CommonStaticRepo;
+import cn.thesilentnights.easylogin.services.action.ActionCheckService;
+import cn.thesilentnights.easylogin.services.auth.LoginService;
+import cn.thesilentnights.easylogin.services.auth.PreLoginService;
+import cn.thesilentnights.easylogin.services.commands.CommandRejectionService;
+import cn.thesilentnights.easylogin.services.task.TaskService;
+import cn.thesilentnights.easylogin.utils.Dependencies;
+
 import java.nio.file.Paths;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.common.Mod;
@@ -27,8 +34,17 @@ public class EasyLogin {
         }
 
         private static void initServer() {
-                new Listener();
-                new ActionListener(NeoForge.EVENT_BUS);
+                new Listener(
+                        Dependencies.getDependency(PreLoginService.class),
+                        Dependencies.getDependency(LoginService.class),
+                        Dependencies.getDependency(TaskService.class),
+                        NeoForge.EVENT_BUS
+                );
+                new ActionListener(
+                        NeoForge.EVENT_BUS,
+                        Dependencies.getDependency(ActionCheckService.class),
+                        Dependencies.getDependency(CommandRejectionService.class)
+                );
                 new CommandRegistrar(NeoForge.EVENT_BUS);
 
                 DataManager.init(Paths.get(CommonStaticRepo.GAME_DIR, "easylogin").toAbsolutePath());

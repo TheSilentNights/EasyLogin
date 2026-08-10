@@ -15,7 +15,14 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.players.NameAndId;
 
 public class PlayerInfoService {
-        public static boolean handle(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        private final DataService dataService;
+
+
+        public PlayerInfoService(DataService dataService) {
+                this.dataService = dataService;
+        }
+        
+        public boolean handle(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
                 Collection<NameAndId> player = GameProfileArgument.getGameProfiles(context, "player");
 
                 if (player.isEmpty()) {
@@ -37,7 +44,7 @@ public class PlayerInfoService {
                         );
                 }
 
-                Optional<PlayerExtraData> account = DataService.getPlayerExtraData(next.id());
+                Optional<PlayerExtraData> account = dataService.getPlayerExtraData(next.id());
 
                 if (account.isEmpty()) {
                         MessageSender.sendMessage(context, "Player not found", MessageType.ERROR);

@@ -8,5 +8,4 @@ public interface ActionCheckService {
     
     boolean shouldCancelEvent(LivingEntity entity);
 
-    boolean isLoggedIn(UUID uuid);
 }

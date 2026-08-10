@@ -5,6 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 
 import cn.thesilentnights.easylogin.services.passwords.ChangePasswordService;
+import cn.thesilentnights.easylogin.utils.Dependencies;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.CommandSourceStack;
 
@@ -17,7 +18,7 @@ public class ChangePassword extends PermissionRequired implements ICommands {
                 var confirm = Commands.argument("confirm", StringArgumentType.string());
 
                 confirm.executes(
-                        (CommandContext<CommandSourceStack> context) -> ChangePasswordService.changePassword(context)
+                        (CommandContext<CommandSourceStack> context) -> Dependencies.getDependency(ChangePasswordService.class).changePassword(context)
                                 ? 1
                                 : 0
                 );

@@ -2,6 +2,7 @@ package cn.thesilentnights.easylogin.mixin;
 
 import cn.thesilentnights.easylogin.repo.PositionRepo;
 import cn.thesilentnights.easylogin.services.action.ActionCheckService;
+import cn.thesilentnights.easylogin.utils.Dependencies;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -18,11 +19,13 @@ public class ServerPacketListenerMix {
         @Shadow
         public ServerPlayer player;
 
+        private final ActionCheckService actionCheckService = Dependencies.getDependency(ActionCheckService.class);
+
         @Inject(method = "handleMovePlayer", at = @At("RETURN") // 在原始逻辑执行完之后注入
         )
         private void afterHandleMove(ServerboundMovePlayerPacket packet, CallbackInfo ci) {
 
-                if (ActionCheckService.shouldCancelEvent(player)) {
+                if (actionCheckService.shouldCancelEvent(player)) {
                         Vec3 pos = player.position();
 
                         Vec3 lastSafePos = PositionRepo.getPos(player.getUUID(), pos);
