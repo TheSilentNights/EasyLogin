@@ -1,7 +1,7 @@
 package cn.thesilentnights.easylogin.mixin;
 
 import cn.thesilentnights.easylogin.repo.PositionRepo;
-import cn.thesilentnights.easylogin.services.ActionCheckService;
+import cn.thesilentnights.easylogin.services.action.ActionCheckService;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;

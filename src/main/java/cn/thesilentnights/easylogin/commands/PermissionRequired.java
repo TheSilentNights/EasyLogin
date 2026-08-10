@@ -1,6 +1,6 @@
 package cn.thesilentnights.easylogin.commands;
 
-import cn.thesilentnights.easylogin.services.LoginService;
+import cn.thesilentnights.easylogin.services.auth.LoginService;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.permissions.Permissions;
 

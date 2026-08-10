@@ -1,9 +1,10 @@
 package cn.thesilentnights.easylogin.commands;
 
-import cn.thesilentnights.easylogin.services.ChangePasswordService;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+
+import cn.thesilentnights.easylogin.services.passwords.ChangePasswordService;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.CommandSourceStack;
 

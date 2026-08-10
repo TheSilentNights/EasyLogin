@@ -1,4 +1,4 @@
-package cn.thesilentnights.easylogin.services;
+package cn.thesilentnights.easylogin.services.data;
 
 import cn.thesilentnights.easylogin.configs.EasyLoginConfig;
 import cn.thesilentnights.easylogin.data.DataManager;
@@ -9,9 +9,11 @@ import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.server.level.ServerPlayer;
 
-public class DataService {
+public class DataServiceImpl implements DataService{
 
-        public static boolean hasAccount(UUID uuid) {
+
+        @Override
+        public boolean hasAccount(UUID uuid) {
                 try {
                         return DataManager.password().get(uuid.toString()) != null;
                 } catch (Exception e) {
@@ -19,7 +21,9 @@ public class DataService {
                 }
         }
 
-        public static Optional<PlayerPasswordData> getPlayerPasswordData(UUID uuid) {
+        @Override
+        public Optional<PlayerPasswordData> getPlayerPasswordData(UUID uuid) {
+
                 try {
                         return Optional.ofNullable(DataManager.password().get(uuid.toString()));
                 } catch (Exception e) {
@@ -27,7 +31,8 @@ public class DataService {
                 }
         }
 
-        public static Optional<PlayerExtraData> getPlayerExtraData(UUID uuid) {
+        @Override
+        public Optional<PlayerExtraData> getPlayerExtraData(UUID uuid) {
                 try {
                         return Optional.ofNullable(DataManager.extra().get(uuid.toString()));
                 } catch (Exception e) {
@@ -35,7 +40,8 @@ public class DataService {
                 }
         }
 
-        public static boolean updatePassword(UUID uuid, String rawPassword) {
+        @Override
+        public boolean updatePassword(UUID uuid, String rawPassword) {
                 try {
                         DataManager.password().save(new PlayerPasswordData(
                                 uuid,
@@ -47,7 +53,8 @@ public class DataService {
                 }
         }
 
-        public static boolean updatePlayerExtraData(PlayerExtraData data) {
+        @Override
+        public boolean updatePlayerExtraData(PlayerExtraData data) {
                 try {
                         DataManager.extra().save(data);
                         return true;
@@ -56,7 +63,7 @@ public class DataService {
                 }
         }
 
-        public static void recordPlayer(ServerPlayer serverPlayer) {
+        public void recordPlayer(ServerPlayer serverPlayer) {
                 if (EasyLoginConfig.enableExtraDataRecord.get()) {
                         updatePlayerExtraData(new PlayerExtraData(
                                 serverPlayer.getUUID(),

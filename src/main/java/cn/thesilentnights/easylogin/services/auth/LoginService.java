@@ -1,8 +1,10 @@
-package cn.thesilentnights.easylogin.services;
+package cn.thesilentnights.easylogin.services.auth;
 
 import cn.thesilentnights.easylogin.pojo.PlayerPasswordData;
 import cn.thesilentnights.easylogin.repo.PlayerCache;
 import cn.thesilentnights.easylogin.repo.PositionRepo;
+import cn.thesilentnights.easylogin.services.data.DataService;
+import cn.thesilentnights.easylogin.services.task.TaskService;
 import cn.thesilentnights.easylogin.utils.LogUtil;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import cn.thesilentnights.easylogin.utils.MessageSender;
@@ -18,15 +20,20 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
 
 public class LoginService {
+        private final DataService dataService;
 
-        public static boolean login(
+        public LoginService(DataService dataService) {
+                this.dataService = dataService;
+        }
+
+        public boolean login(
                 CommandContext<CommandSourceStack> context
         ) throws CommandSyntaxException {
 
                 ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
                 UUID uuid = serverPlayer.getUUID();
 
-                if (!DataService.hasAccount(uuid)) {
+                if (!dataService.hasAccount(uuid)) {
                         MessageSender.sendMessage(context, "you haven't registered", MessageType.ERROR);
                         return false;
                 }
@@ -41,7 +48,7 @@ public class LoginService {
                 }
 
                 String password = StringArgumentType.getString(context, "password");
-                Optional<PlayerPasswordData> account = DataService.getPlayerPasswordData(uuid);
+                                Optional<PlayerPasswordData> account = dataService.getPlayerPasswordData(uuid);
 
                 if (account.isPresent()) {
                         if (PasswordHasher.verify(password, account.get().getPassword())) {
@@ -73,18 +80,18 @@ public class LoginService {
                 return false;
         }
 
-        public static void forceLogin(ServerPlayer serverPlayer) {
+        public void forceLogin(ServerPlayer serverPlayer) {
                 removeLimit(serverPlayer);
                 PlayerCache.addPlayer(serverPlayer.getUUID());
         }
 
-        private static void removeLimit(ServerPlayer serverPlayer) {
+        private void removeLimit(ServerPlayer serverPlayer) {
                 TaskService.cancelPlayer(serverPlayer.getUUID());
                 PositionRepo.removePos(serverPlayer.getUUID());
                 serverPlayer.removeEffect(MobEffects.BLINDNESS);
         }
 
-        public static boolean register(
+        public boolean register(
                 CommandContext<CommandSourceStack> context
         ) throws CommandSyntaxException {
 
@@ -104,7 +111,7 @@ public class LoginService {
                 }
 
                 // data check
-                DataService.updatePassword(uuid, password);
+                                dataService.updatePassword(uuid, password);
 
                 Optional<PlayerPasswordData> auth = DataService.getPlayerPasswordData(serverPlayer.getUUID());
                 if (auth.isEmpty()) {

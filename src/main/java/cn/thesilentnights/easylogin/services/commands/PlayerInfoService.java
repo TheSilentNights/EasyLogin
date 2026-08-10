@@ -1,7 +1,8 @@
-package cn.thesilentnights.easylogin.services;
+package cn.thesilentnights.easylogin.services.commands;
 
 import cn.thesilentnights.easylogin.configs.EasyLoginConfig;
 import cn.thesilentnights.easylogin.pojo.PlayerExtraData;
+import cn.thesilentnights.easylogin.services.data.DataService;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import cn.thesilentnights.easylogin.utils.MessageSender;
 import com.mojang.brigadier.context.CommandContext;

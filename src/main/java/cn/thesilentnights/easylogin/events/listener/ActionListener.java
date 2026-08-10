@@ -1,7 +1,7 @@
 package cn.thesilentnights.easylogin.events.listener;
 
-import cn.thesilentnights.easylogin.services.ActionCheckService;
-import cn.thesilentnights.easylogin.services.CommandRejectionService;
+import cn.thesilentnights.easylogin.services.action.ActionCheckService;
+import cn.thesilentnights.easylogin.services.commands.CommandRejectionService;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import cn.thesilentnights.easylogin.utils.MessageSender;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;

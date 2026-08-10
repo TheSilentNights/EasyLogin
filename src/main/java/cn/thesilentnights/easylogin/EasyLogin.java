@@ -5,7 +5,6 @@ import cn.thesilentnights.easylogin.data.DataManager;
 import cn.thesilentnights.easylogin.events.listener.ActionListener;
 import cn.thesilentnights.easylogin.events.listener.Listener;
 import cn.thesilentnights.easylogin.registrys.CommandRegistrar;
-import cn.thesilentnights.easylogin.registrys.SDRegistry;
 import cn.thesilentnights.easylogin.repo.CommonStaticRepo;
 import java.nio.file.Paths;
 import net.neoforged.api.distmarker.Dist;

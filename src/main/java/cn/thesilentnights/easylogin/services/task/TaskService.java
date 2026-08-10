@@ -1,7 +1,5 @@
-package cn.thesilentnights.easylogin.services;
+package cn.thesilentnights.easylogin.services.task;
 
-import cn.thesilentnights.easylogin.services.task.Loop;
-import cn.thesilentnights.easylogin.services.task.Task;
 import java.util.PriorityQueue;
 import java.util.UUID;
 

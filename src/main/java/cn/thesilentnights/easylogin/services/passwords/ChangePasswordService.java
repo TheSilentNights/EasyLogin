@@ -1,7 +1,9 @@
-package cn.thesilentnights.easylogin.services;
+package cn.thesilentnights.easylogin.services.passwords;
 
 import cn.thesilentnights.easylogin.pojo.PlayerPasswordData;
 import cn.thesilentnights.easylogin.repo.PlayerCache;
+import cn.thesilentnights.easylogin.services.auth.LoginService;
+import cn.thesilentnights.easylogin.services.data.DataService;
 import cn.thesilentnights.easylogin.utils.LogUtil;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import cn.thesilentnights.easylogin.utils.MessageSender;
@@ -18,9 +20,16 @@ import net.minecraft.server.players.NameAndId;
 
 public class ChangePasswordService {
 
-        public static boolean changePassword(
+        private final DataService dataService;
+
+        public ChangePasswordService(DataService dataService) {
+                this.dataService = dataService;
+        }
+
+        public boolean changePassword(
                 CommandContext<CommandSourceStack> context
         ) throws CommandSyntaxException {
+
 
                 if (!LoginService.isLoggedIn(context.getSource().getPlayerOrException().getUUID())) {
                         MessageSender.sendMessage(
@@ -35,7 +44,7 @@ public class ChangePasswordService {
                 String newPasswordConfirm = StringArgumentType.getString(context, "newPasswordConfirm");
 
                 if (newPassword.equals(newPasswordConfirm)) {
-                        DataService.updatePassword(
+                        dataService.updatePassword(
                                 context.getSource().getPlayerOrException().getUUID(),
                                 newPassword
                         );
@@ -59,7 +68,7 @@ public class ChangePasswordService {
                 }
         }
 
-        public static boolean changePasswordAdmin(
+        public boolean changePasswordAdmin(
                 CommandContext<CommandSourceStack> context
         ) throws CommandSyntaxException {
 
@@ -75,7 +84,7 @@ public class ChangePasswordService {
                 String newPassword = StringArgumentType.getString(context, "password");
                 String newPasswordConfirm = StringArgumentType.getString(context, "confirm");
                 if (newPassword.equals(newPasswordConfirm)) {
-                        DataService.updatePassword(next.id(), newPassword);
+                        dataService.updatePassword(next.id(), newPassword);
                         updateCache(next.id());
 
                         MessageSender.sendMessage(
@@ -94,8 +103,8 @@ public class ChangePasswordService {
                 }
         }
 
-        private static void updateCache(UUID id) {
-                Optional<PlayerPasswordData> account = DataService.getPlayerPasswordData(id);
+        private void updateCache(UUID id) {
+                Optional<PlayerPasswordData> account = dataService.getPlayerPasswordData(id);
                 if (account.isPresent()) {
                         PlayerCache.addPlayer(id);
                 } else {

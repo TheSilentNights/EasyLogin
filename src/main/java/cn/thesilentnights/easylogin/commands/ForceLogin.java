@@ -1,7 +1,7 @@
 package cn.thesilentnights.easylogin.commands;
 
-import cn.thesilentnights.easylogin.services.LoginService;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
+import cn.thesilentnights.easylogin.services.auth.LoginService;
 import cn.thesilentnights.easylogin.utils.MessageSender;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;

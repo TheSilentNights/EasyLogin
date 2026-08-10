@@ -1,8 +1,8 @@
 package cn.thesilentnights.easylogin.events.listener;
 
-import cn.thesilentnights.easylogin.services.LoginService;
-import cn.thesilentnights.easylogin.services.PreLoginService;
-import cn.thesilentnights.easylogin.services.TaskService;
+import cn.thesilentnights.easylogin.services.auth.LoginService;
+import cn.thesilentnights.easylogin.services.auth.PreLoginService;
+import cn.thesilentnights.easylogin.services.task.TaskService;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
