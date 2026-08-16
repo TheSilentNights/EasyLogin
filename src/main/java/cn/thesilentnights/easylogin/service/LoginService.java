@@ -95,6 +95,12 @@ public class LoginService {
             return true;
         }
 
+        Optional<PlayerAccount> account = AccountService.getAccount(serverPlayer.getUUID());
+        if (account.isPresent()){
+            MessageSender.sendMessage(serverPlayer,"you cannot register twice",MessageType.ERROR);
+            return false;
+        }
+
         if (!password.equals(repeat)) {
             MessageSender.sendMessage(
                     serverPlayer,
