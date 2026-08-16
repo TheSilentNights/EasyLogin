@@ -104,6 +104,7 @@ public class LoginService {
                     "you cannot register twice",
                     MessageType.ERROR
             );
+            return false;
         }
 
         if (!password.equals(repeat)) {
