@@ -91,8 +91,19 @@ public class LoginService {
         String repeat = StringArgumentType.getString(context, "repeat");
 
         UUID uuid = serverPlayer.getUUID();
+
         if (ByPassService.isBypassed(uuid)) {
             return true;
+        }
+
+        Optional<PlayerAccount> account = AccountService.getAccount(serverPlayer.getUUID());
+
+        if (account.isPresent()){
+            MessageSender.sendMessage(
+                    serverPlayer,
+                    "you cannot register twice",
+                    MessageType.ERROR
+            );
         }
 
         if (!password.equals(repeat)) {
