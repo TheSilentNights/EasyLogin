@@ -35,17 +35,14 @@ public class DataManager {
                         Path dir = Paths.get(baseDir);
                         Files.createDirectories(dir);
 
-                        passwordConnection = new SQLiteConnectionProvider();
-                        passwordConnection.init(dir.resolve("passwords.db").toString());
+                        passwordConnection = new SQLiteConnectionProvider(dir.resolve("passwords.db").toString());
 
-                        extraConnection = new SQLiteConnectionProvider();
-                        extraConnection.init(dir.resolve("extra_data.db").toString());
+                        extraConnection = new SQLiteConnectionProvider(dir.resolve("extra_data.db").toString());
 
-                        passwordSerializer = new PasswordDataSerializer();
-                        passwordSerializer.init(passwordConnection);
 
-                        extraSerializer = new ExtraDataSerializer();
-                        extraSerializer.init(extraConnection);
+                        passwordSerializer = new PasswordDataSerializer(passwordConnection);
+
+                        extraSerializer = new ExtraDataSerializer(extraConnection);
 
                         initialized = true;
                         LogUtil.getLogger().info("DataManager initialized at {}", baseDir);

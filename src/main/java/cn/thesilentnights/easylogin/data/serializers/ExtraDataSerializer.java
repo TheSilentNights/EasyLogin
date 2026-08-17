@@ -7,6 +7,7 @@ import cn.thesilentnights.easylogin.pojo.PlayerExtraData;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -34,19 +35,22 @@ public class ExtraDataSerializer implements DataSerializer<PlayerExtraData> {
                 SELECT_COLUMNS = COLUMN_NAMES.subList(1, COLUMN_NAMES.size());
         }
 
-        private ConnectionProvider provider;
+        private final ConnectionProvider provider;
 
-        @Override
-        public void init(ConnectionProvider provider) throws Exception {
+        public ExtraDataSerializer(ConnectionProvider provider) throws SQLException {
                 this.provider = provider;
+                init();
+        }
+
+        private void init() throws SQLException {
                 Connection conn = provider.getConnection();
                 try (Statement stmt = conn.createStatement()) {
-                        stmt.execute(SqlGenerator.createTable(TABLE, COLUMNS));
+                        stmt.execute(SqlGenerator.createTableIfNoExistence(TABLE, COLUMNS));
                 }
         }
 
         @Override
-        public PlayerExtraData get(String uuid) throws Exception {
+        public PlayerExtraData get(String uuid) throws SQLException {
                 String sql = SqlGenerator.select(TABLE, SELECT_COLUMNS, PK);
                 Connection conn = provider.getConnection();
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -80,7 +84,7 @@ public class ExtraDataSerializer implements DataSerializer<PlayerExtraData> {
         }
 
         @Override
-        public void save(PlayerExtraData data) throws Exception {
+        public void save(PlayerExtraData data) throws SQLException {
                 String sql = SqlGenerator.updateOrInsert(TABLE, COLUMN_NAMES, PK);
                 Connection conn = provider.getConnection();
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -102,7 +106,7 @@ public class ExtraDataSerializer implements DataSerializer<PlayerExtraData> {
         }
 
         @Override
-        public void delete(String uuid) throws Exception {
+        public void delete(String uuid) throws SQLException {
                 String sql = SqlGenerator.delete(TABLE, PK);
                 Connection conn = provider.getConnection();
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {

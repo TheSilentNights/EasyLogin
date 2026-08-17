@@ -1,11 +1,10 @@
 package cn.thesilentnights.easylogin.data.connections;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public interface ConnectionProvider {
-        void init(String connectionString) throws Exception;
+        Connection getConnection() throws SQLException;
 
-        Connection getConnection() throws Exception;
-
-        void close() throws Exception;
+        void close() throws SQLException;
 }

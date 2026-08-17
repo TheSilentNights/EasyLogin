@@ -6,7 +6,7 @@ import java.util.StringJoiner;
 
 public class SqlGenerator {
 
-        public static String createTable(String table, LinkedHashMap<String, String> columns) {
+        public static String createTableIfNoExistence(String table, LinkedHashMap<String, String> columns) {
                 StringJoiner joiner = new StringJoiner(", ");
                 for (var entry : columns.entrySet()) {
                         joiner.add(entry.getKey() + " " + entry.getValue());
