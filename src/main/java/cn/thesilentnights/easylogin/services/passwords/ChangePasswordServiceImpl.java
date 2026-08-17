@@ -35,8 +35,12 @@ public class ChangePasswordServiceImpl implements ChangePasswordService {
         public boolean changePassword(
                 CommandContext<CommandSourceStack> context
         ) throws CommandSyntaxException {
+                UUID uuid = context.getSource().getPlayerOrException().getUUID();
+                if (!loginService.isPlayerLogged(uuid)){
+                        return false;
+                }
 
-                if (!loginService.isPlayerLogged(context.getSource().getPlayerOrException().getUUID())) {
+                if (!loginService.isPlayerLogged(uuid)) {
                         MessageSender.sendMessage(
                                 context,
                                 "commands.password.change.failure.unlogged",

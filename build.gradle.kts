@@ -3,7 +3,7 @@ import java.util.Properties
 
 plugins {
     id("java-library")
-    id("net.neoforged.moddev") version "2.0.142"
+    id("net.neoforged.moddev") version "2.0.144"
 }
 
 val modId: String = project.properties["mod_id"].toString()

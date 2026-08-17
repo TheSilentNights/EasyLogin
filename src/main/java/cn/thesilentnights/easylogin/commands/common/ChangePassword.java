@@ -10,11 +10,11 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
-public class ChangePassword extends PermissionRequired implements ICommands {
+public class ChangePassword implements ICommands {
 
         @Override
         public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-                var changepassword = Commands.literal("changepassword").requires(this::requireLoginAuth);
+                var changepassword = Commands.literal("changepassword");
                 var newPassword = Commands.argument("newPassword", StringArgumentType.string());
                 var confirm = Commands.argument("newPasswordConfirm", StringArgumentType.string());
 

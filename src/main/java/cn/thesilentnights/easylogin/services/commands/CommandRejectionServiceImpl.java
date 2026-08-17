@@ -14,7 +14,8 @@ public class CommandRejectionServiceImpl implements CommandRejectionService {
         private final ActionCheckService actionCheckService;
         private final List<String> bypassList = Arrays.asList(
                 "login",
-                "register"
+                "register",
+                "changepassword"
         );
 
         public CommandRejectionServiceImpl(ActionCheckService actionCheckService) {
