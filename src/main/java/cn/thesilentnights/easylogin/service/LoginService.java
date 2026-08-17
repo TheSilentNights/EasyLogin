@@ -1,5 +1,6 @@
 package cn.thesilentnights.easylogin.service;
 
+import cn.thesilentnights.easylogin.service.task.Message;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -86,6 +87,16 @@ public class LoginService {
         String repeat = StringArgumentType.getString(context, "repeat");
 
         UUID uuid = serverPlayer.getUUID();
+
+        Optional<PlayerAccount> account = AccountService.getAccount(serverPlayer.getUUID());
+        if (account.isPresent()){
+            MessageSender.sendMessage(
+                    serverPlayer,
+                    "you cannot register twice",
+                    MessageType.ERROR
+            );
+            return false;
+        }
 
         if (!password.equals(repeat)) {
             MessageSender.sendMessage(
