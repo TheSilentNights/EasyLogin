@@ -26,3 +26,5 @@ Easylogin.code-workspace
 
 # Files from Forge MDK
 forge*changelog.txt
+
+local.properties

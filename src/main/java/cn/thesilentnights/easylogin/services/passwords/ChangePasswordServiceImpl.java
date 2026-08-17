@@ -6,12 +6,15 @@ import cn.thesilentnights.easylogin.services.auth.LoginService;
 import cn.thesilentnights.easylogin.services.data.DataService;
 import cn.thesilentnights.easylogin.utils.MessageSender;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
+import cn.thesilentnights.easylogin.utils.PasswordHasher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.logging.LogUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.GameProfileArgument;
 import net.minecraft.server.players.NameAndId;
+import org.slf4j.Logger;
 
 import java.sql.SQLException;
 import java.util.Collection;
@@ -50,7 +53,6 @@ public class ChangePasswordServiceImpl implements ChangePasswordService {
                                 context.getSource().getPlayerOrException().getUUID(),
                                 newPassword
                         );
-                        updateCache(context.getSource().getPlayerOrException().getUUID());
                         MessageSender.sendMessage(
                                 context,
                                 "commands.password.change.success",
@@ -89,7 +91,6 @@ public class ChangePasswordServiceImpl implements ChangePasswordService {
                 String newPasswordConfirm = StringArgumentType.getString(context, "confirm");
                 if (newPassword.equals(newPasswordConfirm)) {
                         dataService.updatePassword(next.id(), newPassword);
-                        updateCache(next.id());
 
                         MessageSender.sendMessage(
                                 context,
@@ -108,16 +109,6 @@ public class ChangePasswordServiceImpl implements ChangePasswordService {
         }
 
 
-        private void updateCache(UUID id) {
-                Optional<PlayerPasswordData> account = dataService.getPlayerPasswordData(id);
-                if (account.isPresent()) {
-                        PlayerCache.addPlayer(id);
-                } else {
-                        LogUtil.getLogger().error(
-                                "Error updating cache",
-                                new SQLException("Error updating cache")
-                        );
-                }
-        }
+
 
 }

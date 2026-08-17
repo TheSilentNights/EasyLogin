@@ -114,6 +114,16 @@ public class LoginServiceImpl implements LoginService {
 
                 UUID uuid = serverPlayer.getUUID();
 
+                Optional<PlayerPasswordData> playerPasswordData = dataService.getPlayerPasswordData(uuid);
+                if (playerPasswordData.isPresent()){
+                        MessageSender.sendMessage(
+                                serverPlayer,
+                                "you cannot register twice",
+                                MessageType.ERROR
+                        );
+                        return false;
+                }
+
                 if (!password.equals(repeat)) {
                         MessageSender.sendMessage(
                                 serverPlayer,
@@ -128,7 +138,7 @@ public class LoginServiceImpl implements LoginService {
 
                 Optional<PlayerPasswordData> auth = dataService.getPlayerPasswordData(uuid);
                 if (auth.isEmpty()) {
-                        LogUtil.getLogger().error(
+                        logger.error(
                                 "internal error found in registering player",
                                 new SQLException()
                         );

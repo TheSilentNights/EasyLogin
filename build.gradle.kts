@@ -1,4 +1,5 @@
 import org.gradle.internal.classpath.Instrumented.systemProperty
+import java.util.Properties
 
 plugins {
     id("java-library")
@@ -124,3 +125,24 @@ val generateModMetadata = tasks.register<ProcessResources>("generateModMetadata"
 sourceSets.main.get().resources.srcDir(generateModMetadata)
 
 neoForge.ideSyncTask(generateModMetadata)
+
+val localProps = Properties()
+val localPropsFile = rootProject.file("local.properties")
+if (localPropsFile.exists()) {
+    localPropsFile.inputStream().use { localProps.load(it) }
+}
+val jarOutput: String? = (localProps.getProperty("jar.output")
+        ?: project.findProperty("jar.output") as String?)
+        ?.takeIf { it.isNotBlank() }
+
+if (jarOutput != null) {
+    val outputDir = file(jarOutput)
+    val copyJarToOutput = tasks.register<Copy>("copyJarToOutput") {
+        dependsOn("jar")
+        from(tasks.named<Jar>("jar"))
+        into(outputDir)
+    }
+    tasks.named("build") {
+        dependsOn(copyJarToOutput)
+    }
+}

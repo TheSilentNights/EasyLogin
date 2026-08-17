@@ -34,6 +34,7 @@ public class EasyLogin {
         }
 
         private static void initServer() {
+                DataManager.init(Paths.get(CommonStaticRepo.GAME_DIR, "easylogin").toAbsolutePath());
                 new Listener(
                         Dependencies.getDependency(PreLoginService.class),
                         Dependencies.getDependency(LoginService.class),
@@ -47,7 +48,6 @@ public class EasyLogin {
                 );
                 new CommandRegistrar(NeoForge.EVENT_BUS);
 
-                DataManager.init(Paths.get(CommonStaticRepo.GAME_DIR, "easylogin").toAbsolutePath());
         }
 
 

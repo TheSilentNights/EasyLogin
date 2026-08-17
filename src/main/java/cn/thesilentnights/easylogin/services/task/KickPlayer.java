@@ -1,7 +1,9 @@
 package cn.thesilentnights.easylogin.services.task;
 
+import com.mojang.logging.LogUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import org.slf4j.Logger;
 
 import java.util.UUID;
 
@@ -9,6 +11,7 @@ public class KickPlayer extends Task {
 
         private final ServerPlayer serverPlayer;
         private final Long endTimeMillis;
+        private final Logger logger = LogUtils.getLogger();
 
         public KickPlayer(ServerPlayer serverPlayer, Long delaySeconds) {
                 this.serverPlayer = serverPlayer;
@@ -18,7 +21,7 @@ public class KickPlayer extends Task {
 
         @Override
         public void execute() {
-                LogUtil.getLogger().info("KickPlayer: " + serverPlayer.getDisplayName().getString());
+                logger.info("KickPlayer: {}", serverPlayer.getDisplayName().getString());
                 serverPlayer.connection.disconnect(Component.translatable("You didn't login in time"));
         }
 

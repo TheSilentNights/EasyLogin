@@ -1,5 +1,7 @@
-package cn.thesilentnights.easylogin.commands;
+package cn.thesilentnights.easylogin.commands.common;
 
+import cn.thesilentnights.easylogin.commands.ICommands;
+import cn.thesilentnights.easylogin.commands.PermissionRequired;
 import cn.thesilentnights.easylogin.services.passwords.ChangePasswordService;
 import cn.thesilentnights.easylogin.utils.Dependencies;
 import com.mojang.brigadier.CommandDispatcher;
@@ -14,14 +16,14 @@ public class ChangePassword extends PermissionRequired implements ICommands {
         public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
                 var changepassword = Commands.literal("changepassword").requires(this::requireLoginAuth);
                 var newPassword = Commands.argument("newPassword", StringArgumentType.string());
-                var confirm = Commands.argument("confirm", StringArgumentType.string());
+                var confirm = Commands.argument("newPasswordConfirm", StringArgumentType.string());
 
-                confirm.executes(
-                        (CommandContext<CommandSourceStack> context) -> Dependencies.getDependency(ChangePasswordService.class).changePassword(context)
+
+
+                dispatcher.register(changepassword.then(newPassword.then(confirm.executes(
+                        (var context) -> Dependencies.getDependency(ChangePasswordService.class).changePassword(context)
                                 ? 1
                                 : 0
-                );
-
-                dispatcher.register(changepassword.then(newPassword.then(confirm)));
+                ))));
         }
 }

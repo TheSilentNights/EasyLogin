@@ -7,6 +7,8 @@ import cn.thesilentnights.easylogin.data.serializers.ExtraDataSerializer;
 import cn.thesilentnights.easylogin.data.serializers.PasswordDataSerializer;
 import cn.thesilentnights.easylogin.pojo.PlayerExtraData;
 import cn.thesilentnights.easylogin.pojo.PlayerPasswordData;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,6 +21,8 @@ public class DataManager {
 
         private static DataSerializer<PlayerPasswordData> passwordSerializer;
         private static DataSerializer<PlayerExtraData> extraSerializer;
+
+        private static final Logger logger = LogUtils.getLogger();
 
         private static boolean initialized = false;
 
@@ -44,9 +48,9 @@ public class DataManager {
                         extraSerializer = new ExtraDataSerializer(extraConnection);
 
                         initialized = true;
-                        LogUtil.getLogger().info("DataManager initialized at {}", baseDir);
+                        logger.info("DataManager initialized at {}", baseDir);
                 } catch (Exception e) {
-                        LogUtil.getLogger().error("Failed to initialize DataManager", e);
+                        logger.error("Failed to initialize DataManager", e);
                         throw new RuntimeException("DataManager initialization failed", e);
                 }
         }
@@ -63,7 +67,7 @@ public class DataManager {
                                 extraConnection.close();
                         }
                 } catch (Exception e) {
-                        LogUtil.getLogger().error("Failed to shutdown DataManager cleanly", e);
+                       logger.error("Failed to shutdown DataManager cleanly", e);
                 } finally {
                         passwordConnection = null;
                         extraConnection = null;
