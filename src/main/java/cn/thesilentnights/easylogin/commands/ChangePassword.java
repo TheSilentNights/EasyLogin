@@ -14,7 +14,7 @@ public class ChangePassword extends PermissionRequired implements ICommands {
     public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         var changepassword = Commands.literal("changepassword").requires(this::requireLoginAuth);
         var newPassword = Commands.argument("newPassword", StringArgumentType.string());
-        var confirm = Commands.argument("confirm", StringArgumentType.string());
+        var confirm = Commands.argument("newPasswordConfirm", StringArgumentType.string());
 
         confirm.executes(
                 (CommandContext<CommandSourceStack> context) -> ChangePasswordService.changePassword(context)
