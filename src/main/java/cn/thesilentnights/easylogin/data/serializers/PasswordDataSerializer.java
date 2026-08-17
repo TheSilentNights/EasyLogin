@@ -1,8 +1,9 @@
 package cn.thesilentnights.easylogin.data.serializers;
 
-import cn.thesilentnights.easylogin.data.connections.ConnectionProvider;
 import cn.thesilentnights.easylogin.data.SqlGenerator;
+import cn.thesilentnights.easylogin.data.connections.ConnectionProvider;
 import cn.thesilentnights.easylogin.pojo.PlayerPasswordData;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

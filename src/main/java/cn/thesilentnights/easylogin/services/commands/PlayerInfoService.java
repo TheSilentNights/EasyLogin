@@ -3,16 +3,17 @@ package cn.thesilentnights.easylogin.services.commands;
 import cn.thesilentnights.easylogin.configs.EasyLoginConfig;
 import cn.thesilentnights.easylogin.pojo.PlayerExtraData;
 import cn.thesilentnights.easylogin.services.data.DataService;
-import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import cn.thesilentnights.easylogin.utils.MessageSender;
+import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.GameProfileArgument;
+import net.minecraft.server.players.NameAndId;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import net.minecraft.commands.arguments.GameProfileArgument;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.server.players.NameAndId;
 
 public class PlayerInfoService {
         private final DataService dataService;
@@ -21,7 +22,7 @@ public class PlayerInfoService {
         public PlayerInfoService(DataService dataService) {
                 this.dataService = dataService;
         }
-        
+
         public boolean handle(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
                 Collection<NameAndId> player = GameProfileArgument.getGameProfiles(context, "player");
 

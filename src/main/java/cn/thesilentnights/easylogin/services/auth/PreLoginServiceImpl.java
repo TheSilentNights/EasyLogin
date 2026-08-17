@@ -12,14 +12,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 
 public class PreLoginServiceImpl implements PreLoginService {
-        private final DataService dataService;
-        private final TaskService taskService;
-
-        public PreLoginServiceImpl(DataService dataService, TaskService taskService) {
-                this.dataService = dataService;
-                this.taskService = taskService;
-        }
-
         private final static MobEffectInstance blindness = new MobEffectInstance(
                 MobEffects.BLINDNESS,
                 25565,
@@ -27,6 +19,13 @@ public class PreLoginServiceImpl implements PreLoginService {
                 false,
                 false
         );
+        private final DataService dataService;
+        private final TaskService taskService;
+
+        public PreLoginServiceImpl(DataService dataService, TaskService taskService) {
+                this.dataService = dataService;
+                this.taskService = taskService;
+        }
 
         @Override
         public void preLogin(ServerPlayer serverPlayer) {

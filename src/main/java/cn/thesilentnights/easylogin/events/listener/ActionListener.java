@@ -2,21 +2,20 @@ package cn.thesilentnights.easylogin.events.listener;
 
 import cn.thesilentnights.easylogin.services.action.ActionCheckService;
 import cn.thesilentnights.easylogin.services.commands.CommandRejectionService;
-import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import cn.thesilentnights.easylogin.utils.MessageSender;
+import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.world.InteractionResult;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.CommandEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 
 public class ActionListener {
 
         private final ActionCheckService actionCheckService;
         private final CommandRejectionService commandRejectionService;
-
 
 
         public ActionListener(

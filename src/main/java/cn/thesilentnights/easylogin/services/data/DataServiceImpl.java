@@ -5,11 +5,12 @@ import cn.thesilentnights.easylogin.data.DataManager;
 import cn.thesilentnights.easylogin.pojo.PlayerExtraData;
 import cn.thesilentnights.easylogin.pojo.PlayerPasswordData;
 import cn.thesilentnights.easylogin.utils.PasswordHasher;
-import java.util.Optional;
-import java.util.UUID;
 import net.minecraft.server.level.ServerPlayer;
 
-public class DataServiceImpl implements DataService{
+import java.util.Optional;
+import java.util.UUID;
+
+public class DataServiceImpl implements DataService {
 
 
         @Override

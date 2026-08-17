@@ -1,9 +1,10 @@
 package cn.thesilentnights.easylogin.repo;
 
-import java.util.concurrent.ConcurrentHashMap;
+import net.minecraft.world.phys.Vec3;
+
 import java.util.Map;
 import java.util.UUID;
-import net.minecraft.world.phys.Vec3;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PositionRepo {
         private static final Map<UUID, Vec3> cacheMap = new ConcurrentHashMap<>();

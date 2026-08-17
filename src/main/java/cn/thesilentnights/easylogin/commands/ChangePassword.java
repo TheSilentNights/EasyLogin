@@ -1,13 +1,12 @@
 package cn.thesilentnights.easylogin.commands;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.context.CommandContext;
-
 import cn.thesilentnights.easylogin.services.passwords.ChangePasswordService;
 import cn.thesilentnights.easylogin.utils.Dependencies;
-import net.minecraft.commands.Commands;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
 public class ChangePassword extends PermissionRequired implements ICommands {
 

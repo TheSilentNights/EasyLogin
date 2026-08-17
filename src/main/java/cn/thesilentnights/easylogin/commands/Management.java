@@ -3,15 +3,15 @@ package cn.thesilentnights.easylogin.commands;
 import cn.thesilentnights.easylogin.services.commands.PlayerInfoService;
 import cn.thesilentnights.easylogin.services.passwords.ChangePasswordService;
 import cn.thesilentnights.easylogin.utils.Dependencies;
-
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
-import java.util.Locale;
-import net.minecraft.commands.arguments.GameProfileArgument;
-import net.minecraft.commands.Commands;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.GameProfileArgument;
+
+import java.util.Locale;
 
 public class Management extends PermissionRequired implements ICommands {
 

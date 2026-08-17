@@ -1,10 +1,11 @@
 package cn.thesilentnights.easylogin.services.task;
 
-import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import cn.thesilentnights.easylogin.utils.MessageSender;
-import java.util.UUID;
+import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
+
+import java.util.UUID;
 
 public class Message extends Task implements Loop {
         final int originalDelay;
@@ -15,7 +16,7 @@ public class Message extends Task implements Loop {
         public Message(ServerPlayer serverPlayer, MutableComponent message, int delaySeconds) {
                 this.serverPlayer = serverPlayer;
                 this.message = message;
-                this.endTimeMillis = delaySeconds * 1000 + System.currentTimeMillis();
+                this.endTimeMillis = delaySeconds * 1000L + System.currentTimeMillis();
                 this.originalDelay = delaySeconds;
         }
 

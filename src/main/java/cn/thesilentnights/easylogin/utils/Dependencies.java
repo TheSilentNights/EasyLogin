@@ -1,8 +1,5 @@
 package cn.thesilentnights.easylogin.utils;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import cn.thesilentnights.easylogin.services.action.ActionCheckService;
 import cn.thesilentnights.easylogin.services.action.ActionCheckServiceImpl;
 import cn.thesilentnights.easylogin.services.auth.LoginService;
@@ -19,49 +16,64 @@ import cn.thesilentnights.easylogin.services.passwords.ChangePasswordServiceImpl
 import cn.thesilentnights.easylogin.services.task.TaskService;
 import cn.thesilentnights.easylogin.services.task.TaskServiceImpl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Dependencies {
-    static Map<Class<?>, Object> dependencies = new HashMap<>();
+        static Map<Class<?>, Object> dependencies = new HashMap<>();
 
-    static {
-        dependencies.put(DataService.class, new DataServiceImpl());
-        dependencies.put(TaskService.class, new TaskServiceImpl());
+        static {
+                dependencies.put(DataService.class, new DataServiceImpl());
+                dependencies.put(TaskService.class, new TaskServiceImpl());
 
-        dependencies.put(LoginService.class, new LoginServiceImpl(
-            getDependency(DataService.class),
-            getDependency(TaskService.class)
-        ));
+                dependencies.put(
+                        LoginService.class, new LoginServiceImpl(
+                                getDependency(DataService.class),
+                                getDependency(TaskService.class)
+                        )
+                );
 
-        dependencies.put(ActionCheckService.class, new ActionCheckServiceImpl(
-            getDependency(LoginService.class)
-        ));
-        
-        dependencies.put(CommandRejectionService.class, new CommandRejectionServiceImpl(
-            getDependency(ActionCheckService.class)
-        ));
-        
-        dependencies.put(PreLoginService.class, new PreLoginServiceImpl(
-            getDependency(DataService.class),
-            getDependency(TaskService.class)
-        ));
-        
-        dependencies.put(ChangePasswordService.class, new ChangePasswordServiceImpl(
-            getDependency(DataService.class),
-            getDependency(LoginService.class)
-        ));
+                dependencies.put(
+                        ActionCheckService.class, new ActionCheckServiceImpl(
+                                getDependency(LoginService.class)
+                        )
+                );
 
-        dependencies.put(PlayerInfoService.class, new PlayerInfoService(
-            getDependency(DataService.class)
-        ));
-    }
+                dependencies.put(
+                        CommandRejectionService.class, new CommandRejectionServiceImpl(
+                                getDependency(ActionCheckService.class)
+                        )
+                );
 
-    public static <T> T getDependency(Class<T> clazz) {
-        if (dependencies.containsKey(clazz)) {
-            return clazz.cast(dependencies.get(clazz));
+                dependencies.put(
+                        PreLoginService.class, new PreLoginServiceImpl(
+                                getDependency(DataService.class),
+                                getDependency(TaskService.class)
+                        )
+                );
+
+                dependencies.put(
+                        ChangePasswordService.class, new ChangePasswordServiceImpl(
+                                getDependency(DataService.class),
+                                getDependency(LoginService.class)
+                        )
+                );
+
+                dependencies.put(
+                        PlayerInfoService.class, new PlayerInfoService(
+                                getDependency(DataService.class)
+                        )
+                );
         }
-        throw new IllegalArgumentException("Dependency not registered: " + clazz);
-    }
 
-    public static void registerDependency(Class<?> clazz, Object instance) {
-        dependencies.put(clazz, instance);
-    }
+        public static <T> T getDependency(Class<T> clazz) {
+                if (dependencies.containsKey(clazz)) {
+                        return clazz.cast(dependencies.get(clazz));
+                }
+                throw new IllegalArgumentException("Dependency not registered: " + clazz);
+        }
+
+        public static void registerDependency(Class<?> clazz, Object instance) {
+                dependencies.put(clazz, instance);
+        }
 }

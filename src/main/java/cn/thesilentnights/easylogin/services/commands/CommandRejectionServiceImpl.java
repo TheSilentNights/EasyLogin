@@ -1,25 +1,25 @@
 package cn.thesilentnights.easylogin.services.commands;
 
-import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import cn.thesilentnights.easylogin.services.action.ActionCheckService;
 import cn.thesilentnights.easylogin.utils.MessageSender;
+import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.neoforged.neoforge.event.CommandEvent;
+
 import java.util.Arrays;
 import java.util.List;
-import net.neoforged.neoforge.event.CommandEvent;
 
 public class CommandRejectionServiceImpl implements CommandRejectionService {
 
         private final ActionCheckService actionCheckService;
-
-        public CommandRejectionServiceImpl(ActionCheckService actionCheckService) {
-                this.actionCheckService = actionCheckService;
-        }
-
         private final List<String> bypassList = Arrays.asList(
                 "login",
                 "register"
         );
+
+        public CommandRejectionServiceImpl(ActionCheckService actionCheckService) {
+                this.actionCheckService = actionCheckService;
+        }
 
         @Override
         public void handleRejection(CommandEvent event) throws CommandSyntaxException {

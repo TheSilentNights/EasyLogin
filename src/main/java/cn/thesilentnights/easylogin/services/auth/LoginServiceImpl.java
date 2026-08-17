@@ -6,18 +6,20 @@ import cn.thesilentnights.easylogin.repo.PositionRepo;
 import cn.thesilentnights.easylogin.services.data.DataService;
 import cn.thesilentnights.easylogin.services.task.TaskService;
 import cn.thesilentnights.easylogin.utils.LogUtil;
-import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import cn.thesilentnights.easylogin.utils.MessageSender;
+import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import cn.thesilentnights.easylogin.utils.PasswordHasher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import java.sql.SQLException;
-import java.util.Optional;
-import java.util.UUID;
+import com.mojang.logging.LogUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
+
+import java.sql.SQLException;
+import java.util.Optional;
+import java.util.UUID;
 
 public class LoginServiceImpl implements LoginService {
         private final DataService dataService;
@@ -33,21 +35,23 @@ public class LoginServiceImpl implements LoginService {
 
                 ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
                 UUID uuid = serverPlayer.getUUID();
-                
+
 
                 if (!dataService.hasAccount(uuid)) {
                         MessageSender.sendMessage(
-                                        context,
-                                        "you haven't registered",
-                                        MessageType.ERROR);
+                                context,
+                                "you haven't registered",
+                                MessageType.ERROR
+                        );
                         return false;
                 }
 
                 if (PlayerCache.isPlayerLogged(uuid)) {
                         MessageSender.sendMessage(
-                                        serverPlayer,
-                                        "you are already logged in",
-                                        MessageType.ERROR);
+                                serverPlayer,
+                                "you are already logged in",
+                                MessageType.ERROR
+                        );
                         return false;
                 }
 
@@ -58,26 +62,29 @@ public class LoginServiceImpl implements LoginService {
                         if (PasswordHasher.verify(password, account.get().getPassword())) {
 
                                 MessageSender.sendMessage(
-                                                serverPlayer,
-                                                "login success",
-                                                MessageType.SUCCESS);
+                                        serverPlayer,
+                                        "login success",
+                                        MessageType.SUCCESS
+                                );
 
                                 PlayerCache.addPlayer(uuid);
                                 removeLimit(serverPlayer);
                                 return true;
                         } else {
                                 MessageSender.sendMessage(
-                                                serverPlayer,
-                                                "password failed",
-                                                MessageType.ERROR);
+                                        serverPlayer,
+                                        "password failed",
+                                        MessageType.ERROR
+                                );
                                 return false;
                         }
                 }
 
                 MessageSender.sendMessage(
-                                serverPlayer,
-                                "login failed",
-                                MessageType.ERROR);
+                        serverPlayer,
+                        "login failed",
+                        MessageType.ERROR
+                );
                 return false;
         }
 
@@ -104,9 +111,10 @@ public class LoginServiceImpl implements LoginService {
 
                 if (!password.equals(repeat)) {
                         MessageSender.sendMessage(
-                                        serverPlayer,
-                                        "password confirm failed",
-                                        MessageType.ERROR);
+                                serverPlayer,
+                                "password confirm failed",
+                                MessageType.ERROR
+                        );
                         return false;
                 }
 
@@ -116,14 +124,16 @@ public class LoginServiceImpl implements LoginService {
                 Optional<PlayerPasswordData> auth = dataService.getPlayerPasswordData(uuid);
                 if (auth.isEmpty()) {
                         LogUtil.getLogger().error(
-                                        "internal error found in registering player",
-                                        new SQLException());
+                                "internal error found in registering player",
+                                new SQLException()
+                        );
                         return false;
                 } else {
                         MessageSender.sendMessage(
-                                        serverPlayer,
-                                        "register success",
-                                        MessageType.SUCCESS);
+                                serverPlayer,
+                                "register success",
+                                MessageType.SUCCESS
+                        );
                         PlayerCache.addPlayer(uuid);
                         removeLimit(serverPlayer);
                         return true;
@@ -135,11 +145,14 @@ public class LoginServiceImpl implements LoginService {
                 //
                 if (!PlayerCache.isPlayerLogged(serverPlayer.getUUID())) {
                         MessageSender.sendMessage(
-                                        serverPlayer,
-                                        "you are not logged in",
-                                        MessageType.ERROR);
+                                serverPlayer,
+                                "you are not logged in",
+                                MessageType.ERROR
+                        );
+                    LogUtils.getLogger().info("player not logged out");
                 } else {
                         // save player status
+                        LogUtils.getLogger().info("player logged out");
                         dataService.recordPlayer(serverPlayer);
                         PlayerCache.dropPlayerLogged(serverPlayer.getUUID());
                         taskService.cancelPlayer(serverPlayer.getUUID());

@@ -1,9 +1,6 @@
 package cn.thesilentnights.easylogin.services.action;
 
-import cn.thesilentnights.easylogin.repo.PlayerCache;
 import cn.thesilentnights.easylogin.services.auth.LoginService;
-
-import java.util.UUID;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -23,5 +20,5 @@ public class ActionCheckServiceImpl implements ActionCheckService {
                 return false;
         }
 
-        
+
 }

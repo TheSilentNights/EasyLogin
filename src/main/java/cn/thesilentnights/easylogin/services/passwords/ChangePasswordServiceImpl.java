@@ -5,18 +5,19 @@ import cn.thesilentnights.easylogin.repo.PlayerCache;
 import cn.thesilentnights.easylogin.services.auth.LoginService;
 import cn.thesilentnights.easylogin.services.data.DataService;
 import cn.thesilentnights.easylogin.utils.LogUtil;
-import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import cn.thesilentnights.easylogin.utils.MessageSender;
+import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.GameProfileArgument;
+import net.minecraft.server.players.NameAndId;
+
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
-import net.minecraft.commands.arguments.GameProfileArgument;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.server.players.NameAndId;
 
 public class ChangePasswordServiceImpl implements ChangePasswordService {
 
@@ -107,7 +108,7 @@ public class ChangePasswordServiceImpl implements ChangePasswordService {
                 }
         }
 
-        
+
         private void updateCache(UUID id) {
                 Optional<PlayerPasswordData> account = dataService.getPlayerPasswordData(id);
                 if (account.isPresent()) {

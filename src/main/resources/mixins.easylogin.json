@@ -1,17 +1,17 @@
 {
-    "required": true,
-    "minVersion": "0.8",
-    "package": "cn.thesilentnights.easylogin.mixin",
-    "refmap":"mixins.easylogin.refmap.json",
-    "compatibility": [
-        "JAVA_21"
-    ],
-    "mixins": [
-        "ServerPacketListenerMix"
-    ],
-    "client":[],
-    "server":[],
-    "injectors":{
-        "defaultRequire": 1
-    }
+  "required": true,
+  "minVersion": "0.8",
+  "package": "cn.thesilentnights.easylogin.mixin",
+  "refmap": "mixins.easylogin.refmap.json",
+  "compatibility": [
+    "JAVA_21"
+  ],
+  "mixins": [
+    "ServerPacketListenerMix"
+  ],
+  "client": [],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

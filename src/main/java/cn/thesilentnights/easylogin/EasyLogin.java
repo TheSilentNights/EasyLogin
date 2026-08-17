@@ -12,14 +12,14 @@ import cn.thesilentnights.easylogin.services.auth.PreLoginService;
 import cn.thesilentnights.easylogin.services.commands.CommandRejectionService;
 import cn.thesilentnights.easylogin.services.task.TaskService;
 import cn.thesilentnights.easylogin.utils.Dependencies;
-
-import java.nio.file.Paths;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.fml.ModContainer;
 import net.neoforged.neoforge.common.NeoForge;
+
+import java.nio.file.Paths;
 
 @Mod(value = CommonStaticRepo.MOD_ID, dist = Dist.DEDICATED_SERVER)
 public class EasyLogin {

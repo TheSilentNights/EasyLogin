@@ -1,10 +1,11 @@
 package cn.thesilentnights.easylogin.registrys;
 
 import cn.thesilentnights.easylogin.commands.*;
-import java.util.List;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+
+import java.util.List;
 
 public class CommandRegistrar {
 

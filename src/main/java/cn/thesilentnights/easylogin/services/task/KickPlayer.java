@@ -1,14 +1,15 @@
 package cn.thesilentnights.easylogin.services.task;
 
 import cn.thesilentnights.easylogin.utils.LogUtil;
-import java.util.UUID;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+
+import java.util.UUID;
 
 public class KickPlayer extends Task {
 
         private final ServerPlayer serverPlayer;
-        private Long endTimeMillis;
+        private final Long endTimeMillis;
 
         public KickPlayer(ServerPlayer serverPlayer, Long delaySeconds) {
                 this.serverPlayer = serverPlayer;
