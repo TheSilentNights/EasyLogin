@@ -6,6 +6,7 @@ import net.minecraft.world.entity.LivingEntity;
 
 public class ActionCheckServiceImpl implements ActionCheckService {
 
+
         private final LoginService loginService;
 
         public ActionCheckServiceImpl(LoginService loginService) {

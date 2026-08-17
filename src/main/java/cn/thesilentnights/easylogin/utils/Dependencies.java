@@ -9,6 +9,7 @@ import cn.thesilentnights.easylogin.services.auth.PreLoginServiceImpl;
 import cn.thesilentnights.easylogin.services.commands.CommandRejectionService;
 import cn.thesilentnights.easylogin.services.commands.CommandRejectionServiceImpl;
 import cn.thesilentnights.easylogin.services.commands.PlayerInfoService;
+import cn.thesilentnights.easylogin.services.commands.PlayerInfoServiceImpl;
 import cn.thesilentnights.easylogin.services.data.DataService;
 import cn.thesilentnights.easylogin.services.data.DataServiceImpl;
 import cn.thesilentnights.easylogin.services.passwords.ChangePasswordService;
@@ -23,44 +24,44 @@ public class Dependencies {
         static Map<Class<?>, Object> dependencies = new HashMap<>();
 
         static {
-                dependencies.put(DataService.class, new DataServiceImpl());
-                dependencies.put(TaskService.class, new TaskServiceImpl());
+                registerDependency(DataService.class, new DataServiceImpl());
+                registerDependency(TaskService.class, new TaskServiceImpl());
 
-                dependencies.put(
+                registerDependency(
                         LoginService.class, new LoginServiceImpl(
                                 getDependency(DataService.class),
                                 getDependency(TaskService.class)
                         )
                 );
 
-                dependencies.put(
+                registerDependency(
                         ActionCheckService.class, new ActionCheckServiceImpl(
                                 getDependency(LoginService.class)
                         )
                 );
 
-                dependencies.put(
+                registerDependency(
                         CommandRejectionService.class, new CommandRejectionServiceImpl(
                                 getDependency(ActionCheckService.class)
                         )
                 );
 
-                dependencies.put(
+                registerDependency(
                         PreLoginService.class, new PreLoginServiceImpl(
                                 getDependency(DataService.class),
                                 getDependency(TaskService.class)
                         )
                 );
 
-                dependencies.put(
+                registerDependency(
                         ChangePasswordService.class, new ChangePasswordServiceImpl(
                                 getDependency(DataService.class),
                                 getDependency(LoginService.class)
                         )
                 );
 
-                dependencies.put(
-                        PlayerInfoService.class, new PlayerInfoService(
+                registerDependency(
+                        PlayerInfoService.class, new PlayerInfoServiceImpl(
                                 getDependency(DataService.class)
                         )
                 );
@@ -73,7 +74,7 @@ public class Dependencies {
                 throw new IllegalArgumentException("Dependency not registered: " + clazz);
         }
 
-        public static void registerDependency(Class<?> clazz, Object instance) {
+        private static void registerDependency(Class<?> clazz, Object instance) {
                 dependencies.put(clazz, instance);
         }
 }
