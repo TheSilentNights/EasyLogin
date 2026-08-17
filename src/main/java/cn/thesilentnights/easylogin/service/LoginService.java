@@ -15,7 +15,9 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
+import oshi.hardware.platform.unix.aix.AixNetworkIF;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
@@ -95,6 +97,16 @@ public class LoginService {
             return true;
         }
 
+        Optional<PlayerAccount> account = AccountService.getAccount(serverPlayer.getUUID());
+        if (account.isPresent()){
+            MessageSender.sendMessage(
+                    serverPlayer,
+                    "you cannot register twice",
+                    MessageType.ERROR
+            );
+            return false;
+        }
+
         if (!password.equals(repeat)) {
             MessageSender.sendMessage(
                     serverPlayer,
@@ -103,20 +115,28 @@ public class LoginService {
             return false;
         }
 
-        PlayerAccount newAccount = new PlayerAccount(
-                uuid,
-                serverPlayer.getGameProfile().getName(),
-                PasswordHasher.hash(password),
-                serverPlayer.getIpAddress(),
-                serverPlayer.getX(),
-                serverPlayer.getY(),
-                serverPlayer.getZ(),
-                serverPlayer.level().dimension().location().getNamespace(),
-                System.currentTimeMillis());
-        // data check
-        AccountService.updateAccount(newAccount);
+        try (var level = serverPlayer.level()){
+            PlayerAccount newAccount = new PlayerAccount(
+                    uuid,
+                    serverPlayer.getGameProfile().getName(),
+                    PasswordHasher.hash(password),
+                    serverPlayer.getIpAddress(),
+                    serverPlayer.getX(),
+                    serverPlayer.getY(),
+                    serverPlayer.getZ(),
+                    level.dimension().location().getNamespace(),
+                    System.currentTimeMillis());
+            // data check
+            AccountService.updateAccount(newAccount);
+        } catch (IOException e) {
+                throw new RuntimeException(e);
+        }
+
+
 
         Optional<PlayerAccount> auth = AccountService.getAccount(serverPlayer.getUUID());
+
+
         if (auth.isEmpty()) {
             LogUtil.getLogger().error("internal error found in registering player", new SQLException());
             return false;

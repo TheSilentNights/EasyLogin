@@ -128,6 +128,7 @@ tasks.named('processResources', ProcessResources).configure {
 
 
 jar {
+    archiveBaseName = "easylogin-forge-${minecraft_version}"
     manifest {
         attributes(["Specification-Title"     : "easylogin",
                     "Specification-Vendor"    : "easyloginsareus",
