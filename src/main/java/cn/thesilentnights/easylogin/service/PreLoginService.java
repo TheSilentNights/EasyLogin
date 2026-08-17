@@ -4,10 +4,11 @@ import cn.thesilentnights.easylogin.configs.EasyLoginConfig;
 import cn.thesilentnights.easylogin.service.task.KickPlayer;
 import cn.thesilentnights.easylogin.service.task.Message;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+
+import java.awt.*;
 
 public class PreLoginService {
 
@@ -20,10 +21,10 @@ public class PreLoginService {
 
 
         if (AccountService.hasAccount(serverPlayer.getUUID())) {
-            TaskService.addTask(new Message(serverPlayer, new TextComponent("use /login to login"), 5));
+            TaskService.addTask(new Message(serverPlayer, Component.literal("use /login to login"), 5));
         } else {
             TaskService.addTask(
-                    new Message(serverPlayer, new TextComponent("use /register to register"), 5)
+                    new Message(serverPlayer, Component.literal("use /register to register"), 5)
             );
         }
 

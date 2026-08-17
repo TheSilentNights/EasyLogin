@@ -25,7 +25,7 @@ public class ActionListener {
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (ActionCheckService.shouldCancelEvent(event.getPlayer())) {
+        if (ActionCheckService.shouldCancelEvent(event.getEntity())) {
             MessageSender.sendMessage(
                     event,
                     "you cannot interact before you log in",
@@ -37,7 +37,7 @@ public class ActionListener {
 
     @SubscribeEvent
     public void onPlayerAttack(LivingAttackEvent event) {
-        if (event.getEntity() instanceof ServerPlayer serverPlayer && ActionCheckService.shouldCancelEvent(event.getEntityLiving())) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer && ActionCheckService.shouldCancelEvent(event.getEntity())) {
             MessageSender.sendMessage(
                     serverPlayer,
                     "you cannot attack before you log in",
