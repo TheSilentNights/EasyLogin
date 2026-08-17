@@ -5,7 +5,6 @@ import cn.thesilentnights.easylogin.repo.PlayerCache;
 import cn.thesilentnights.easylogin.repo.PositionRepo;
 import cn.thesilentnights.easylogin.services.data.DataService;
 import cn.thesilentnights.easylogin.services.task.TaskService;
-import cn.thesilentnights.easylogin.utils.LogUtil;
 import cn.thesilentnights.easylogin.utils.MessageSender;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import cn.thesilentnights.easylogin.utils.PasswordHasher;
@@ -16,6 +15,7 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
+import org.slf4j.Logger;
 
 import java.sql.SQLException;
 import java.util.Optional;
@@ -24,6 +24,7 @@ import java.util.UUID;
 public class LoginServiceImpl implements LoginService {
         private final DataService dataService;
         private final TaskService taskService;
+        private final Logger logger = LogUtils.getLogger();
 
         public LoginServiceImpl(DataService dataService, TaskService taskService) {
                 this.dataService = dataService;
@@ -67,8 +68,8 @@ public class LoginServiceImpl implements LoginService {
                                         MessageType.SUCCESS
                                 );
 
-                                PlayerCache.addPlayer(uuid);
-                                removeLimit(serverPlayer);
+                                postLogin(serverPlayer);
+
                                 return true;
                         } else {
                                 MessageSender.sendMessage(
@@ -90,8 +91,12 @@ public class LoginServiceImpl implements LoginService {
 
         @Override
         public void forceLogin(ServerPlayer serverPlayer) {
-                removeLimit(serverPlayer);
-                PlayerCache.addPlayer(serverPlayer.getUUID());
+                postLogin(serverPlayer);
+        }
+
+        private void postLogin(ServerPlayer player){
+                removeLimit(player);
+                PlayerCache.addPlayer(player.getUUID());
         }
 
         private void removeLimit(ServerPlayer serverPlayer) {
@@ -118,7 +123,7 @@ public class LoginServiceImpl implements LoginService {
                         return false;
                 }
 
-                // data check
+                //register player
                 dataService.updatePassword(uuid, password);
 
                 Optional<PlayerPasswordData> auth = dataService.getPlayerPasswordData(uuid);
@@ -134,25 +139,16 @@ public class LoginServiceImpl implements LoginService {
                                 "register success",
                                 MessageType.SUCCESS
                         );
-                        PlayerCache.addPlayer(uuid);
-                        removeLimit(serverPlayer);
+                        postLogin(serverPlayer);
                         return true;
                 }
         }
 
         @Override
         public void logout(ServerPlayer serverPlayer) {
-                //
-                if (!PlayerCache.isPlayerLogged(serverPlayer.getUUID())) {
-                        MessageSender.sendMessage(
-                                serverPlayer,
-                                "you are not logged in",
-                                MessageType.ERROR
-                        );
-                    LogUtils.getLogger().info("player not logged out");
-                } else {
+
+                if (PlayerCache.isPlayerLogged(serverPlayer.getUUID())) {
                         // save player status
-                        LogUtils.getLogger().info("player logged out");
                         dataService.recordPlayer(serverPlayer);
                         PlayerCache.dropPlayerLogged(serverPlayer.getUUID());
                         taskService.cancelPlayer(serverPlayer.getUUID());

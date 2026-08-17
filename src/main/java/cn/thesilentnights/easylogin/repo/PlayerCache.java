@@ -1,12 +1,10 @@
 package cn.thesilentnights.easylogin.repo;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerCache {
 
-        private static final List<UUID> loggedPlayers = new ArrayList<>();
+        private static final Set<UUID> loggedPlayers = new HashSet<>();
 
 
         public static void addPlayer(UUID uuid) {

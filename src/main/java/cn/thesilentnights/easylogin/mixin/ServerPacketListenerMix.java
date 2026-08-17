@@ -9,6 +9,7 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -16,7 +17,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ServerGamePacketListenerImpl.class)
 public class ServerPacketListenerMix {
 
-        private final ActionCheckService actionCheckService = Dependencies.getDependency(ActionCheckService.class);
+        @Unique
+        private final ActionCheckService easyLogin$actionCheckService = Dependencies.getDependency(ActionCheckService.class);
+
         @Shadow
         public ServerPlayer player;
 
@@ -24,7 +27,7 @@ public class ServerPacketListenerMix {
         )
         private void afterHandleMove(ServerboundMovePlayerPacket packet, CallbackInfo ci) {
 
-                if (actionCheckService.shouldCancelEvent(player)) {
+                if (easyLogin$actionCheckService.shouldCancelEvent(player)) {
                         Vec3 pos = player.position();
 
                         Vec3 lastSafePos = PositionRepo.getPos(player.getUUID(), pos);

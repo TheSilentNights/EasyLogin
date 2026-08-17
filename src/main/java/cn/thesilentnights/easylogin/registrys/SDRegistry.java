@@ -7,6 +7,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
+import org.jetbrains.annotations.ApiStatus;
 
 @Deprecated
 public class SDRegistry {

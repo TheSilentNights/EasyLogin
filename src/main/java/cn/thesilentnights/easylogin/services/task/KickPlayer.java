@@ -1,6 +1,5 @@
 package cn.thesilentnights.easylogin.services.task;
 
-import cn.thesilentnights.easylogin.utils.LogUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 

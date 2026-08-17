@@ -4,7 +4,6 @@ import cn.thesilentnights.easylogin.pojo.PlayerPasswordData;
 import cn.thesilentnights.easylogin.repo.PlayerCache;
 import cn.thesilentnights.easylogin.services.auth.LoginService;
 import cn.thesilentnights.easylogin.services.data.DataService;
-import cn.thesilentnights.easylogin.utils.LogUtil;
 import cn.thesilentnights.easylogin.utils.MessageSender;
 import cn.thesilentnights.easylogin.utils.MessageSender.MessageType;
 import com.mojang.brigadier.arguments.StringArgumentType;

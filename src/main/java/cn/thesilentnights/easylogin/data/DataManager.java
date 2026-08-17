@@ -7,7 +7,6 @@ import cn.thesilentnights.easylogin.data.serializers.ExtraDataSerializer;
 import cn.thesilentnights.easylogin.data.serializers.PasswordDataSerializer;
 import cn.thesilentnights.easylogin.pojo.PlayerExtraData;
 import cn.thesilentnights.easylogin.pojo.PlayerPasswordData;
-import cn.thesilentnights.easylogin.utils.LogUtil;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
