@@ -50,8 +50,5 @@ public class EasyLogin {
                 DataManager.init(Paths.get(CommonStaticRepo.GAME_DIR, "easylogin").toAbsolutePath());
         }
 
-        private static void initClient() {
-                new CommandRegistrar(NeoForge.EVENT_BUS);
-        }
 
 }
