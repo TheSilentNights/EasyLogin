@@ -16,7 +16,7 @@ public abstract class AdminCommands extends PermissionRequired implements IComma
 
         @Override
         public void register(CommandDispatcher<CommandSourceStack> source) {
-                var command = registerAsAdmin(this.mainNode);
+                LiteralArgumentBuilder<CommandSourceStack> command = this.registerAsAdmin(this.mainNode);
                 source.register(command);
         }
 

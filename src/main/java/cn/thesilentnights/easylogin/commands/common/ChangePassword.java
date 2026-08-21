@@ -18,12 +18,12 @@ public class ChangePassword implements ICommands {
                 var newPassword = Commands.argument("newPassword", StringArgumentType.string());
                 var confirm = Commands.argument("newPasswordConfirm", StringArgumentType.string());
 
-
-
-                dispatcher.register(changepassword.then(newPassword.then(confirm.executes(
-                        (var context) -> Dependencies.getDependency(ChangePasswordService.class).changePassword(context)
+                confirm.executes(
+                        (CommandContext<CommandSourceStack> context) -> Dependencies.getDependency(ChangePasswordService.class).changePassword(context)
                                 ? 1
                                 : 0
-                ))));
+                );
+
+                dispatcher.register(changepassword.then(newPassword.then(confirm)));
         }
 }
