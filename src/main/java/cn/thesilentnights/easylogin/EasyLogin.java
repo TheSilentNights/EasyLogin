@@ -12,6 +12,7 @@ import cn.thesilentnights.easylogin.services.auth.PreLoginService;
 import cn.thesilentnights.easylogin.services.commands.CommandRejectionService;
 import cn.thesilentnights.easylogin.services.task.TaskService;
 import cn.thesilentnights.easylogin.utils.Dependencies;
+import com.mojang.brigadier.Command;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -30,6 +31,8 @@ public class EasyLogin {
 
                 if (FMLEnvironment.getDist() == Dist.DEDICATED_SERVER || !FMLEnvironment.isProduction()) {
                         initServer();
+                }else{
+                        initClient();
                 }
         }
 
@@ -48,6 +51,10 @@ public class EasyLogin {
                 );
                 new CommandRegistrar(NeoForge.EVENT_BUS);
 
+        }
+
+        private static void initClient(){
+                new CommandRegistrar(NeoForge.EVENT_BUS);
         }
 
 

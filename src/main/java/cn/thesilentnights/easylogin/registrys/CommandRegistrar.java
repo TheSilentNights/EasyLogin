@@ -1,6 +1,6 @@
 package cn.thesilentnights.easylogin.registrys;
 
-import cn.thesilentnights.easylogin.commands.*;
+import cn.thesilentnights.easylogin.commands.ICommands;
 import cn.thesilentnights.easylogin.commands.admin.ChangePasswordAdmin;
 import cn.thesilentnights.easylogin.commands.admin.ForceLogin;
 import cn.thesilentnights.easylogin.commands.admin.PlayerInfo;
